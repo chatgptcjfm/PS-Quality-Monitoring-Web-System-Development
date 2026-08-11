@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import React, { useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import * as XLSX from 'xlsx'

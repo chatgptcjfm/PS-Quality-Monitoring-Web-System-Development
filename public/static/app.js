@@ -1317,10 +1317,10 @@ var require_react_dom_development = __commonJS({
           implementation
         };
       }
-      function getCrossOriginStringAs(as, input2) {
+      function getCrossOriginStringAs(as, input) {
         if ("font" === as) return "";
-        if ("string" === typeof input2)
-          return "use-credentials" === input2 ? input2 : "";
+        if ("string" === typeof input)
+          return "use-credentials" === input ? input : "";
       }
       function getValueDescriptorExpectingObjectForWarning(thing) {
         return null === thing ? "`null`" : void 0 === thing ? "`undefined`" : "" === thing ? "an empty string" : 'something with type "' + typeof thing + '"';
@@ -1513,8 +1513,8 @@ var require_react_dom_development = __commonJS({
           integrity: "string" === typeof options.integrity ? options.integrity : void 0
         })) : Internals.d.m(href));
       };
-      exports.requestFormReset = function(form2) {
-        Internals.d.r(form2);
+      exports.requestFormReset = function(form) {
+        Internals.d.r(form);
       };
       exports.unstable_batchedUpdates = function(fn, a) {
         return fn(a);
@@ -3471,7 +3471,7 @@ var require_react_dom_client_development = __commonJS({
           return character.toUpperCase();
         });
       }
-      function setValueForStyle(style3, styleName, value) {
+      function setValueForStyle(style2, styleName, value) {
         var isCustomProperty = 0 === styleName.indexOf("--");
         isCustomProperty || (-1 < styleName.indexOf("-") ? warnedStyleNames.hasOwnProperty(styleName) && warnedStyleNames[styleName] || (warnedStyleNames[styleName] = true, console.error(
           "Unsupported style property %s. Did you mean %s?",
@@ -3492,7 +3492,7 @@ var require_react_dom_client_development = __commonJS({
           "`Infinity` is an invalid value for the `%s` css style property.",
           styleName
         ))));
-        null == value || "boolean" === typeof value || "" === value ? isCustomProperty ? style3.setProperty(styleName, "") : "float" === styleName ? style3.cssFloat = "" : style3[styleName] = "" : isCustomProperty ? style3.setProperty(styleName, value) : "number" !== typeof value || 0 === value || unitlessNumbers.has(styleName) ? "float" === styleName ? style3.cssFloat = value : (checkCSSPropertyStringCoercion(value, styleName), style3[styleName] = ("" + value).trim()) : style3[styleName] = value + "px";
+        null == value || "boolean" === typeof value || "" === value ? isCustomProperty ? style2.setProperty(styleName, "") : "float" === styleName ? style2.cssFloat = "" : style2[styleName] = "" : isCustomProperty ? style2.setProperty(styleName, value) : "number" !== typeof value || 0 === value || unitlessNumbers.has(styleName) ? "float" === styleName ? style2.cssFloat = value : (checkCSSPropertyStringCoercion(value, styleName), style2[styleName] = ("" + value).trim()) : style2[styleName] = value + "px";
       }
       function setValueForStyles(node, styles, prevStyles) {
         if (null != styles && "object" !== typeof styles)
@@ -4189,7 +4189,7 @@ var require_react_dom_client_development = __commonJS({
         if (!vendorPrefixes[eventName]) return eventName;
         var prefixMap = vendorPrefixes[eventName], styleProp;
         for (styleProp in prefixMap)
-          if (prefixMap.hasOwnProperty(styleProp) && styleProp in style2)
+          if (prefixMap.hasOwnProperty(styleProp) && styleProp in style)
             return prefixedEventNames[eventName] = prefixMap[styleProp];
         return eventName;
       }
@@ -14811,15 +14811,15 @@ var require_react_dom_client_development = __commonJS({
         checkAttributeStringCoercion(actionProp, "action");
         return sanitizeURL("" + actionProp);
       }
-      function createFormDataWithSubmitter(form2, submitter) {
+      function createFormDataWithSubmitter(form, submitter) {
         var temp = submitter.ownerDocument.createElement("input");
         temp.name = submitter.name;
         temp.value = submitter.value;
-        form2.id && temp.setAttribute("form", form2.id);
+        form.id && temp.setAttribute("form", form.id);
         submitter.parentNode.insertBefore(temp, submitter);
-        form2 = new FormData(form2);
+        form = new FormData(form);
         temp.parentNode.removeChild(temp);
-        return form2;
+        return form;
       }
       function extractEvents$1(dispatchQueue, domEventName, maybeTargetInst, nativeEvent, nativeEventTarget) {
         if ("submit" === domEventName && maybeTargetInst && maybeTargetInst.stateNode === nativeEventTarget) {
@@ -15416,12 +15416,12 @@ var require_react_dom_client_development = __commonJS({
           typeof listener2
         );
       }
-      function normalizeHTML(parent, html2) {
+      function normalizeHTML(parent, html) {
         parent = parent.namespaceURI === MATH_NAMESPACE || parent.namespaceURI === SVG_NAMESPACE ? parent.ownerDocument.createElementNS(
           parent.namespaceURI,
           parent.tagName
         ) : parent.ownerDocument.createElement(parent.tagName);
-        parent.innerHTML = html2;
+        parent.innerHTML = html;
         return parent.innerHTML;
       }
       function normalizeMarkupForTextOrAttribute(markup) {
@@ -18404,20 +18404,20 @@ var require_react_dom_client_development = __commonJS({
           function() {
             lastScheduledReplayQueue === formReplayingQueue && (lastScheduledReplayQueue = null);
             for (var i = 0; i < formReplayingQueue.length; i += 3) {
-              var form2 = formReplayingQueue[i], submitterOrAction = formReplayingQueue[i + 1], formData = formReplayingQueue[i + 2];
+              var form = formReplayingQueue[i], submitterOrAction = formReplayingQueue[i + 1], formData = formReplayingQueue[i + 2];
               if ("function" !== typeof submitterOrAction)
-                if (null === findInstanceBlockingTarget(submitterOrAction || form2))
+                if (null === findInstanceBlockingTarget(submitterOrAction || form))
                   continue;
                 else break;
-              var formInst = getInstanceFromNode(form2);
-              null !== formInst && (formReplayingQueue.splice(i, 3), i -= 3, form2 = {
+              var formInst = getInstanceFromNode(form);
+              null !== formInst && (formReplayingQueue.splice(i, 3), i -= 3, form = {
                 pending: true,
                 data: formData,
-                method: form2.method,
+                method: form.method,
                 action: submitterOrAction
-              }, Object.freeze(form2), startHostTransition(
+              }, Object.freeze(form), startHostTransition(
                 formInst,
-                form2,
+                form,
                 submitterOrAction,
                 formData
               ));
@@ -18443,16 +18443,16 @@ var require_react_dom_client_development = __commonJS({
         i = (unblocked.ownerDocument || unblocked).$$reactFormReplay;
         if (null != i)
           for (queuedTarget = 0; queuedTarget < i.length; queuedTarget += 3) {
-            var form2 = i[queuedTarget], submitterOrAction = i[queuedTarget + 1], formProps = form2[internalPropsKey] || null;
+            var form = i[queuedTarget], submitterOrAction = i[queuedTarget + 1], formProps = form[internalPropsKey] || null;
             if ("function" === typeof submitterOrAction)
               formProps || scheduleReplayQueueIfNeeded(i);
             else if (formProps) {
               var action = null;
               if (submitterOrAction && submitterOrAction.hasAttribute("formAction"))
-                if (form2 = submitterOrAction, formProps = submitterOrAction[internalPropsKey] || null)
+                if (form = submitterOrAction, formProps = submitterOrAction[internalPropsKey] || null)
                   action = formProps.formAction;
                 else {
-                  if (null !== findInstanceBlockingTarget(form2)) continue;
+                  if (null !== findInstanceBlockingTarget(form)) continue;
                 }
               else action = formProps.action;
               "function" === typeof action ? i[queuedTarget + 1] = action : (i.splice(queuedTarget, 3), queuedTarget -= 3);
@@ -19537,8 +19537,8 @@ var require_react_dom_client_development = __commonJS({
         transitionstart: makePrefixMap("Transition", "TransitionStart"),
         transitioncancel: makePrefixMap("Transition", "TransitionCancel"),
         transitionend: makePrefixMap("Transition", "TransitionEnd")
-      }, prefixedEventNames = {}, style2 = {};
-      canUseDOM2 && (style2 = document.createElement("div").style, "AnimationEvent" in window || (delete vendorPrefixes.animationend.animation, delete vendorPrefixes.animationiteration.animation, delete vendorPrefixes.animationstart.animation), "TransitionEvent" in window || delete vendorPrefixes.transitionend.transition);
+      }, prefixedEventNames = {}, style = {};
+      canUseDOM2 && (style = document.createElement("div").style, "AnimationEvent" in window || (delete vendorPrefixes.animationend.animation, delete vendorPrefixes.animationiteration.animation, delete vendorPrefixes.animationstart.animation), "TransitionEvent" in window || delete vendorPrefixes.transitionend.transition);
       var ANIMATION_END = getVendorPrefixedEventName("animationend"), ANIMATION_ITERATION = getVendorPrefixedEventName("animationiteration"), ANIMATION_START = getVendorPrefixedEventName("animationstart"), TRANSITION_RUN = getVendorPrefixedEventName("transitionrun"), TRANSITION_START = getVendorPrefixedEventName("transitionstart"), TRANSITION_CANCEL = getVendorPrefixedEventName("transitioncancel"), TRANSITION_END = getVendorPrefixedEventName("transitionend"), topLevelEventsToReactNames = /* @__PURE__ */ new Map(), simpleEventPluginEvents = "abort auxClick beforeToggle cancel canPlay canPlayThrough click close contextMenu copy cut drag dragEnd dragEnter dragExit dragLeave dragOver dragStart drop durationChange emptied encrypted ended error gotPointerCapture input invalid keyDown keyPress keyUp load loadedData loadedMetadata loadStart lostPointerCapture mouseDown mouseMove mouseOut mouseOver mouseUp paste pause play playing pointerCancel pointerDown pointerMove pointerOut pointerOver pointerUp progress rateChange reset resize seeked seeking stalled submit suspend timeUpdate touchCancel touchEnd touchStart volumeChange scroll toggle touchMove waiting wheel".split(
         " "
       );
@@ -21059,9 +21059,9 @@ var require_react_dom_client_development = __commonJS({
           var previousWasRendering = previousDispatcher.f(), wasRendering = flushSyncWork$1();
           return previousWasRendering || wasRendering;
         },
-        r: function(form2) {
-          var formInst = getInstanceFromNode(form2);
-          null !== formInst && 5 === formInst.tag && "form" === formInst.type ? requestFormReset$1(formInst) : previousDispatcher.r(form2);
+        r: function(form) {
+          var formInst = getInstanceFromNode(form);
+          null !== formInst && 5 === formInst.tag && "form" === formInst.type ? requestFormReset$1(formInst) : previousDispatcher.r(form);
         },
         D: function(href) {
           previousDispatcher.D(href);
@@ -21171,17 +21171,17 @@ var require_react_dom_client_development = __commonJS({
                   options
                 );
                 (options = preloadPropsMap.get(key)) && adoptPreloadPropsForStylesheet(href, options);
-                var link2 = resource = ownerDocument.createElement("link");
-                markNodeAsHoistable(link2);
-                setInitialProperties(link2, "link", href);
-                link2._p = new Promise(function(resolve, reject) {
-                  link2.onload = resolve;
-                  link2.onerror = reject;
+                var link = resource = ownerDocument.createElement("link");
+                markNodeAsHoistable(link);
+                setInitialProperties(link, "link", href);
+                link._p = new Promise(function(resolve, reject) {
+                  link.onload = resolve;
+                  link.onerror = reject;
                 });
-                link2.addEventListener("load", function() {
+                link.addEventListener("load", function() {
                   state.loading |= Loaded;
                 });
-                link2.addEventListener("error", function() {
+                link.addEventListener("error", function() {
                   state.loading |= Errored;
                 });
                 state.loading |= Inserted;
@@ -22838,6 +22838,275 @@ var require_eventemitter3 = __commonJS({
   }
 });
 
+// node_modules/react/cjs/react-jsx-runtime.development.js
+var require_react_jsx_runtime_development = __commonJS({
+  "node_modules/react/cjs/react-jsx-runtime.development.js"(exports) {
+    "use strict";
+    (function() {
+      function getComponentNameFromType(type) {
+        if (null == type) return null;
+        if ("function" === typeof type)
+          return type.$$typeof === REACT_CLIENT_REFERENCE ? null : type.displayName || type.name || null;
+        if ("string" === typeof type) return type;
+        switch (type) {
+          case REACT_FRAGMENT_TYPE:
+            return "Fragment";
+          case REACT_PROFILER_TYPE:
+            return "Profiler";
+          case REACT_STRICT_MODE_TYPE:
+            return "StrictMode";
+          case REACT_SUSPENSE_TYPE:
+            return "Suspense";
+          case REACT_SUSPENSE_LIST_TYPE:
+            return "SuspenseList";
+          case REACT_ACTIVITY_TYPE:
+            return "Activity";
+        }
+        if ("object" === typeof type)
+          switch ("number" === typeof type.tag && console.error(
+            "Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue."
+          ), type.$$typeof) {
+            case REACT_PORTAL_TYPE:
+              return "Portal";
+            case REACT_CONTEXT_TYPE:
+              return type.displayName || "Context";
+            case REACT_CONSUMER_TYPE:
+              return (type._context.displayName || "Context") + ".Consumer";
+            case REACT_FORWARD_REF_TYPE2:
+              var innerType = type.render;
+              type = type.displayName;
+              type || (type = innerType.displayName || innerType.name || "", type = "" !== type ? "ForwardRef(" + type + ")" : "ForwardRef");
+              return type;
+            case REACT_MEMO_TYPE2:
+              return innerType = type.displayName || null, null !== innerType ? innerType : getComponentNameFromType(type.type) || "Memo";
+            case REACT_LAZY_TYPE:
+              innerType = type._payload;
+              type = type._init;
+              try {
+                return getComponentNameFromType(type(innerType));
+              } catch (x2) {
+              }
+          }
+        return null;
+      }
+      function testStringCoercion(value) {
+        return "" + value;
+      }
+      function checkKeyStringCoercion(value) {
+        try {
+          testStringCoercion(value);
+          var JSCompiler_inline_result = false;
+        } catch (e) {
+          JSCompiler_inline_result = true;
+        }
+        if (JSCompiler_inline_result) {
+          JSCompiler_inline_result = console;
+          var JSCompiler_temp_const = JSCompiler_inline_result.error;
+          var JSCompiler_inline_result$jscomp$0 = "function" === typeof Symbol && Symbol.toStringTag && value[Symbol.toStringTag] || value.constructor.name || "Object";
+          JSCompiler_temp_const.call(
+            JSCompiler_inline_result,
+            "The provided key is an unsupported type %s. This value must be coerced to a string before using it here.",
+            JSCompiler_inline_result$jscomp$0
+          );
+          return testStringCoercion(value);
+        }
+      }
+      function getTaskName(type) {
+        if (type === REACT_FRAGMENT_TYPE) return "<>";
+        if ("object" === typeof type && null !== type && type.$$typeof === REACT_LAZY_TYPE)
+          return "<...>";
+        try {
+          var name = getComponentNameFromType(type);
+          return name ? "<" + name + ">" : "<...>";
+        } catch (x2) {
+          return "<...>";
+        }
+      }
+      function getOwner() {
+        var dispatcher = ReactSharedInternals.A;
+        return null === dispatcher ? null : dispatcher.getOwner();
+      }
+      function UnknownOwner() {
+        return Error("react-stack-top-frame");
+      }
+      function hasValidKey(config) {
+        if (hasOwnProperty.call(config, "key")) {
+          var getter = Object.getOwnPropertyDescriptor(config, "key").get;
+          if (getter && getter.isReactWarning) return false;
+        }
+        return void 0 !== config.key;
+      }
+      function defineKeyPropWarningGetter(props, displayName) {
+        function warnAboutAccessingKey() {
+          specialPropKeyWarningShown || (specialPropKeyWarningShown = true, console.error(
+            "%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://react.dev/link/special-props)",
+            displayName
+          ));
+        }
+        warnAboutAccessingKey.isReactWarning = true;
+        Object.defineProperty(props, "key", {
+          get: warnAboutAccessingKey,
+          configurable: true
+        });
+      }
+      function elementRefGetterWithDeprecationWarning() {
+        var componentName = getComponentNameFromType(this.type);
+        didWarnAboutElementRef[componentName] || (didWarnAboutElementRef[componentName] = true, console.error(
+          "Accessing element.ref was removed in React 19. ref is now a regular prop. It will be removed from the JSX Element type in a future release."
+        ));
+        componentName = this.props.ref;
+        return void 0 !== componentName ? componentName : null;
+      }
+      function ReactElement(type, key, props, owner, debugStack, debugTask) {
+        var refProp = props.ref;
+        type = {
+          $$typeof: REACT_ELEMENT_TYPE,
+          type,
+          key,
+          props,
+          _owner: owner
+        };
+        null !== (void 0 !== refProp ? refProp : null) ? Object.defineProperty(type, "ref", {
+          enumerable: false,
+          get: elementRefGetterWithDeprecationWarning
+        }) : Object.defineProperty(type, "ref", { enumerable: false, value: null });
+        type._store = {};
+        Object.defineProperty(type._store, "validated", {
+          configurable: false,
+          enumerable: false,
+          writable: true,
+          value: 0
+        });
+        Object.defineProperty(type, "_debugInfo", {
+          configurable: false,
+          enumerable: false,
+          writable: true,
+          value: null
+        });
+        Object.defineProperty(type, "_debugStack", {
+          configurable: false,
+          enumerable: false,
+          writable: true,
+          value: debugStack
+        });
+        Object.defineProperty(type, "_debugTask", {
+          configurable: false,
+          enumerable: false,
+          writable: true,
+          value: debugTask
+        });
+        Object.freeze && (Object.freeze(type.props), Object.freeze(type));
+        return type;
+      }
+      function jsxDEVImpl(type, config, maybeKey, isStaticChildren, debugStack, debugTask) {
+        var children = config.children;
+        if (void 0 !== children)
+          if (isStaticChildren)
+            if (isArrayImpl(children)) {
+              for (isStaticChildren = 0; isStaticChildren < children.length; isStaticChildren++)
+                validateChildKeys(children[isStaticChildren]);
+              Object.freeze && Object.freeze(children);
+            } else
+              console.error(
+                "React.jsx: Static children should always be an array. You are likely explicitly calling React.jsxs or React.jsxDEV. Use the Babel transform instead."
+              );
+          else validateChildKeys(children);
+        if (hasOwnProperty.call(config, "key")) {
+          children = getComponentNameFromType(type);
+          var keys2 = Object.keys(config).filter(function(k) {
+            return "key" !== k;
+          });
+          isStaticChildren = 0 < keys2.length ? "{key: someKey, " + keys2.join(": ..., ") + ": ...}" : "{key: someKey}";
+          didWarnAboutKeySpread[children + isStaticChildren] || (keys2 = 0 < keys2.length ? "{" + keys2.join(": ..., ") + ": ...}" : "{}", console.error(
+            'A props object containing a "key" prop is being spread into JSX:\n  let props = %s;\n  <%s {...props} />\nReact keys must be passed directly to JSX without using spread:\n  let props = %s;\n  <%s key={someKey} {...props} />',
+            isStaticChildren,
+            children,
+            keys2,
+            children
+          ), didWarnAboutKeySpread[children + isStaticChildren] = true);
+        }
+        children = null;
+        void 0 !== maybeKey && (checkKeyStringCoercion(maybeKey), children = "" + maybeKey);
+        hasValidKey(config) && (checkKeyStringCoercion(config.key), children = "" + config.key);
+        if ("key" in config) {
+          maybeKey = {};
+          for (var propName in config)
+            "key" !== propName && (maybeKey[propName] = config[propName]);
+        } else maybeKey = config;
+        children && defineKeyPropWarningGetter(
+          maybeKey,
+          "function" === typeof type ? type.displayName || type.name || "Unknown" : type
+        );
+        return ReactElement(
+          type,
+          children,
+          maybeKey,
+          getOwner(),
+          debugStack,
+          debugTask
+        );
+      }
+      function validateChildKeys(node) {
+        isValidElement17(node) ? node._store && (node._store.validated = 1) : "object" === typeof node && null !== node && node.$$typeof === REACT_LAZY_TYPE && ("fulfilled" === node._payload.status ? isValidElement17(node._payload.value) && node._payload.value._store && (node._payload.value._store.validated = 1) : node._store && (node._store.validated = 1));
+      }
+      function isValidElement17(object) {
+        return "object" === typeof object && null !== object && object.$$typeof === REACT_ELEMENT_TYPE;
+      }
+      var React41 = require_react(), REACT_ELEMENT_TYPE = /* @__PURE__ */ Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = /* @__PURE__ */ Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = /* @__PURE__ */ Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = /* @__PURE__ */ Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = /* @__PURE__ */ Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = /* @__PURE__ */ Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = /* @__PURE__ */ Symbol.for("react.context"), REACT_FORWARD_REF_TYPE2 = /* @__PURE__ */ Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = /* @__PURE__ */ Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = /* @__PURE__ */ Symbol.for("react.suspense_list"), REACT_MEMO_TYPE2 = /* @__PURE__ */ Symbol.for("react.memo"), REACT_LAZY_TYPE = /* @__PURE__ */ Symbol.for("react.lazy"), REACT_ACTIVITY_TYPE = /* @__PURE__ */ Symbol.for("react.activity"), REACT_CLIENT_REFERENCE = /* @__PURE__ */ Symbol.for("react.client.reference"), ReactSharedInternals = React41.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, hasOwnProperty = Object.prototype.hasOwnProperty, isArrayImpl = Array.isArray, createTask = console.createTask ? console.createTask : function() {
+        return null;
+      };
+      React41 = {
+        react_stack_bottom_frame: function(callStackForError) {
+          return callStackForError();
+        }
+      };
+      var specialPropKeyWarningShown;
+      var didWarnAboutElementRef = {};
+      var unknownOwnerDebugStack = React41.react_stack_bottom_frame.bind(
+        React41,
+        UnknownOwner
+      )();
+      var unknownOwnerDebugTask = createTask(getTaskName(UnknownOwner));
+      var didWarnAboutKeySpread = {};
+      exports.Fragment = REACT_FRAGMENT_TYPE;
+      exports.jsx = function(type, config, maybeKey) {
+        var trackActualOwner = 1e4 > ReactSharedInternals.recentlyCreatedOwnerStacks++;
+        return jsxDEVImpl(
+          type,
+          config,
+          maybeKey,
+          false,
+          trackActualOwner ? Error("react-stack-top-frame") : unknownOwnerDebugStack,
+          trackActualOwner ? createTask(getTaskName(type)) : unknownOwnerDebugTask
+        );
+      };
+      exports.jsxs = function(type, config, maybeKey) {
+        var trackActualOwner = 1e4 > ReactSharedInternals.recentlyCreatedOwnerStacks++;
+        return jsxDEVImpl(
+          type,
+          config,
+          maybeKey,
+          true,
+          trackActualOwner ? Error("react-stack-top-frame") : unknownOwnerDebugStack,
+          trackActualOwner ? createTask(getTaskName(type)) : unknownOwnerDebugTask
+        );
+      };
+    })();
+  }
+});
+
+// node_modules/react/jsx-runtime.js
+var require_jsx_runtime = __commonJS({
+  "node_modules/react/jsx-runtime.js"(exports, module) {
+    "use strict";
+    if (false) {
+      module.exports = null;
+    } else {
+      module.exports = require_react_jsx_runtime_development();
+    }
+  }
+});
+
 // src/client.tsx
 var import_react57 = __toESM(require_react(), 1);
 var import_client = __toESM(require_client(), 1);
@@ -22957,15 +23226,15 @@ var $cptable;
 var DENSE = null;
 var DIF_XL = true;
 var Base64_map = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-function Base64_encode(input2) {
+function Base64_encode(input) {
   var o = "";
   var c1 = 0, c2 = 0, c3 = 0, e1 = 0, e22 = 0, e3 = 0, e4 = 0;
-  for (var i = 0; i < input2.length; ) {
-    c1 = input2.charCodeAt(i++);
+  for (var i = 0; i < input.length; ) {
+    c1 = input.charCodeAt(i++);
     e1 = c1 >> 2;
-    c2 = input2.charCodeAt(i++);
+    c2 = input.charCodeAt(i++);
     e22 = (c1 & 3) << 4 | c2 >> 4;
-    c3 = input2.charCodeAt(i++);
+    c3 = input.charCodeAt(i++);
     e3 = (c2 & 15) << 2 | c3 >> 6;
     e4 = c3 & 63;
     if (isNaN(c2)) {
@@ -22977,21 +23246,21 @@ function Base64_encode(input2) {
   }
   return o;
 }
-function Base64_decode(input2) {
+function Base64_decode(input) {
   var o = "";
   var c1 = 0, c2 = 0, c3 = 0, e1 = 0, e22 = 0, e3 = 0, e4 = 0;
-  input2 = input2.replace(/[^\w\+\/\=]/g, "");
-  for (var i = 0; i < input2.length; ) {
-    e1 = Base64_map.indexOf(input2.charAt(i++));
-    e22 = Base64_map.indexOf(input2.charAt(i++));
+  input = input.replace(/[^\w\+\/\=]/g, "");
+  for (var i = 0; i < input.length; ) {
+    e1 = Base64_map.indexOf(input.charAt(i++));
+    e22 = Base64_map.indexOf(input.charAt(i++));
     c1 = e1 << 2 | e22 >> 4;
     o += String.fromCharCode(c1);
-    e3 = Base64_map.indexOf(input2.charAt(i++));
+    e3 = Base64_map.indexOf(input.charAt(i++));
     c2 = (e22 & 15) << 4 | e3 >> 2;
     if (e3 !== 64) {
       o += String.fromCharCode(c2);
     }
-    e4 = Base64_map.indexOf(input2.charAt(i++));
+    e4 = Base64_map.indexOf(input.charAt(i++));
     c3 = (e3 & 3) << 6 | e4;
     if (e4 !== 64) {
       o += String.fromCharCode(c3);
@@ -29465,7 +29734,7 @@ function parse_MulBlank(blob, length) {
   if (ixfes.length != lastcol - col + 1) throw new Error("MulBlank length mismatch");
   return { r: rw, c: col, C: lastcol, ixfe: ixfes };
 }
-function parse_CellStyleXF(blob, length, style2, opts) {
+function parse_CellStyleXF(blob, length, style, opts) {
   var o = {};
   var a = blob.read_shift(4), b = blob.read_shift(4);
   var c = blob.read_shift(4), d = blob.read_shift(2);
@@ -31023,7 +31292,7 @@ var ETH = /* @__PURE__ */ (function() {
     "--SocialCalcSpreadsheetControlSave",
     "Content-type: text/plain; charset=UTF-8"
   ].join("\n") + "\n";
-  var meta2 = [
+  var meta = [
     "# SocialCalc Spreadsheet Control Save",
     "part:sheet"
   ].join("\n");
@@ -31079,7 +31348,7 @@ var ETH = /* @__PURE__ */ (function() {
     return o.join("\n");
   }
   function sheet_to_eth(ws) {
-    return [header, sep, meta2, sep, sheet_to_eth_data(ws), end].join("\n");
+    return [header, sep, meta, sep, sheet_to_eth_data(ws), end].join("\n");
   }
   return {
     to_workbook: eth_to_workbook,
@@ -32600,13 +32869,13 @@ var parse_rs = /* @__PURE__ */ (function() {
 var rs_to_html = /* @__PURE__ */ (function parse_rs_factory() {
   var nlregex = /(\r\n|\n)/g;
   function parse_rpr2(font, intro, outro) {
-    var style2 = [];
-    if (font.u) style2.push("text-decoration: underline;");
-    if (font.uval) style2.push("text-underline-style:" + font.uval + ";");
-    if (font.sz) style2.push("font-size:" + font.sz + "pt;");
-    if (font.outline) style2.push("text-effect: outline;");
-    if (font.shadow) style2.push("text-shadow: auto;");
-    intro.push('<span style="' + style2.join("") + '">');
+    var style = [];
+    if (font.u) style.push("text-decoration: underline;");
+    if (font.uval) style.push("text-underline-style:" + font.uval + ";");
+    if (font.sz) style.push("font-size:" + font.sz + "pt;");
+    if (font.outline) style.push("text-effect: outline;");
+    if (font.shadow) style.push("text-shadow: auto;");
+    intro.push('<span style="' + style.join("") + '">');
     if (font.b) {
       intro.push("<b>");
       outro.push("</b>");
@@ -32643,20 +32912,20 @@ var sitregex = /<(?:\w+:)?t[^>]*>([^<]*)<\/(?:\w+:)?t>/g;
 var sirregex = /<(?:\w+:)?r>/;
 var sirphregex = /<(?:\w+:)?rPh.*?>([\s\S]*?)<\/(?:\w+:)?rPh>/g;
 function parse_si(x2, opts) {
-  var html2 = opts ? opts.cellHTML : true;
+  var html = opts ? opts.cellHTML : true;
   var z = {};
   if (!x2) return { t: "" };
   if (x2.match(/^\s*<(?:\w+:)?t[^>]*>/)) {
     z.t = unescapexml(utf8read(x2.slice(x2.indexOf(">") + 1).split(/<\/(?:\w+:)?t>/)[0] || ""));
     z.r = utf8read(x2);
-    if (html2) z.h = escapehtml(z.t);
+    if (html) z.h = escapehtml(z.t);
   } else if (
     /*y = */
     x2.match(sirregex)
   ) {
     z.r = utf8read(x2);
     z.t = unescapexml(utf8read((x2.replace(sirphregex, "").match(sitregex) || []).join("").replace(tagregex, "")));
-    if (html2) z.h = rs_to_html(parse_rs(z.r));
+    if (html) z.h = rs_to_html(parse_rs(z.r));
   }
   return z;
 }
@@ -48883,10 +49152,10 @@ function parse_zip(zip, opts) {
     if (opts.cellStyles && dir.themes.length) themes = parse_theme(getzipstr(zip, dir.themes[0].replace(/^\//, ""), true) || "", dir.themes[0], opts);
     if (dir.style) styles = parse_sty(getzipdata(zip, strip_front_slash(dir.style)), dir.style, themes, opts);
   }
-  dir.links.map(function(link2) {
+  dir.links.map(function(link) {
     try {
-      var rels = parse_rels(getzipstr(zip, get_rels_path(strip_front_slash(link2))), link2);
-      return parse_xlink(getzipdata(zip, strip_front_slash(link2)), rels, link2, opts);
+      var rels = parse_rels(getzipstr(zip, get_rels_path(strip_front_slash(link))), link);
+      return parse_xlink(getzipdata(zip, strip_front_slash(link)), rels, link, opts);
     } catch (e) {
     }
   });
@@ -49216,7 +49485,7 @@ function readSync(data, opts) {
 }
 function make_json_row(sheet, r2, R, cols, header, hdr, dense, o) {
   var rr = encode_row(R);
-  var defval = o.defval, raw2 = o.raw || !Object.prototype.hasOwnProperty.call(o, "raw");
+  var defval = o.defval, raw = o.raw || !Object.prototype.hasOwnProperty.call(o, "raw");
   var isempty = true;
   var row = header === 1 ? [] : {};
   if (header !== 1) {
@@ -49256,10 +49525,10 @@ function make_json_row(sheet, r2, R, cols, header, hdr, dense, o) {
       if (v == null) {
         if (val.t == "e" && v === null) row[hdr[C]] = null;
         else if (defval !== void 0) row[hdr[C]] = defval;
-        else if (raw2 && v === null) row[hdr[C]] = null;
+        else if (raw && v === null) row[hdr[C]] = null;
         else continue;
       } else {
-        row[hdr[C]] = raw2 && (val.t !== "n" || val.t === "n" && o.rawNumbers !== false) ? v : format_cell(val, v, o);
+        row[hdr[C]] = raw && (val.t !== "n" || val.t === "n" && o.rawNumbers !== false) ? v : format_cell(val, v, o);
       }
       if (v != null) isempty = false;
     }
@@ -50007,16 +50276,16 @@ function svgPropertiesNoEvents(obj) {
   }
   return result;
 }
-function svgPropertiesNoEventsFromUnknown(input2) {
-  if (input2 == null) {
+function svgPropertiesNoEventsFromUnknown(input) {
+  if (input == null) {
     return null;
   }
-  if (/* @__PURE__ */ (0, import_react.isValidElement)(input2) && typeof input2.props === "object" && input2.props !== null) {
-    var p = input2.props;
+  if (/* @__PURE__ */ (0, import_react.isValidElement)(input) && typeof input.props === "object" && input.props !== null) {
+    var p = input.props;
     return svgPropertiesNoEvents(p);
   }
-  if (typeof input2 === "object" && !Array.isArray(input2)) {
-    return svgPropertiesNoEvents(input2);
+  if (typeof input === "object" && !Array.isArray(input)) {
+    return svgPropertiesNoEvents(input);
   }
   return null;
 }
@@ -50033,15 +50302,15 @@ function svgPropertiesAndEvents(obj) {
   }
   return result;
 }
-function svgPropertiesAndEventsFromUnknown(input2) {
-  if (input2 == null) {
+function svgPropertiesAndEventsFromUnknown(input) {
+  if (input == null) {
     return null;
   }
-  if (/* @__PURE__ */ (0, import_react2.isValidElement)(input2)) {
-    return svgPropertiesAndEvents(input2.props);
+  if (/* @__PURE__ */ (0, import_react2.isValidElement)(input)) {
+    return svgPropertiesAndEvents(input.props);
   }
-  if (typeof input2 === "object" && !Array.isArray(input2)) {
-    return svgPropertiesAndEvents(input2);
+  if (typeof input === "object" && !Array.isArray(input)) {
+    return svgPropertiesAndEvents(input);
   }
   return null;
 }
@@ -50076,7 +50345,7 @@ function _objectWithoutPropertiesLoose(r2, e) {
   return t;
 }
 var Surface = /* @__PURE__ */ (0, import_react3.forwardRef)((props, ref) => {
-  var children = props.children, width = props.width, height = props.height, viewBox = props.viewBox, className = props.className, style2 = props.style, title2 = props.title, desc = props.desc, others = _objectWithoutProperties(props, _excluded);
+  var children = props.children, width = props.width, height = props.height, viewBox = props.viewBox, className = props.className, style = props.style, title = props.title, desc = props.desc, others = _objectWithoutProperties(props, _excluded);
   var svgView = viewBox || {
     width,
     height,
@@ -50088,10 +50357,10 @@ var Surface = /* @__PURE__ */ (0, import_react3.forwardRef)((props, ref) => {
     className: layerClass,
     width,
     height,
-    style: style2,
+    style,
     viewBox: "".concat(svgView.x, " ").concat(svgView.y, " ").concat(svgView.width, " ").concat(svgView.height),
     ref
-  }), /* @__PURE__ */ React.createElement("title", null, title2), /* @__PURE__ */ React.createElement("desc", null, desc), children);
+  }), /* @__PURE__ */ React.createElement("title", null, title), /* @__PURE__ */ React.createElement("desc", null, desc), children);
 });
 
 // node_modules/recharts/es6/container/Layer.js
@@ -54429,9 +54698,9 @@ var nanoid = (size = 21) => {
 };
 var commonProperties = ["name", "message", "stack", "code"];
 var RejectWithValue = class {
-  constructor(payload, meta2) {
+  constructor(payload, meta) {
     this.payload = payload;
-    this.meta = meta2;
+    this.meta = meta;
   }
   payload;
   meta;
@@ -54442,9 +54711,9 @@ var RejectWithValue = class {
   _type;
 };
 var FulfillWithMeta = class {
-  constructor(payload, meta2) {
+  constructor(payload, meta) {
     this.payload = payload;
-    this.meta = meta2;
+    this.meta = meta;
   }
   payload;
   meta;
@@ -54471,29 +54740,29 @@ var miniSerializeError = (value) => {
 var externalAbortMessage = "External signal was aborted";
 var createAsyncThunk = /* @__PURE__ */ (() => {
   function createAsyncThunk2(typePrefix, payloadCreator, options) {
-    const fulfilled = createAction(typePrefix + "/fulfilled", (payload, requestId, arg, meta2) => ({
+    const fulfilled = createAction(typePrefix + "/fulfilled", (payload, requestId, arg, meta) => ({
       payload,
       meta: {
-        ...meta2 || {},
+        ...meta || {},
         arg,
         requestId,
         requestStatus: "fulfilled"
       }
     }));
-    const pending = createAction(typePrefix + "/pending", (requestId, arg, meta2) => ({
+    const pending = createAction(typePrefix + "/pending", (requestId, arg, meta) => ({
       payload: void 0,
       meta: {
-        ...meta2 || {},
+        ...meta || {},
         arg,
         requestId,
         requestStatus: "pending"
       }
     }));
-    const rejected = createAction(typePrefix + "/rejected", (error, requestId, arg, payload, meta2) => ({
+    const rejected = createAction(typePrefix + "/rejected", (error, requestId, arg, payload, meta) => ({
       payload,
       error: (options && options.serializeError || miniSerializeError)(error || "Rejected"),
       meta: {
-        ...meta2 || {},
+        ...meta || {},
         arg,
         requestId,
         rejectedWithValue: !!payload,
@@ -54564,11 +54833,11 @@ var createAsyncThunk = /* @__PURE__ */ (() => {
               requestId,
               signal: abortController.signal,
               abort,
-              rejectWithValue: ((value, meta2) => {
-                return new RejectWithValue(value, meta2);
+              rejectWithValue: ((value, meta) => {
+                return new RejectWithValue(value, meta);
               }),
-              fulfillWithValue: ((value, meta2) => {
-                return new FulfillWithMeta(value, meta2);
+              fulfillWithValue: ((value, meta) => {
+                return new FulfillWithMeta(value, meta);
               })
             })).then((result) => {
               if (result instanceof RejectWithValue) {
@@ -56235,7 +56504,7 @@ function ResponsiveContainerContextProvider(_ref2) {
 }
 var useResponsiveContainerContext = () => (0, import_react10.useContext)(ResponsiveContainerContext);
 var SizeDetectorContainer = /* @__PURE__ */ (0, import_react10.forwardRef)((_ref2, ref) => {
-  var aspect = _ref2.aspect, _ref2$initialDimensio = _ref2.initialDimension, initialDimension = _ref2$initialDimensio === void 0 ? defaultResponsiveContainerProps.initialDimension : _ref2$initialDimensio, width = _ref2.width, height = _ref2.height, _ref2$minWidth = _ref2.minWidth, minWidth = _ref2$minWidth === void 0 ? defaultResponsiveContainerProps.minWidth : _ref2$minWidth, minHeight = _ref2.minHeight, maxHeight = _ref2.maxHeight, children = _ref2.children, _ref2$debounce = _ref2.debounce, debounce3 = _ref2$debounce === void 0 ? defaultResponsiveContainerProps.debounce : _ref2$debounce, id = _ref2.id, className = _ref2.className, onResize = _ref2.onResize, _ref2$style = _ref2.style, style2 = _ref2$style === void 0 ? {} : _ref2$style, others = _objectWithoutProperties3(_ref2, _excluded3);
+  var aspect = _ref2.aspect, _ref2$initialDimensio = _ref2.initialDimension, initialDimension = _ref2$initialDimensio === void 0 ? defaultResponsiveContainerProps.initialDimension : _ref2$initialDimensio, width = _ref2.width, height = _ref2.height, _ref2$minWidth = _ref2.minWidth, minWidth = _ref2$minWidth === void 0 ? defaultResponsiveContainerProps.minWidth : _ref2$minWidth, minHeight = _ref2.minHeight, maxHeight = _ref2.maxHeight, children = _ref2.children, _ref2$debounce = _ref2.debounce, debounce3 = _ref2$debounce === void 0 ? defaultResponsiveContainerProps.debounce : _ref2$debounce, id = _ref2.id, className = _ref2.className, onResize = _ref2.onResize, _ref2$style = _ref2.style, style = _ref2$style === void 0 ? {} : _ref2$style, others = _objectWithoutProperties3(_ref2, _excluded3);
   var containerRef = (0, import_react10.useRef)(null);
   var onResizeRef = (0, import_react10.useRef)();
   onResizeRef.current = onResize;
@@ -56297,7 +56566,7 @@ var SizeDetectorContainer = /* @__PURE__ */ (0, import_react10.forwardRef)((_ref
   return /* @__PURE__ */ React4.createElement("div", _extends3({
     id: id ? "".concat(id) : void 0,
     className: clsx("recharts-responsive-container", className),
-    style: _objectSpread5(_objectSpread5({}, style2), {}, {
+    style: _objectSpread5(_objectSpread5({}, style), {}, {
       width,
       height,
       minWidth,
@@ -58041,7 +58310,7 @@ function JavascriptAnimate(outsideProps) {
   var prefersReducedMotion = usePrefersReducedMotion();
   var isActive = isActiveProp === "auto" ? !Global.isSsr && !prefersReducedMotion : isActiveProp;
   var animationController = useAnimationController(props.animationController);
-  var _useState = (0, import_react14.useState)(isActive ? from : to), _useState2 = _slicedToArray6(_useState, 2), style2 = _useState2[0], setStyle = _useState2[1];
+  var _useState = (0, import_react14.useState)(isActive ? from : to), _useState2 = _slicedToArray6(_useState, 2), style = _useState2[0], setStyle = _useState2[1];
   (0, import_react14.useEffect)(() => {
     if (!isActive) {
       setStyle(to);
@@ -58065,18 +58334,18 @@ function JavascriptAnimate(outsideProps) {
     });
     return animationController(timeoutController, animation, setStyle);
   }, [animationController, animationId, isActive, canBegin, duration2, easing, begin, onAnimationStart, onAnimationEnd]);
-  return children(Number(style2));
+  return children(Number(style));
 }
 
 // node_modules/recharts/es6/util/useAnimationId.js
 var import_react15 = __toESM(require_react());
-function useAnimationId(input2) {
+function useAnimationId(input) {
   var prefix = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : "animation-";
   var animationId = (0, import_react15.useRef)(uniqueId(prefix));
-  var prevProps = (0, import_react15.useRef)(input2);
-  if (prevProps.current !== input2) {
+  var prevProps = (0, import_react15.useRef)(input);
+  if (prevProps.current !== input) {
     animationId.current = uniqueId(prefix);
-    prevProps.current = input2;
+    prevProps.current = input;
   }
   return animationId.current;
 }
@@ -59601,8 +59870,8 @@ function rechartsScaleFactory(d3Scale) {
     },
     bandwidth: bandwidthFn ? () => bandwidthFn.call(d3Scale) : void 0,
     ticks: ticksFn ? (count) => ticksFn.call(d3Scale, count) : void 0,
-    map: (input2, options) => {
-      var baseValue = d3Scale(input2);
+    map: (input, options) => {
+      var baseValue = d3Scale(input);
       if (baseValue == null) {
         return void 0;
       }
@@ -60731,19 +61000,19 @@ function copy(source, target) {
   return target.domain(source.domain()).range(source.range()).interpolate(source.interpolate()).clamp(source.clamp()).unknown(source.unknown());
 }
 function transformer() {
-  var domain = unit, range3 = unit, interpolate2 = value_default, transform, untransform, unknown, clamp = identity2, piecewise2, output, input2;
+  var domain = unit, range3 = unit, interpolate2 = value_default, transform, untransform, unknown, clamp = identity2, piecewise2, output, input;
   function rescale() {
     var n = Math.min(domain.length, range3.length);
     if (clamp !== identity2) clamp = clamper(domain[0], domain[n - 1]);
     piecewise2 = n > 2 ? polymap : bimap;
-    output = input2 = null;
+    output = input = null;
     return scale;
   }
   function scale(x2) {
     return x2 == null || isNaN(x2 = +x2) ? unknown : (output || (output = piecewise2(domain.map(transform), range3, interpolate2)))(transform(clamp(x2)));
   }
   scale.invert = function(y2) {
-    return clamp(untransform((input2 || (input2 = piecewise2(range3, domain.map(transform), number_default)))(y2)));
+    return clamp(untransform((input || (input = piecewise2(range3, domain.map(transform), number_default)))(y2)));
   };
   scale.domain = function(_) {
     return arguments.length ? (domain = Array.from(_, number2), rescale()) : domain.slice();
@@ -65865,16 +66134,16 @@ var SPAN_STYLE = {
   whiteSpace: "pre"
 };
 var MEASUREMENT_SPAN_ID = "recharts_measurement_span";
-function createCacheKey(text, style2) {
-  var fontSize = style2.fontSize || "";
-  var fontFamily = style2.fontFamily || "";
-  var fontWeight = style2.fontWeight || "";
-  var fontStyle = style2.fontStyle || "";
-  var letterSpacing = style2.letterSpacing || "";
-  var textTransform = style2.textTransform || "";
+function createCacheKey(text, style) {
+  var fontSize = style.fontSize || "";
+  var fontFamily = style.fontFamily || "";
+  var fontWeight = style.fontWeight || "";
+  var fontStyle = style.fontStyle || "";
+  var letterSpacing = style.letterSpacing || "";
+  var textTransform = style.textTransform || "";
   return "".concat(text, "|").concat(fontSize, "|").concat(fontFamily, "|").concat(fontWeight, "|").concat(fontStyle, "|").concat(letterSpacing, "|").concat(textTransform);
 }
-var measureTextWithDOM = (text, style2) => {
+var measureTextWithDOM = (text, style) => {
   try {
     var measurementSpan = document.getElementById(MEASUREMENT_SPAN_ID);
     if (!measurementSpan) {
@@ -65883,7 +66152,7 @@ var measureTextWithDOM = (text, style2) => {
       measurementSpan.setAttribute("aria-hidden", "true");
       document.body.appendChild(measurementSpan);
     }
-    Object.assign(measurementSpan.style, SPAN_STYLE, style2);
+    Object.assign(measurementSpan.style, SPAN_STYLE, style);
     measurementSpan.textContent = "".concat(text);
     var rect = measurementSpan.getBoundingClientRect();
     return {
@@ -65898,7 +66167,7 @@ var measureTextWithDOM = (text, style2) => {
   }
 };
 var getStringSize = function getStringSize2(text) {
-  var style2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+  var style = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
   if (text === void 0 || text === null || Global.isSsr) {
     return {
       width: 0,
@@ -65906,14 +66175,14 @@ var getStringSize = function getStringSize2(text) {
     };
   }
   if (!currentConfig.enableCache) {
-    return measureTextWithDOM(text, style2);
+    return measureTextWithDOM(text, style);
   }
-  var cacheKey = createCacheKey(text, style2);
+  var cacheKey = createCacheKey(text, style);
   var cachedResult = stringCache.get(cacheKey);
   if (cachedResult) {
     return cachedResult;
   }
-  var result = measureTextWithDOM(text, style2);
+  var result = measureTextWithDOM(text, style);
   stringCache.set(cacheKey, result);
   return result;
 };
@@ -66193,7 +66462,7 @@ function _arrayWithHoles13(r2) {
 }
 var BREAKING_SPACES = /[ \f\n\r\t\v\u2028\u2029]+/;
 var calculateWordWidths = (_ref2) => {
-  var children = _ref2.children, breakAll = _ref2.breakAll, style2 = _ref2.style;
+  var children = _ref2.children, breakAll = _ref2.breakAll, style = _ref2.style;
   try {
     var words = [];
     if (!isNullish(children)) {
@@ -66205,9 +66474,9 @@ var calculateWordWidths = (_ref2) => {
     }
     var wordsWithComputedWidth = words.map((word) => ({
       word,
-      width: getStringSize(word, style2).width
+      width: getStringSize(word, style).width
     }));
-    var spaceWidth = breakAll ? 0 : getStringSize("\xA0", style2).width;
+    var spaceWidth = breakAll ? 0 : getStringSize("\xA0", style).width;
     return {
       wordsWithComputedWidth,
       spaceWidth
@@ -66239,11 +66508,11 @@ var calculate = (words, lineWidth, spaceWidth, scaleToFit) => words.reduce((resu
 }, []);
 var findLongestLine = (words) => words.reduce((a, b) => a.width > b.width ? a : b);
 var suffix = "\u2026";
-var checkOverflow = (text, index, breakAll, style2, maxLines, lineWidth, spaceWidth, scaleToFit) => {
+var checkOverflow = (text, index, breakAll, style, maxLines, lineWidth, spaceWidth, scaleToFit) => {
   var tempText = text.slice(0, index);
   var words = calculateWordWidths({
     breakAll,
-    style: style2,
+    style,
     children: tempText + suffix
   });
   if (!words) {
@@ -66254,7 +66523,7 @@ var checkOverflow = (text, index, breakAll, style2, maxLines, lineWidth, spaceWi
   return [doesOverflow, result];
 };
 var calculateWordsByLines = (_ref3, initialWordsWithComputedWith, spaceWidth, lineWidth, scaleToFit) => {
-  var maxLines = _ref3.maxLines, children = _ref3.children, style2 = _ref3.style, breakAll = _ref3.breakAll;
+  var maxLines = _ref3.maxLines, children = _ref3.children, style = _ref3.style, breakAll = _ref3.breakAll;
   var shouldLimitLines = isNumber(maxLines);
   var text = String(children);
   var originalResult = calculate(initialWordsWithComputedWith, lineWidth, spaceWidth, scaleToFit);
@@ -66272,8 +66541,8 @@ var calculateWordsByLines = (_ref3, initialWordsWithComputedWith, spaceWidth, li
   while (start <= end && iterations <= text.length - 1) {
     var middle = Math.floor((start + end) / 2);
     var prev = middle - 1;
-    var _checkOverflow = checkOverflow(text, prev, breakAll, style2, maxLines, lineWidth, spaceWidth, scaleToFit), _checkOverflow2 = _slicedToArray13(_checkOverflow, 2), doesPrevOverflow = _checkOverflow2[0], result = _checkOverflow2[1];
-    var _checkOverflow3 = checkOverflow(text, middle, breakAll, style2, maxLines, lineWidth, spaceWidth, scaleToFit), _checkOverflow4 = _slicedToArray13(_checkOverflow3, 1), doesMiddleOverflow = _checkOverflow4[0];
+    var _checkOverflow = checkOverflow(text, prev, breakAll, style, maxLines, lineWidth, spaceWidth, scaleToFit), _checkOverflow2 = _slicedToArray13(_checkOverflow, 2), doesPrevOverflow = _checkOverflow2[0], result = _checkOverflow2[1];
+    var _checkOverflow3 = checkOverflow(text, middle, breakAll, style, maxLines, lineWidth, spaceWidth, scaleToFit), _checkOverflow4 = _slicedToArray13(_checkOverflow3, 1), doesMiddleOverflow = _checkOverflow4[0];
     if (!doesPrevOverflow && !doesMiddleOverflow) {
       start = middle + 1;
     }
@@ -66296,13 +66565,13 @@ var getWordsWithoutCalculate = (children) => {
   }];
 };
 var getWordsByLines = (_ref4) => {
-  var width = _ref4.width, scaleToFit = _ref4.scaleToFit, children = _ref4.children, style2 = _ref4.style, breakAll = _ref4.breakAll, maxLines = _ref4.maxLines;
+  var width = _ref4.width, scaleToFit = _ref4.scaleToFit, children = _ref4.children, style = _ref4.style, breakAll = _ref4.breakAll, maxLines = _ref4.maxLines;
   if ((width || scaleToFit) && !Global.isSsr) {
     var wordsWithComputedWidth, spaceWidth;
     var wordWidths = calculateWordWidths({
       breakAll,
       children,
-      style: style2
+      style
     });
     if (wordWidths) {
       var wcw = wordWidths.wordsWithComputedWidth, sw = wordWidths.spaceWidth;
@@ -66315,7 +66584,7 @@ var getWordsByLines = (_ref4) => {
       breakAll,
       children,
       maxLines,
-      style: style2
+      style
     }, wordsWithComputedWidth, spaceWidth, width, Boolean(scaleToFit));
   }
   return getWordsWithoutCalculate(children);
@@ -72033,7 +72302,7 @@ var MainChartSurface = /* @__PURE__ */ (0, import_react48.forwardRef)((props, re
   if (!isPositiveNumber(width) || !isPositiveNumber(height)) {
     return null;
   }
-  var children = props.children, otherAttributes = props.otherAttributes, title2 = props.title, desc = props.desc;
+  var children = props.children, otherAttributes = props.otherAttributes, title = props.title, desc = props.desc;
   var tabIndex, role;
   if (otherAttributes != null) {
     if (typeof otherAttributes.tabIndex === "number") {
@@ -72048,7 +72317,7 @@ var MainChartSurface = /* @__PURE__ */ (0, import_react48.forwardRef)((props, re
     }
   }
   return /* @__PURE__ */ React35.createElement(Surface, _extends22({}, otherAttributes, {
-    title: title2,
+    title,
     desc,
     role,
     tabIndex,
@@ -72386,7 +72655,7 @@ function getWrapperDivComponent(responsive) {
   return responsive ? ResponsiveDiv : NonResponsiveDiv;
 }
 var RechartsWrapper = /* @__PURE__ */ (0, import_react50.forwardRef)((props, ref) => {
-  var children = props.children, className = props.className, heightFromProps = props.height, onClick = props.onClick, onContextMenu = props.onContextMenu, onDoubleClick = props.onDoubleClick, onMouseDown = props.onMouseDown, onMouseEnter = props.onMouseEnter, onMouseLeave = props.onMouseLeave, onMouseMove = props.onMouseMove, onMouseUp = props.onMouseUp, onTouchEnd = props.onTouchEnd, onTouchMove = props.onTouchMove, onTouchStart = props.onTouchStart, style2 = props.style, widthFromProps = props.width, responsive = props.responsive, _props$dispatchTouchE = props.dispatchTouchEvents, dispatchTouchEvents = _props$dispatchTouchE === void 0 ? true : _props$dispatchTouchE;
+  var children = props.children, className = props.className, heightFromProps = props.height, onClick = props.onClick, onContextMenu = props.onContextMenu, onDoubleClick = props.onDoubleClick, onMouseDown = props.onMouseDown, onMouseEnter = props.onMouseEnter, onMouseLeave = props.onMouseLeave, onMouseMove = props.onMouseMove, onMouseUp = props.onMouseUp, onTouchEnd = props.onTouchEnd, onTouchMove = props.onTouchMove, onTouchStart = props.onTouchStart, style = props.style, widthFromProps = props.width, responsive = props.responsive, _props$dispatchTouchE = props.dispatchTouchEvents, dispatchTouchEvents = _props$dispatchTouchE === void 0 ? true : _props$dispatchTouchE;
   var containerRef = (0, import_react50.useRef)(null);
   var dispatch = useAppDispatch();
   var _useState5 = (0, import_react50.useState)(null), _useState6 = _slicedToArray20(_useState5, 2), tooltipPortal = _useState6[0], setTooltipPortal = _useState6[1];
@@ -72494,15 +72763,15 @@ var RechartsWrapper = /* @__PURE__ */ (0, import_react50.forwardRef)((props, ref
   }, /* @__PURE__ */ React36.createElement(LegendPortalContext.Provider, {
     value: legendPortal
   }, /* @__PURE__ */ React36.createElement(WrapperDiv, {
-    width: width !== null && width !== void 0 ? width : style2 === null || style2 === void 0 ? void 0 : style2.width,
-    height: height !== null && height !== void 0 ? height : style2 === null || style2 === void 0 ? void 0 : style2.height,
+    width: width !== null && width !== void 0 ? width : style === null || style === void 0 ? void 0 : style.width,
+    height: height !== null && height !== void 0 ? height : style === null || style === void 0 ? void 0 : style.height,
     className: clsx("recharts-wrapper", className),
     style: _objectSpread35({
       position: "relative",
       cursor: "default",
       width,
       height
-    }, style2),
+    }, style),
     onClick: myOnClick,
     onContextMenu: myOnContextMenu,
     onDoubleClick: myOnDoubleClick,
@@ -72542,7 +72811,7 @@ function _objectWithoutPropertiesLoose19(r2, e) {
   return t;
 }
 var CategoricalChart = /* @__PURE__ */ (0, import_react51.forwardRef)((props, ref) => {
-  var width = props.width, height = props.height, responsive = props.responsive, children = props.children, className = props.className, style2 = props.style, compact = props.compact, title2 = props.title, desc = props.desc, others = _objectWithoutProperties19(props, _excluded19);
+  var width = props.width, height = props.height, responsive = props.responsive, children = props.children, className = props.className, style = props.style, compact = props.compact, title = props.title, desc = props.desc, others = _objectWithoutProperties19(props, _excluded19);
   var attrs = svgPropertiesNoEvents(others);
   if (compact) {
     return /* @__PURE__ */ React37.createElement(React37.Fragment, null, /* @__PURE__ */ React37.createElement(ReportChartSize, {
@@ -72550,13 +72819,13 @@ var CategoricalChart = /* @__PURE__ */ (0, import_react51.forwardRef)((props, re
       height
     }), /* @__PURE__ */ React37.createElement(RootSurface, {
       otherAttributes: attrs,
-      title: title2,
+      title,
       desc
     }, children));
   }
   return /* @__PURE__ */ React37.createElement(RechartsWrapper, {
     className,
-    style: style2,
+    style,
     width,
     height,
     responsive: responsive !== null && responsive !== void 0 ? responsive : false,
@@ -72573,7 +72842,7 @@ var CategoricalChart = /* @__PURE__ */ (0, import_react51.forwardRef)((props, re
     onTouchEnd: props.onTouchEnd
   }, /* @__PURE__ */ React37.createElement(RootSurface, {
     otherAttributes: attrs,
-    title: title2,
+    title,
     desc,
     ref
   }, /* @__PURE__ */ React37.createElement(ClipPathProvider, null, children)));
@@ -72927,894 +73196,8 @@ var __iconNode11 = [
 ];
 var Zap = createLucideIcon("zap", __iconNode11);
 
-// node_modules/hono/dist/utils/html.js
-var HtmlEscapedCallbackPhase = {
-  Stringify: 1,
-  BeforeStream: 2,
-  Stream: 3
-};
-var raw = (value, callbacks) => {
-  const escapedString = new String(value);
-  escapedString.isEscaped = true;
-  escapedString.callbacks = callbacks;
-  return escapedString;
-};
-var escapeRe = /[&<>'"]/;
-var stringBufferToString = async (buffer, callbacks) => {
-  let str = "";
-  callbacks ||= [];
-  const resolvedBuffer = await Promise.all(buffer);
-  for (let i = resolvedBuffer.length - 1; ; i--) {
-    str += resolvedBuffer[i];
-    i--;
-    if (i < 0) {
-      break;
-    }
-    let r2 = resolvedBuffer[i];
-    if (typeof r2 === "object") {
-      callbacks.push(...r2.callbacks || []);
-    }
-    const isEscaped = r2.isEscaped;
-    r2 = await (typeof r2 === "object" ? r2.toString() : r2);
-    if (typeof r2 === "object") {
-      callbacks.push(...r2.callbacks || []);
-    }
-    if (r2.isEscaped ?? isEscaped) {
-      str += r2;
-    } else {
-      const buf = [str];
-      escapeToBuffer(r2, buf);
-      str = buf[0];
-    }
-  }
-  return raw(str, callbacks);
-};
-var escapeToBuffer = (str, buffer) => {
-  const match = str.search(escapeRe);
-  if (match === -1) {
-    buffer[0] += str;
-    return;
-  }
-  let escape;
-  let index;
-  let lastIndex = 0;
-  for (index = match; index < str.length; index++) {
-    switch (str.charCodeAt(index)) {
-      case 34:
-        escape = "&quot;";
-        break;
-      case 39:
-        escape = "&#39;";
-        break;
-      case 38:
-        escape = "&amp;";
-        break;
-      case 60:
-        escape = "&lt;";
-        break;
-      case 62:
-        escape = "&gt;";
-        break;
-      default:
-        continue;
-    }
-    buffer[0] += str.substring(lastIndex, index) + escape;
-    lastIndex = index + 1;
-  }
-  buffer[0] += str.substring(lastIndex, index);
-};
-var resolveCallbackSync = (str) => {
-  const callbacks = str.callbacks;
-  if (!callbacks?.length) {
-    return str;
-  }
-  const buffer = [str];
-  const context = {};
-  callbacks.forEach((c) => c({ phase: HtmlEscapedCallbackPhase.Stringify, buffer, context }));
-  return buffer[0];
-};
-
-// node_modules/hono/dist/jsx/constants.js
-var DOM_RENDERER = /* @__PURE__ */ Symbol("RENDERER");
-var DOM_ERROR_HANDLER = /* @__PURE__ */ Symbol("ERROR_HANDLER");
-var DOM_INTERNAL_TAG = /* @__PURE__ */ Symbol("INTERNAL");
-var PERMALINK = /* @__PURE__ */ Symbol("PERMALINK");
-
-// node_modules/hono/dist/jsx/dom/utils.js
-var setInternalTagFlag = (fn) => {
-  ;
-  fn[DOM_INTERNAL_TAG] = true;
-  return fn;
-};
-
-// node_modules/hono/dist/jsx/dom/context.js
-var createContextProviderFunction = (values) => ({ value, children }) => {
-  if (!children) {
-    return void 0;
-  }
-  const props = {
-    children: [
-      {
-        tag: setInternalTagFlag(() => {
-          values.push(value);
-        }),
-        props: {}
-      }
-    ]
-  };
-  if (Array.isArray(children)) {
-    props.children.push(...children.flat());
-  } else {
-    props.children.push(children);
-  }
-  props.children.push({
-    tag: setInternalTagFlag(() => {
-      values.pop();
-    }),
-    props: {}
-  });
-  const res = { tag: "", props, type: "" };
-  res[DOM_ERROR_HANDLER] = (err) => {
-    values.pop();
-    throw err;
-  };
-  return res;
-};
-
-// node_modules/hono/dist/jsx/context.js
-var globalContexts = [];
-var alsProbed = false;
-var asyncLocalStorage;
-var fallbackStore;
-var fallbackRendersInFlight = 0;
-var warnedFallbackDefault = false;
-var loadAsyncLocalStorage = () => {
-  if (alsProbed) {
-    return asyncLocalStorage;
-  }
-  alsProbed = true;
-  const global2 = globalThis;
-  let AsyncLocalStorage;
-  for (const probe of [
-    // Node.js >= 20.16, Deno, Bun, Cloudflare Workers (nodejs_compat). Property
-    // access only, so bundlers don't statically resolve `node:async_hooks`.
-    () => global2.process?.getBuiltinModule?.("node:async_hooks")?.AsyncLocalStorage,
-    // Node.js < 20.16 has no `process.getBuiltinModule`, but a CJS entrypoint
-    // exposes the main module's `require` here.
-    () => global2.process?.mainModule?.require?.("node:async_hooks")?.AsyncLocalStorage
-  ]) {
-    try {
-      AsyncLocalStorage = probe();
-    } catch {
-    }
-    if (AsyncLocalStorage) {
-      break;
-    }
-  }
-  if (AsyncLocalStorage) {
-    asyncLocalStorage = new AsyncLocalStorage();
-  }
-  return asyncLocalStorage;
-};
-var getCurrentStore = () => {
-  return loadAsyncLocalStorage()?.getStore() || fallbackStore;
-};
-var warnIfStorelessAccess = () => {
-  if (fallbackRendersInFlight > 0 && !warnedFallbackDefault) {
-    warnedFallbackDefault = true;
-    console.warn(
-      "hono/jsx: AsyncLocalStorage is unavailable in this runtime, so useContext() after an await in an async component falls back to the context default value during server-side rendering. To get provided values across await boundaries, use a runtime with AsyncLocalStorage (Node.js >= 20.16, Deno, Bun, or Cloudflare Workers with the nodejs_compat flag)."
-    );
-  }
-};
-var getContextValuesIn = (store, context) => {
-  if (!store) {
-    warnIfStorelessAccess();
-    return context.values;
-  }
-  let values = store.get(context);
-  if (!values) {
-    values = [context.values[0]];
-    store.set(context, values);
-  }
-  return values;
-};
-var readContextValueIn = (store, context) => {
-  if (!store) {
-    warnIfStorelessAccess();
-    return context.values.at(-1);
-  }
-  const values = store.get(context);
-  return values?.length ? values.at(-1) : context.values[0];
-};
-var captureContextValues = (store) => (store ? globalContexts.filter((c) => store.has(c)) : globalContexts).map((c) => [
-  c,
-  readContextValueIn(store, c)
-]);
-var resumeWithContextValues = (callback, store, contexts) => runWithRenderContext(() => {
-  const currentStore = getCurrentStore();
-  const valuesPerContext = contexts.map(([context, value]) => {
-    const values = getContextValuesIn(currentStore, context);
-    values.push(value);
-    return values;
-  });
-  const popContextValues = () => {
-    valuesPerContext.forEach((values) => {
-      values.pop();
-    });
-  };
-  try {
-    const result = callback();
-    if (result instanceof Promise) {
-      return result.finally(popContextValues);
-    }
-    popContextValues();
-    return result;
-  } catch (e) {
-    popContextValues();
-    throw e;
-  }
-}, store);
-var runWithRenderContext = (callback, resumeStore) => {
-  if (getCurrentStore()) {
-    return callback();
-  }
-  const store = resumeStore ?? /* @__PURE__ */ new WeakMap();
-  const storage = loadAsyncLocalStorage();
-  if (storage) {
-    return storage.run(store, callback);
-  }
-  fallbackStore = store;
-  let result;
-  try {
-    result = callback();
-  } finally {
-    fallbackStore = void 0;
-  }
-  if (!warnedFallbackDefault && result instanceof Promise) {
-    fallbackRendersInFlight++;
-    result = result.finally(() => {
-      fallbackRendersInFlight--;
-    });
-  }
-  return result;
-};
-var captureRenderContext = () => {
-  const store = getCurrentStore();
-  const contexts = captureContextValues(store);
-  return (callback) => resumeWithContextValues(callback, store, contexts);
-};
-var createContext14 = (defaultValue) => {
-  const values = [defaultValue];
-  const context = ((props) => {
-    const contextValues = getContextValuesIn(getCurrentStore(), context);
-    contextValues.push(props.value);
-    let string;
-    try {
-      string = props.children ? (Array.isArray(props.children) ? new JSXFragmentNode("", {}, props.children) : props.children).toString() : "";
-    } catch (e) {
-      contextValues.pop();
-      throw e;
-    }
-    if (string instanceof Promise) {
-      return string.finally(() => contextValues.pop()).then((resString) => raw(resString, resString.callbacks));
-    } else {
-      contextValues.pop();
-      return raw(string);
-    }
-  });
-  context.values = values;
-  context.Provider = context;
-  context[DOM_RENDERER] = createContextProviderFunction(values);
-  globalContexts.push(context);
-  return context;
-};
-var useContext14 = (context) => {
-  return readContextValueIn(getCurrentStore(), context);
-};
-
-// node_modules/hono/dist/jsx/intrinsic-element/common.js
-var deDupeKeyMap = {
-  title: [],
-  script: ["src"],
-  style: ["data-href"],
-  link: ["href"],
-  meta: ["name", "httpEquiv", "charset", "itemProp"]
-};
-var domRenderers = {};
-var dataPrecedenceAttr = "data-precedence";
-var isStylesheetLinkWithPrecedence = (props) => props.rel === "stylesheet" && "precedence" in props;
-var shouldDeDupeByKey = (tagName, supportSort) => {
-  if (tagName === "link") {
-    return supportSort;
-  }
-  return deDupeKeyMap[tagName].length > 0;
-};
-
-// node_modules/hono/dist/jsx/intrinsic-element/components.js
-var components_exports = {};
-__export(components_exports, {
-  button: () => button,
-  form: () => form,
-  input: () => input,
-  link: () => link,
-  meta: () => meta,
-  script: () => script,
-  style: () => style,
-  title: () => title
-});
-
-// node_modules/hono/dist/jsx/children.js
-var toArray = (children) => Array.isArray(children) ? children : [children];
-
-// node_modules/hono/dist/jsx/intrinsic-element/components.js
-var metaTagMap = /* @__PURE__ */ new WeakMap();
-var insertIntoHead = (tagName, tag, props, precedence) => ({ buffer, context }) => {
-  if (!buffer) {
-    return;
-  }
-  const map2 = metaTagMap.get(context) || {};
-  metaTagMap.set(context, map2);
-  const tags = map2[tagName] ||= [];
-  let duped = false;
-  const deDupeKeys = deDupeKeyMap[tagName];
-  const deDupeByKey = shouldDeDupeByKey(tagName, precedence !== void 0);
-  if (deDupeByKey) {
-    LOOP: for (const [, tagProps] of tags) {
-      if (tagName === "link" && !(tagProps.rel === "stylesheet" && tagProps[dataPrecedenceAttr] !== void 0)) {
-        continue;
-      }
-      for (const key of deDupeKeys) {
-        if ((tagProps?.[key] ?? null) === props?.[key]) {
-          duped = true;
-          break LOOP;
-        }
-      }
-    }
-  }
-  if (duped) {
-    buffer[0] = buffer[0].replaceAll(tag, "");
-  } else if (deDupeByKey || tagName === "link") {
-    tags.push([tag, props, precedence]);
-  } else {
-    tags.unshift([tag, props, precedence]);
-  }
-  if (buffer[0].indexOf("</head>") !== -1) {
-    let insertTags;
-    if (tagName === "link" || precedence !== void 0) {
-      const precedences = [];
-      insertTags = tags.map(([tag2, , tagPrecedence], index) => {
-        if (tagPrecedence === void 0) {
-          return [tag2, Number.MAX_SAFE_INTEGER, index];
-        }
-        let order = precedences.indexOf(tagPrecedence);
-        if (order === -1) {
-          precedences.push(tagPrecedence);
-          order = precedences.length - 1;
-        }
-        return [tag2, order, index];
-      }).sort((a, b) => a[1] - b[1] || a[2] - b[2]).map(([tag2]) => tag2);
-    } else {
-      insertTags = tags.map(([tag2]) => tag2);
-    }
-    insertTags.forEach((tag2) => {
-      buffer[0] = buffer[0].replaceAll(tag2, "");
-    });
-    buffer[0] = buffer[0].replace(/(?=<\/head>)/, insertTags.join(""));
-  }
-};
-var returnWithoutSpecialBehavior = (tag, children, props) => raw(new JSXNode(tag, props, toArray(children ?? [])).toString());
-var documentMetadataTag = (tag, children, props, sort) => {
-  if ("itemProp" in props) {
-    return returnWithoutSpecialBehavior(tag, children, props);
-  }
-  let { precedence, blocking, ...restProps } = props;
-  precedence = sort ? precedence ?? "" : void 0;
-  if (sort) {
-    restProps[dataPrecedenceAttr] = precedence;
-  }
-  const string = new JSXNode(tag, restProps, toArray(children || [])).toString();
-  if (string instanceof Promise) {
-    return string.then(
-      (resString) => raw(string, [
-        ...resString.callbacks || [],
-        insertIntoHead(tag, resString, restProps, precedence)
-      ])
-    );
-  } else {
-    return raw(string, [insertIntoHead(tag, string, restProps, precedence)]);
-  }
-};
-var title = ({ children, ...props }) => {
-  const nameSpaceContext2 = getNameSpaceContext();
-  if (nameSpaceContext2) {
-    const context = useContext14(nameSpaceContext2);
-    if (context === "svg" || context === "head") {
-      return new JSXNode(
-        "title",
-        props,
-        toArray(children ?? [])
-      );
-    }
-  }
-  return documentMetadataTag("title", children, props, false);
-};
-var script = ({
-  children,
-  ...props
-}) => {
-  const nameSpaceContext2 = getNameSpaceContext();
-  if (["src", "async"].some((k) => !props[k]) || nameSpaceContext2 && useContext14(nameSpaceContext2) === "head") {
-    return returnWithoutSpecialBehavior("script", children, props);
-  }
-  return documentMetadataTag("script", children, props, false);
-};
-var style = ({
-  children,
-  ...props
-}) => {
-  if (!["href", "precedence"].every((k) => k in props)) {
-    return returnWithoutSpecialBehavior("style", children, props);
-  }
-  props["data-href"] = props.href;
-  delete props.href;
-  return documentMetadataTag("style", children, props, true);
-};
-var link = ({ children, ...props }) => {
-  if (["onLoad", "onError"].some((k) => k in props) || props.rel === "stylesheet" && (!("precedence" in props) || "disabled" in props)) {
-    return returnWithoutSpecialBehavior("link", children, props);
-  }
-  return documentMetadataTag("link", children, props, isStylesheetLinkWithPrecedence(props));
-};
-var meta = ({ children, ...props }) => {
-  const nameSpaceContext2 = getNameSpaceContext();
-  if (nameSpaceContext2 && useContext14(nameSpaceContext2) === "head") {
-    return returnWithoutSpecialBehavior("meta", children, props);
-  }
-  return documentMetadataTag("meta", children, props, false);
-};
-var newJSXNode = (tag, { children, ...props }) => (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  new JSXNode(tag, props, toArray(children ?? []))
-);
-var form = (props) => {
-  if (typeof props.action === "function") {
-    props.action = PERMALINK in props.action ? props.action[PERMALINK] : void 0;
-  }
-  return newJSXNode("form", props);
-};
-var formActionableElement = (tag, props) => {
-  if (typeof props.formAction === "function") {
-    props.formAction = PERMALINK in props.formAction ? props.formAction[PERMALINK] : void 0;
-  }
-  return newJSXNode(tag, props);
-};
-var input = (props) => formActionableElement("input", props);
-var button = (props) => formActionableElement("button", props);
-
-// node_modules/hono/dist/jsx/utils.js
-var normalizeElementKeyMap = /* @__PURE__ */ new Map([
-  ["className", "class"],
-  ["htmlFor", "for"],
-  ["crossOrigin", "crossorigin"],
-  ["httpEquiv", "http-equiv"],
-  ["itemProp", "itemprop"],
-  ["fetchPriority", "fetchpriority"],
-  ["noModule", "nomodule"],
-  ["formAction", "formaction"]
-]);
-var normalizeIntrinsicElementKey = (key) => normalizeElementKeyMap.get(key) || key;
-var invalidAttributeNameCharRe = /[\s"'<>/=`\\\x00-\x1f\x7f-\x9f]/;
-var validAttributeNameCache = /* @__PURE__ */ new Set();
-var validAttributeNameCacheMax = 1024;
-var invalidTagNameCharRe = /^[!?]|[\s"'<>/=`\\\x00-\x1f\x7f-\x9f]/;
-var validTagNameCache = /* @__PURE__ */ new Set();
-var validTagNameCacheMax = 256;
-var cacheValidName = (cache, max2, name) => {
-  if (cache.size >= max2) {
-    cache.clear();
-  }
-  cache.add(name);
-};
-var isValidTagName = (name) => {
-  if (validTagNameCache.has(name)) {
-    return true;
-  }
-  if (typeof name !== "string") {
-    return false;
-  }
-  if (name.length === 0) {
-    return true;
-  }
-  if (invalidTagNameCharRe.test(name)) {
-    return false;
-  }
-  cacheValidName(validTagNameCache, validTagNameCacheMax, name);
-  return true;
-};
-var isValidAttributeName = (name) => {
-  if (validAttributeNameCache.has(name)) {
-    return true;
-  }
-  const len = name.length;
-  if (len === 0) {
-    return false;
-  }
-  for (let i = 0; i < len; i++) {
-    const c = name.charCodeAt(i);
-    if (!(c >= 97 && c <= 122 || // a-z
-    c >= 65 && c <= 90 || // A-Z
-    c >= 48 && c <= 57 || // 0-9
-    c === 45 || // -
-    c === 95 || // _
-    c === 46 || // .
-    c === 58)) {
-      if (!invalidAttributeNameCharRe.test(name)) {
-        cacheValidName(validAttributeNameCache, validAttributeNameCacheMax, name);
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
-  cacheValidName(validAttributeNameCache, validAttributeNameCacheMax, name);
-  return true;
-};
-var invalidStylePropertyNameCharRe = /[\s"'():;\\/\[\]{}\x00-\x1f\x7f-\x9f]/;
-var validStylePropertyNameCache = /* @__PURE__ */ new Set();
-var validStylePropertyNameCacheMax = 1024;
-var isValidStylePropertyName = (name) => {
-  if (validStylePropertyNameCache.has(name)) {
-    return true;
-  }
-  const len = name.length;
-  if (len === 0) {
-    return false;
-  }
-  for (let i = 0; i < len; i++) {
-    const c = name.charCodeAt(i);
-    if (!(c >= 97 && c <= 122 || // a-z
-    c >= 65 && c <= 90 || // A-Z
-    c >= 48 && c <= 57 || // 0-9
-    c === 45 || // -
-    c === 95)) {
-      if (!invalidStylePropertyNameCharRe.test(name)) {
-        cacheValidName(validStylePropertyNameCache, validStylePropertyNameCacheMax, name);
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
-  cacheValidName(validStylePropertyNameCache, validStylePropertyNameCacheMax, name);
-  return true;
-};
-var unsafeStyleValueCharRe = /[;"'\\/\[\](){}]/;
-var hasUnsafeStyleValue = (value) => {
-  if (!unsafeStyleValueCharRe.test(value)) {
-    return false;
-  }
-  let quote = 0;
-  const blockStack = [];
-  for (let i = 0, len = value.length; i < len; i++) {
-    const c = value.charCodeAt(i);
-    if (c === 92) {
-      if (i === len - 1) {
-        return true;
-      }
-      i++;
-    } else if (quote !== 0) {
-      if (c === 10 || c === 12 || c === 13) {
-        return true;
-      }
-      if (c === quote) {
-        quote = 0;
-      }
-    } else if (c === 47 && value.charCodeAt(i + 1) === 42) {
-      const end = value.indexOf("*/", i + 2);
-      if (end === -1) {
-        return true;
-      }
-      i = end + 1;
-    } else if (c === 34 || c === 39) {
-      quote = c;
-    } else if (c === 40) {
-      blockStack.push(41);
-    } else if (c === 91) {
-      blockStack.push(93);
-    } else if (c === 123 || c === 125) {
-      return true;
-    } else if (c === 41 || c === 93) {
-      if (blockStack[blockStack.length - 1] !== c) {
-        return true;
-      }
-      blockStack.pop();
-    } else if (c === 59 && blockStack.length === 0) {
-      return true;
-    }
-  }
-  return quote !== 0 || blockStack.length !== 0;
-};
-var styleObjectForEach = (style2, fn) => {
-  for (const [k, v] of Object.entries(style2)) {
-    const key = k[0] === "-" || !/[A-Z]/.test(k) ? k : k.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
-    if (!isValidStylePropertyName(key)) {
-      continue;
-    }
-    if (v == null) {
-      fn(key, null);
-      continue;
-    }
-    let value;
-    if (typeof v === "number") {
-      value = !key.match(
-        /^(?:a|border-im|column(?:-c|s)|flex(?:$|-[^b])|grid-(?:ar|[^a])|font-w|li|or|sca|st|ta|wido|z)|ty$/
-      ) ? `${v}px` : `${v}`;
-    } else if (typeof v === "string") {
-      if (hasUnsafeStyleValue(v)) {
-        continue;
-      }
-      value = v;
-    } else {
-      continue;
-    }
-    fn(key, value);
-  }
-};
-
-// node_modules/hono/dist/jsx/base.js
-var nameSpaceContext = void 0;
-var getNameSpaceContext = () => nameSpaceContext;
-var toSVGAttributeName = (key) => /[A-Z]/.test(key) && // Presentation attributes are findable in style object. "clip-path", "font-size", "stroke-width", etc.
-// Or other un-deprecated kebab-case attributes. "overline-position", "paint-order", "strikethrough-position", etc.
-key.match(
-  /^(?:al|basel|clip(?:Path|Rule)$|co|do|fill|fl|fo|gl|let|lig|i|marker[EMS]|o|pai|pointe|sh|st[or]|text[^L]|tr|u|ve|w)/
-) ? key.replace(/([A-Z])/g, "-$1").toLowerCase() : key;
-var emptyTags = [
-  "area",
-  "base",
-  "br",
-  "col",
-  "embed",
-  "hr",
-  "img",
-  "input",
-  "keygen",
-  "link",
-  "meta",
-  "param",
-  "source",
-  "track",
-  "wbr"
-];
-var booleanAttributes = [
-  "allowfullscreen",
-  "async",
-  "autofocus",
-  "autoplay",
-  "checked",
-  "controls",
-  "default",
-  "defer",
-  "disabled",
-  "download",
-  "formnovalidate",
-  "hidden",
-  "inert",
-  "ismap",
-  "itemscope",
-  "loop",
-  "multiple",
-  "muted",
-  "nomodule",
-  "novalidate",
-  "open",
-  "playsinline",
-  "readonly",
-  "required",
-  "reversed",
-  "selected"
-];
-var childrenToStringToBuffer = (children, buffer) => {
-  for (let i = 0, len = children.length; i < len; i++) {
-    const child = children[i];
-    if (typeof child === "string") {
-      escapeToBuffer(child, buffer);
-    } else if (typeof child === "boolean" || child === null || child === void 0) {
-      continue;
-    } else if (child instanceof JSXNode) {
-      child.toStringToBuffer(buffer);
-    } else if (typeof child === "number" || child.isEscaped) {
-      ;
-      buffer[0] += child;
-    } else if (child instanceof Promise) {
-      buffer.unshift("", child);
-    } else {
-      childrenToStringToBuffer(child, buffer);
-    }
-  }
-};
-var JSXNode = class {
-  tag;
-  props;
-  key;
-  children;
-  isEscaped = true;
-  suspendedContext;
-  constructor(tag, props, children) {
-    if (typeof tag !== "function" && !isValidTagName(tag)) {
-      throw new Error(`Invalid JSX tag name: ${tag}`);
-    }
-    this.tag = tag;
-    this.props = props;
-    this.children = children;
-  }
-  get type() {
-    return this.tag;
-  }
-  // Added for compatibility with libraries that rely on React's internal structure
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get ref() {
-    return this.props.ref || null;
-  }
-  toString() {
-    const render = () => {
-      const buffer = [""];
-      this.toStringToBuffer(buffer);
-      return buffer.length === 1 ? "callbacks" in buffer ? resolveCallbackSync(raw(buffer[0], buffer.callbacks)).toString() : buffer[0] : stringBufferToString(buffer, buffer.callbacks);
-    };
-    return this.suspendedContext ? this.suspendedContext(render) : runWithRenderContext(render);
-  }
-  toStringToBuffer(buffer) {
-    const tag = this.tag;
-    const props = this.props;
-    let { children } = this;
-    buffer[0] += `<${tag}`;
-    const normalizeKey = tag === "svg" || nameSpaceContext && useContext14(nameSpaceContext) === "svg" ? (key) => toSVGAttributeName(normalizeIntrinsicElementKey(key)) : (key) => normalizeIntrinsicElementKey(key);
-    for (let [key, v] of Object.entries(props)) {
-      key = normalizeKey(key);
-      if (!isValidAttributeName(key)) {
-        continue;
-      }
-      if (key === "children") {
-      } else if (key === "style" && typeof v === "object") {
-        let styleStr = "";
-        styleObjectForEach(v, (property2, value) => {
-          if (value != null) {
-            styleStr += `${styleStr ? ";" : ""}${property2}:${value}`;
-          }
-        });
-        buffer[0] += ' style="';
-        escapeToBuffer(styleStr, buffer);
-        buffer[0] += '"';
-      } else if (typeof v === "string") {
-        buffer[0] += ` ${key}="`;
-        escapeToBuffer(v, buffer);
-        buffer[0] += '"';
-      } else if (v === null || v === void 0) {
-      } else if (typeof v === "number" || v.isEscaped) {
-        buffer[0] += ` ${key}="${v}"`;
-      } else if (typeof v === "boolean" && booleanAttributes.includes(key)) {
-        if (v) {
-          buffer[0] += ` ${key}=""`;
-        }
-      } else if (key === "dangerouslySetInnerHTML") {
-        if (children.length > 0) {
-          throw new Error("Can only set one of `children` or `props.dangerouslySetInnerHTML`.");
-        }
-        children = [raw(v.__html)];
-      } else if (v instanceof Promise) {
-        buffer[0] += ` ${key}="`;
-        buffer.unshift('"', v);
-      } else if (typeof v === "function") {
-        if (!key.startsWith("on") && key !== "ref") {
-          throw new Error(`Invalid prop '${key}' of type 'function' supplied to '${tag}'.`);
-        }
-      } else {
-        buffer[0] += ` ${key}="`;
-        escapeToBuffer(v.toString(), buffer);
-        buffer[0] += '"';
-      }
-    }
-    if (emptyTags.includes(tag) && children.length === 0) {
-      buffer[0] += "/>";
-      return;
-    }
-    buffer[0] += ">";
-    childrenToStringToBuffer(children, buffer);
-    buffer[0] += `</${tag}>`;
-  }
-};
-var JSXFunctionNode = class extends JSXNode {
-  toStringToBuffer(buffer) {
-    const { children } = this;
-    const props = { ...this.props };
-    if (children.length) {
-      props.children = children.length === 1 ? children[0] : children;
-    }
-    const res = this.tag.call(null, props);
-    if (typeof res === "boolean" || res == null) {
-      return;
-    } else if (res instanceof Promise) {
-      if (globalContexts.length === 0) {
-        buffer.unshift("", res);
-      } else {
-        const suspendedContext = captureRenderContext();
-        buffer.unshift(
-          "",
-          res.then((childRes) => {
-            if (childRes instanceof JSXNode) {
-              childRes.suspendedContext = suspendedContext;
-            }
-            return childRes;
-          })
-        );
-      }
-    } else if (res instanceof JSXNode) {
-      res.toStringToBuffer(buffer);
-    } else if (typeof res === "number" || res.isEscaped) {
-      buffer[0] += res;
-      if (res.callbacks) {
-        buffer.callbacks ||= [];
-        buffer.callbacks.push(...res.callbacks);
-      }
-    } else {
-      escapeToBuffer(res, buffer);
-    }
-  }
-};
-var JSXFragmentNode = class extends JSXNode {
-  toStringToBuffer(buffer) {
-    childrenToStringToBuffer(this.children, buffer);
-  }
-};
-var initDomRenderer = false;
-var jsxFn = (tag, props, children) => {
-  if (!initDomRenderer) {
-    for (const k in domRenderers) {
-      ;
-      components_exports[k][DOM_RENDERER] = domRenderers[k];
-    }
-    initDomRenderer = true;
-  }
-  if (typeof tag === "function") {
-    return new JSXFunctionNode(tag, props, children);
-  } else if (components_exports[tag]) {
-    return new JSXFunctionNode(
-      components_exports[tag],
-      props,
-      children
-    );
-  } else if (tag === "svg" || tag === "head") {
-    nameSpaceContext ||= createContext14("");
-    return new JSXNode(tag, props, [
-      new JSXFunctionNode(
-        nameSpaceContext,
-        {
-          value: tag
-        },
-        children
-      )
-    ]);
-  } else {
-    return new JSXNode(tag, props, children);
-  }
-};
-
-// node_modules/hono/dist/jsx/jsx-dev-runtime.js
-function jsxDEV(tag, props, key) {
-  let node;
-  if (!props || !("children" in props)) {
-    node = jsxFn(tag, props, []);
-  } else {
-    const children = props.children;
-    node = Array.isArray(children) ? jsxFn(tag, props, children) : jsxFn(tag, props, [children]);
-  }
-  node.key = key;
-  return node;
-}
-
 // src/client.tsx
+var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
 var demoRows = [
   { id: 1, date: "08.10", client: "\uC911\uAD6D \xB7 \uC81C\uC57D\uCF00\uC774\uC2A4", grade: "IV", measure: "\uD3C9\uB7C9", value: 303, status: "\uC815\uC0C1", time: "07:38", source: "6810J30001" },
   { id: 2, date: "08.10", client: "\uC911\uAD6D \xB7 \uC81C\uC57D\uCF00\uC774\uC2A4", grade: "IV", measure: "\uD3C9\uB7C9", value: 304, status: "\uC815\uC0C1", time: "07:44", source: "6810J30003" },
@@ -73885,268 +73268,268 @@ function App() {
     setDragging(false);
     void loadFile(event.dataTransfer.files[0]);
   };
-  return /* @__PURE__ */ jsxDEV("main", { className: "app-shell", children: [
-    /* @__PURE__ */ jsxDEV("header", { className: "topbar", children: [
-      /* @__PURE__ */ jsxDEV("div", { className: "brand", children: [
-        /* @__PURE__ */ jsxDEV("span", { className: "brand-mark", children: /* @__PURE__ */ jsxDEV(Zap, { size: 16, fill: "currentColor" }) }),
-        /* @__PURE__ */ jsxDEV("span", { children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", { className: "app-shell", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", { className: "topbar", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "brand", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "brand-mark", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Zap, { size: 16, fill: "currentColor" }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
           "QUALITY ",
-          /* @__PURE__ */ jsxDEV("b", { children: "LEDGER" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("b", { children: "LEDGER" })
         ] })
       ] }),
-      /* @__PURE__ */ jsxDEV("div", { className: "topbar-meta", children: [
-        /* @__PURE__ */ jsxDEV("span", { className: "live-dot" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "topbar-meta", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "live-dot" }),
         " LIVE ANALYTICS ",
-        /* @__PURE__ */ jsxDEV("span", { className: "divider" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "divider" }),
         " PLANT 03 ",
-        /* @__PURE__ */ jsxDEV("span", { className: "avatar", children: "JK" })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "avatar", children: "JK" })
       ] })
     ] }),
-    /* @__PURE__ */ jsxDEV("section", { className: "hero", children: [
-      /* @__PURE__ */ jsxDEV("div", { children: [
-        /* @__PURE__ */ jsxDEV("p", { className: "eyebrow", children: "QUALITY CONTROL / 03" }),
-        /* @__PURE__ */ jsxDEV("h1", { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "hero", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "eyebrow", children: "QUALITY CONTROL / 03" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h1", { children: [
           "\uD488\uC9C8 \uB370\uC774\uD130 ",
-          /* @__PURE__ */ jsxDEV("em", { children: "\uC778\uC0AC\uC774\uD2B8" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("em", { children: "\uC778\uC0AC\uC774\uD2B8" })
         ] }),
-        /* @__PURE__ */ jsxDEV("p", { className: "hero-copy", children: "\uBCC0\uACBD\uC77C\uC9C0 \uB370\uC774\uD130\uC5D0\uC11C \uD328\uD134\uC744 \uC77D\uACE0, \uADDC\uACA9 \uC774\uD0C8\uC744 \uD55C\uB208\uC5D0 \uAD00\uB9AC\uD558\uC138\uC694." })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "hero-copy", children: "\uBCC0\uACBD\uC77C\uC9C0 \uB370\uC774\uD130\uC5D0\uC11C \uD328\uD134\uC744 \uC77D\uACE0, \uADDC\uACA9 \uC774\uD0C8\uC744 \uD55C\uB208\uC5D0 \uAD00\uB9AC\uD558\uC138\uC694." })
       ] }),
-      /* @__PURE__ */ jsxDEV("div", { className: "hero-stamp", children: [
-        /* @__PURE__ */ jsxDEV("span", { children: "LAST SYNC" }),
-        /* @__PURE__ */ jsxDEV("strong", { children: "08.10.2026" }),
-        /* @__PURE__ */ jsxDEV("small", { children: "09:04 KST" })
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "hero-stamp", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "LAST SYNC" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "08.10.2026" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: "09:04 KST" })
       ] })
     ] }),
-    /* @__PURE__ */ jsxDEV("section", { className: "upload-zone-wrap", children: [
-      /* @__PURE__ */ jsxDEV("div", { className: `upload-zone ${dragging ? "is-dragging" : ""}`, onDragOver: (e) => {
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "upload-zone-wrap", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: `upload-zone ${dragging ? "is-dragging" : ""}`, onDragOver: (e) => {
         e.preventDefault();
         setDragging(true);
       }, onDragLeave: () => setDragging(false), onDrop: handleDrop, onClick: () => inputRef.current?.click(), children: [
-        /* @__PURE__ */ jsxDEV("input", { ref: inputRef, type: "file", accept: ".xls,.xlsx", hidden: true, onChange: (e) => void loadFile(e.target.files?.[0]) }),
-        /* @__PURE__ */ jsxDEV("span", { className: "upload-icon", children: /* @__PURE__ */ jsxDEV(CloudUpload, { size: 22 }) }),
-        /* @__PURE__ */ jsxDEV("div", { children: [
-          /* @__PURE__ */ jsxDEV("strong", { children: "\uC5D1\uC140 \uD30C\uC77C\uC744 \uC5EC\uAE30\uC5D0 \uB193\uC73C\uC138\uC694" }),
-          /* @__PURE__ */ jsxDEV("span", { children: ".XLS \uB610\uB294 .XLSX \xB7 \uBCC0\uACBD\uC77C\uC9C0 \uC2DC\uD2B8 \uC790\uB3D9 \uC778\uC2DD" })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { ref: inputRef, type: "file", accept: ".xls,.xlsx", hidden: true, onChange: (e) => void loadFile(e.target.files?.[0]) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "upload-icon", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { size: 22 }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "\uC5D1\uC140 \uD30C\uC77C\uC744 \uC5EC\uAE30\uC5D0 \uB193\uC73C\uC138\uC694" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: ".XLS \uB610\uB294 .XLSX \xB7 \uBCC0\uACBD\uC77C\uC9C0 \uC2DC\uD2B8 \uC790\uB3D9 \uC778\uC2DD" })
         ] }),
-        /* @__PURE__ */ jsxDEV("button", { className: "ghost-button", type: "button", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { className: "ghost-button", type: "button", children: [
           "\uD30C\uC77C \uC120\uD0DD ",
-          /* @__PURE__ */ jsxDEV(ChevronDown, { size: 15 })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronDown, { size: 15 })
         ] })
       ] }),
-      /* @__PURE__ */ jsxDEV("div", { className: "file-chip", children: [
-        /* @__PURE__ */ jsxDEV(FileSpreadsheet, { size: 16 }),
-        /* @__PURE__ */ jsxDEV("span", { children: fileName }),
-        /* @__PURE__ */ jsxDEV("b", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "file-chip", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileSpreadsheet, { size: 16 }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: fileName }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("b", { children: [
           rows.length,
           " rows"
         ] }),
-        /* @__PURE__ */ jsxDEV(X, { size: 15 })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, { size: 15 })
       ] })
     ] }),
-    /* @__PURE__ */ jsxDEV("section", { className: "control-bar", children: [
-      /* @__PURE__ */ jsxDEV("div", { className: "control-label", children: [
-        /* @__PURE__ */ jsxDEV(Funnel, { size: 17 }),
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "control-bar", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "control-label", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Funnel, { size: 17 }),
         " FILTERS"
       ] }),
-      /* @__PURE__ */ jsxDEV("label", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
         "\uC9C0\uC885 ",
-        /* @__PURE__ */ jsxDEV("select", { value: grade, onChange: (e) => setGrade(e.target.value), children: grades.map((item) => /* @__PURE__ */ jsxDEV("option", { children: item }, item)) })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: grade, onChange: (e) => setGrade(e.target.value), children: grades.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: item }, item)) })
       ] }),
-      /* @__PURE__ */ jsxDEV("label", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
         "\uCE21\uC815 \uD56D\uBAA9 ",
-        /* @__PURE__ */ jsxDEV("select", { value: metric, onChange: (e) => setMetric(e.target.value), children: metricOptions.map((item) => /* @__PURE__ */ jsxDEV("option", { value: item.key, children: item.label }, item.key)) })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: metric, onChange: (e) => setMetric(e.target.value), children: metricOptions.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: item.key, children: item.label }, item.key)) })
       ] }),
-      /* @__PURE__ */ jsxDEV("div", { className: "spec-controls", children: [
-        /* @__PURE__ */ jsxDEV("span", { children: "SPEC LIMITS" }),
-        /* @__PURE__ */ jsxDEV("label", { className: "limit-input usl", children: [
-          /* @__PURE__ */ jsxDEV("i", {}),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "spec-controls", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "SPEC LIMITS" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { className: "limit-input usl", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", {}),
           " USL ",
-          /* @__PURE__ */ jsxDEV("input", { value: usl, onChange: (e) => setUsl(e.target.value) })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { value: usl, onChange: (e) => setUsl(e.target.value) })
         ] }),
-        /* @__PURE__ */ jsxDEV("label", { className: "limit-input lsl", children: [
-          /* @__PURE__ */ jsxDEV("i", {}),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { className: "limit-input lsl", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", {}),
           " LSL ",
-          /* @__PURE__ */ jsxDEV("input", { value: lsl, onChange: (e) => setLsl(e.target.value) })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { value: lsl, onChange: (e) => setLsl(e.target.value) })
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxDEV("section", { className: "stat-grid", children: [
-      /* @__PURE__ */ jsxDEV("article", { className: "stat-card", children: [
-        /* @__PURE__ */ jsxDEV("span", { children: "\uCE21\uC815 \uB370\uC774\uD130" }),
-        /* @__PURE__ */ jsxDEV("strong", { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "stat-grid", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "stat-card", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uCE21\uC815 \uB370\uC774\uD130" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("strong", { children: [
           filteredRows.length.toLocaleString(),
           " ",
-          /* @__PURE__ */ jsxDEV("small", { children: "\uAC74" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: "\uAC74" })
         ] }),
-        /* @__PURE__ */ jsxDEV("p", { children: [
-          /* @__PURE__ */ jsxDEV(ChartColumn, { size: 14 }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChartColumn, { size: 14 }),
           " \uCD5C\uADFC \uBCC0\uACBD\uC77C\uC9C0 \uAE30\uC900"
         ] })
       ] }),
-      /* @__PURE__ */ jsxDEV("article", { className: "stat-card", children: [
-        /* @__PURE__ */ jsxDEV("span", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "stat-card", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
           "\uD3C9\uADE0 ",
           metric
         ] }),
-        /* @__PURE__ */ jsxDEV("strong", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("strong", { children: [
           avg.toFixed(metric === "\uC218\uBD84" ? 2 : 1),
           " ",
-          /* @__PURE__ */ jsxDEV("small", { children: selectedMetric.unit })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: selectedMetric.unit })
         ] }),
-        /* @__PURE__ */ jsxDEV("p", { className: "positive", children: [
-          /* @__PURE__ */ jsxDEV(Gauge, { size: 14 }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "positive", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Gauge, { size: 14 }),
           " \uACF5\uC815 \uC911\uC2EC\uAC12"
         ] })
       ] }),
-      /* @__PURE__ */ jsxDEV("article", { className: "stat-card alert-card", children: [
-        /* @__PURE__ */ jsxDEV("span", { children: "\uADDC\uACA9 \uC774\uD0C8" }),
-        /* @__PURE__ */ jsxDEV("strong", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "stat-card alert-card", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uADDC\uACA9 \uC774\uD0C8" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("strong", { children: [
           outliers.length,
           " ",
-          /* @__PURE__ */ jsxDEV("small", { children: "\uAC74" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: "\uAC74" })
         ] }),
-        /* @__PURE__ */ jsxDEV("p", { children: [
-          /* @__PURE__ */ jsxDEV(TriangleAlert, { size: 14 }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { size: 14 }),
           " \uC989\uC2DC \uD655\uC778 \uD544\uC694"
         ] })
       ] }),
-      /* @__PURE__ */ jsxDEV("article", { className: "stat-card", children: [
-        /* @__PURE__ */ jsxDEV("span", { children: "\uD569\uACA9\uB960" }),
-        /* @__PURE__ */ jsxDEV("strong", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "stat-card", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uD569\uACA9\uB960" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("strong", { children: [
           passRate,
-          /* @__PURE__ */ jsxDEV("small", { children: "%" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: "%" })
         ] }),
-        /* @__PURE__ */ jsxDEV("p", { className: "positive", children: [
-          /* @__PURE__ */ jsxDEV(CircleCheck, { size: 14 }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "positive", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { size: 14 }),
           " \uC591\uD638\uD55C \uACF5\uC815 \uC0C1\uD0DC"
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxDEV("section", { className: "content-grid", children: [
-      /* @__PURE__ */ jsxDEV("article", { className: "panel chart-panel", children: [
-        /* @__PURE__ */ jsxDEV("div", { className: "panel-head", children: [
-          /* @__PURE__ */ jsxDEV("div", { children: [
-            /* @__PURE__ */ jsxDEV("p", { className: "panel-kicker", children: "TREND MONITOR" }),
-            /* @__PURE__ */ jsxDEV("h2", { children: "\uC2DC\uACC4\uC5F4 \uD488\uC9C8 \uD2B8\uB80C\uB4DC" })
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "content-grid", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "panel chart-panel", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "panel-head", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "panel-kicker", children: "TREND MONITOR" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: "\uC2DC\uACC4\uC5F4 \uD488\uC9C8 \uD2B8\uB80C\uB4DC" })
           ] }),
-          /* @__PURE__ */ jsxDEV("div", { className: "legend", children: [
-            /* @__PURE__ */ jsxDEV("span", { children: [
-              /* @__PURE__ */ jsxDEV("i", { className: "legend-line" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "legend", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", { className: "legend-line" }),
               " \uCE21\uC815\uAC12"
             ] }),
-            /* @__PURE__ */ jsxDEV("span", { children: [
-              /* @__PURE__ */ jsxDEV("i", { className: "legend-usl" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", { className: "legend-usl" }),
               " USL / LSL"
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxDEV("div", { className: "chart-wrap", children: /* @__PURE__ */ jsxDEV(ResponsiveContainer, { width: "100%", height: "100%", children: /* @__PURE__ */ jsxDEV(AreaChart, { data: chartData, margin: { top: 18, right: 18, left: -18, bottom: 0 }, children: [
-          /* @__PURE__ */ jsxDEV("defs", { children: /* @__PURE__ */ jsxDEV("linearGradient", { id: "qualityFill", x1: "0", y1: "0", x2: "0", y2: "1", children: [
-            /* @__PURE__ */ jsxDEV("stop", { offset: "0%", stopColor: "#27d3a2", stopOpacity: 0.27 }),
-            /* @__PURE__ */ jsxDEV("stop", { offset: "100%", stopColor: "#27d3a2", stopOpacity: 0 })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "chart-wrap", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResponsiveContainer, { width: "100%", height: "100%", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(AreaChart, { data: chartData, margin: { top: 18, right: 18, left: -18, bottom: 0 }, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("defs", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("linearGradient", { id: "qualityFill", x1: "0", y1: "0", x2: "0", y2: "1", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("stop", { offset: "0%", stopColor: "#27d3a2", stopOpacity: 0.27 }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("stop", { offset: "100%", stopColor: "#27d3a2", stopOpacity: 0 })
           ] }) }),
-          /* @__PURE__ */ jsxDEV(CartesianGrid, { stroke: "#e8edf2", vertical: false }),
-          /* @__PURE__ */ jsxDEV(XAxis, { dataKey: "label", tick: { fontSize: 10, fill: "#84909d" }, tickLine: false, axisLine: false }),
-          /* @__PURE__ */ jsxDEV(YAxis, { domain: [Number(lsl) - 6, Number(usl) + 6], tick: { fontSize: 10, fill: "#84909d" }, tickLine: false, axisLine: false }),
-          /* @__PURE__ */ jsxDEV(Tooltip, { contentStyle: { border: "0", borderRadius: 10, boxShadow: "0 8px 30px rgba(20,40,70,.12)" }, formatter: (value) => [`${value} ${selectedMetric.unit}`, metric] }),
-          /* @__PURE__ */ jsxDEV(ReferenceLine, { y: Number(usl), stroke: "#f36a5d", strokeDasharray: "5 5", label: { value: "USL", fill: "#f36a5d", fontSize: 11, position: "insideTopRight" } }),
-          /* @__PURE__ */ jsxDEV(ReferenceLine, { y: Number(lsl), stroke: "#f36a5d", strokeDasharray: "5 5", label: { value: "LSL", fill: "#f36a5d", fontSize: 11, position: "insideBottomRight" } }),
-          /* @__PURE__ */ jsxDEV(Area, { type: "monotone", dataKey: "value", stroke: "#16b98d", strokeWidth: 2.5, fill: "url(#qualityFill)", dot: (props) => props.payload.status === "\uC774\uD0C8" ? /* @__PURE__ */ jsxDEV("circle", { ...props, r: 5, fill: "#f36a5d", stroke: "#fff", strokeWidth: 2 }) : /* @__PURE__ */ jsxDEV("circle", { ...props, r: 3, fill: "#16b98d", stroke: "#fff", strokeWidth: 2 }), activeDot: { r: 6 } })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CartesianGrid, { stroke: "#e8edf2", vertical: false }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(XAxis, { dataKey: "label", tick: { fontSize: 10, fill: "#84909d" }, tickLine: false, axisLine: false }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, { domain: [Number(lsl) - 6, Number(usl) + 6], tick: { fontSize: 10, fill: "#84909d" }, tickLine: false, axisLine: false }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { contentStyle: { border: "0", borderRadius: 10, boxShadow: "0 8px 30px rgba(20,40,70,.12)" }, formatter: (value) => [`${value} ${selectedMetric.unit}`, metric] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReferenceLine, { y: Number(usl), stroke: "#f36a5d", strokeDasharray: "5 5", label: { value: "USL", fill: "#f36a5d", fontSize: 11, position: "insideTopRight" } }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReferenceLine, { y: Number(lsl), stroke: "#f36a5d", strokeDasharray: "5 5", label: { value: "LSL", fill: "#f36a5d", fontSize: 11, position: "insideBottomRight" } }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Area, { type: "monotone", dataKey: "value", stroke: "#16b98d", strokeWidth: 2.5, fill: "url(#qualityFill)", dot: (props) => props.payload.status === "\uC774\uD0C8" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { ...props, r: 5, fill: "#f36a5d", stroke: "#fff", strokeWidth: 2 }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { ...props, r: 3, fill: "#16b98d", stroke: "#fff", strokeWidth: 2 }), activeDot: { r: 6 } })
         ] }) }) })
       ] }),
-      /* @__PURE__ */ jsxDEV("article", { className: "panel insight-panel", children: [
-        /* @__PURE__ */ jsxDEV("div", { className: "panel-head", children: [
-          /* @__PURE__ */ jsxDEV("div", { children: [
-            /* @__PURE__ */ jsxDEV("p", { className: "panel-kicker", children: "AI QUALITY READOUT" }),
-            /* @__PURE__ */ jsxDEV("h2", { children: "\uACF5\uC815 \uD574\uC11D" })
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "panel insight-panel", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "panel-head", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "panel-kicker", children: "AI QUALITY READOUT" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: "\uACF5\uC815 \uD574\uC11D" })
           ] }),
-          /* @__PURE__ */ jsxDEV(Layers, { size: 20, className: "muted-icon" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Layers, { size: 20, className: "muted-icon" })
         ] }),
-        /* @__PURE__ */ jsxDEV("div", { className: "insight-highlight", children: [
-          /* @__PURE__ */ jsxDEV("span", { className: "signal-icon", children: /* @__PURE__ */ jsxDEV(Zap, { size: 17, fill: "currentColor" }) }),
-          /* @__PURE__ */ jsxDEV("div", { children: [
-            /* @__PURE__ */ jsxDEV("strong", { children: "\uC548\uC815\uC801\uC778 \uACF5\uC815 \uD750\uB984" }),
-            /* @__PURE__ */ jsxDEV("p", { children: "\uCD5C\uADFC \uCE21\uC815\uAC12\uC774 \uC911\uC2EC\uC120\uC744 \uC720\uC9C0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4." })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "insight-highlight", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "signal-icon", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Zap, { size: 17, fill: "currentColor" }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "\uC548\uC815\uC801\uC778 \uACF5\uC815 \uD750\uB984" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "\uCD5C\uADFC \uCE21\uC815\uAC12\uC774 \uC911\uC2EC\uC120\uC744 \uC720\uC9C0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4." })
           ] })
         ] }),
-        /* @__PURE__ */ jsxDEV("div", { className: "insight-list", children: [
-          /* @__PURE__ */ jsxDEV("div", { children: [
-            /* @__PURE__ */ jsxDEV("span", { children: "\uC911\uC2EC \uACBD\uD5A5" }),
-            /* @__PURE__ */ jsxDEV("strong", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "insight-list", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uC911\uC2EC \uACBD\uD5A5" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("strong", { children: [
               avg.toFixed(1),
               " ",
               selectedMetric.unit
             ] })
           ] }),
-          /* @__PURE__ */ jsxDEV("div", { children: [
-            /* @__PURE__ */ jsxDEV("span", { children: "\uCD5C\uB300 \uD3B8\uCC28" }),
-            /* @__PURE__ */ jsxDEV("strong", { className: outliers.length ? "danger-text" : "", children: outliers.length ? `${Math.max(...filteredRows.map((r2) => Math.abs(r2.value - avg))).toFixed(1)} ${selectedMetric.unit}` : "\uC5C6\uC74C" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uCD5C\uB300 \uD3B8\uCC28" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { className: outliers.length ? "danger-text" : "", children: outliers.length ? `${Math.max(...filteredRows.map((r2) => Math.abs(r2.value - avg))).toFixed(1)} ${selectedMetric.unit}` : "\uC5C6\uC74C" })
           ] }),
-          /* @__PURE__ */ jsxDEV("div", { children: [
-            /* @__PURE__ */ jsxDEV("span", { children: "\uC0D8\uD50C \uBC94\uC704" }),
-            /* @__PURE__ */ jsxDEV("strong", { children: filteredRows.length ? `${Math.min(...filteredRows.map((r2) => r2.value))} \u2014 ${Math.max(...filteredRows.map((r2) => r2.value))}` : "\u2014" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uC0D8\uD50C \uBC94\uC704" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: filteredRows.length ? `${Math.min(...filteredRows.map((r2) => r2.value))} \u2014 ${Math.max(...filteredRows.map((r2) => r2.value))}` : "\u2014" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxDEV("button", { className: "text-button", type: "button", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { className: "text-button", type: "button", children: [
           "\uC0C1\uC138 \uB9AC\uD3EC\uD2B8 \uBCF4\uAE30 ",
-          /* @__PURE__ */ jsxDEV("span", { children: "\u2192" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\u2192" })
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxDEV("section", { className: "panel table-panel", children: [
-      /* @__PURE__ */ jsxDEV("div", { className: "panel-head", children: [
-        /* @__PURE__ */ jsxDEV("div", { children: [
-          /* @__PURE__ */ jsxDEV("p", { className: "panel-kicker", children: "RECENT OBSERVATIONS" }),
-          /* @__PURE__ */ jsxDEV("h2", { children: "\uCD5C\uADFC \uCE21\uC815 \uB370\uC774\uD130" })
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "panel table-panel", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "panel-head", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "panel-kicker", children: "RECENT OBSERVATIONS" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: "\uCD5C\uADFC \uCE21\uC815 \uB370\uC774\uD130" })
         ] }),
-        /* @__PURE__ */ jsxDEV("span", { className: "row-count", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "row-count", children: [
           filteredRows.length,
           " records"
         ] })
       ] }),
-      /* @__PURE__ */ jsxDEV("div", { className: "table-scroll", children: /* @__PURE__ */ jsxDEV("table", { children: [
-        /* @__PURE__ */ jsxDEV("thead", { children: /* @__PURE__ */ jsxDEV("tr", { children: [
-          /* @__PURE__ */ jsxDEV("th", { children: "\uCE21\uC815 \uC2DC\uAC01" }),
-          /* @__PURE__ */ jsxDEV("th", { children: "\uAC70\uB798\uCC98 / \uD56D\uCC28\uBC88\uD638" }),
-          /* @__PURE__ */ jsxDEV("th", { children: "\uC9C0\uC885" }),
-          /* @__PURE__ */ jsxDEV("th", { children: "\uD56D\uBAA9" }),
-          /* @__PURE__ */ jsxDEV("th", { children: "\uCE21\uC815\uAC12" }),
-          /* @__PURE__ */ jsxDEV("th", { children: "\uD310\uC815" })
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "table-scroll", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uCE21\uC815 \uC2DC\uAC01" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uAC70\uB798\uCC98 / \uD56D\uCC28\uBC88\uD638" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uC9C0\uC885" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD56D\uBAA9" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uCE21\uC815\uAC12" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD310\uC815" })
         ] }) }),
-        /* @__PURE__ */ jsxDEV("tbody", { children: filteredRows.map((row) => {
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: filteredRows.map((row) => {
           const isOutlier = row.value > Number(usl) || row.value < Number(lsl);
-          return /* @__PURE__ */ jsxDEV("tr", { children: [
-            /* @__PURE__ */ jsxDEV("td", { className: "mono", children: [
+          return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { className: "mono", children: [
               row.date,
               " ",
-              /* @__PURE__ */ jsxDEV("span", { children: row.time })
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: row.time })
             ] }),
-            /* @__PURE__ */ jsxDEV("td", { children: [
-              /* @__PURE__ */ jsxDEV("strong", { children: row.client }),
-              /* @__PURE__ */ jsxDEV("small", { children: row.source })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: row.client }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: row.source })
             ] }),
-            /* @__PURE__ */ jsxDEV("td", { children: /* @__PURE__ */ jsxDEV("span", { className: "grade-tag", children: row.grade }) }),
-            /* @__PURE__ */ jsxDEV("td", { children: metric }),
-            /* @__PURE__ */ jsxDEV("td", { className: isOutlier ? "danger-text value-cell" : "value-cell", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "grade-tag", children: row.grade }) }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: metric }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { className: isOutlier ? "danger-text value-cell" : "value-cell", children: [
               row.value,
               " ",
-              /* @__PURE__ */ jsxDEV("small", { children: selectedMetric.unit })
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: selectedMetric.unit })
             ] }),
-            /* @__PURE__ */ jsxDEV("td", { children: /* @__PURE__ */ jsxDEV("span", { className: `status ${isOutlier ? "status-alert" : "status-ok"}`, children: [
-              isOutlier ? /* @__PURE__ */ jsxDEV(TriangleAlert, { size: 13 }) : /* @__PURE__ */ jsxDEV(CircleCheck, { size: 13 }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: `status ${isOutlier ? "status-alert" : "status-ok"}`, children: [
+              isOutlier ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { size: 13 }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { size: 13 }),
               isOutlier ? "\uADDC\uACA9 \uC774\uD0C8" : "\uD569\uACA9"
             ] }) })
           ] }, row.id);
         }) })
       ] }) })
     ] }),
-    /* @__PURE__ */ jsxDEV("footer", { children: [
-      /* @__PURE__ */ jsxDEV("span", { children: "QUALITY LEDGER / PLANT 03" }),
-      /* @__PURE__ */ jsxDEV("span", { children: "Data integrity monitored \xB7 v1.0.0" })
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("footer", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "QUALITY LEDGER / PLANT 03" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Data integrity monitored \xB7 v1.0.0" })
     ] })
   ] });
 }
-(0, import_client.createRoot)(document.getElementById("root")).render(/* @__PURE__ */ jsxDEV(App, {}));
+(0, import_client.createRoot)(document.getElementById("root")).render(/* @__PURE__ */ (0, import_jsx_runtime.jsx)(App, {}));
 /*! Bundled license information:
 
 react/cjs/react.development.js:
@@ -74228,6 +73611,17 @@ use-sync-external-store/cjs/use-sync-external-store-with-selector.development.js
 
 decimal.js-light/decimal.js:
   (*! decimal.js-light v2.5.1 https://github.com/MikeMcl/decimal.js-light/LICENCE *)
+
+react/cjs/react-jsx-runtime.development.js:
+  (**
+   * @license React
+   * react-jsx-runtime.development.js
+   *
+   * Copyright (c) Meta Platforms, Inc. and affiliates.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE file in the root directory of this source tree.
+   *)
 
 xlsx/xlsx.mjs:
   (*! xlsx.js (C) 2013-present SheetJS -- http://sheetjs.com *)
