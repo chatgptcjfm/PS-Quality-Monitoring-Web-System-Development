@@ -1,21 +1,32 @@
-```txt
+# Quality Ledger
+
+## 프로젝트 개요
+엑셀 `변경일지` 데이터를 업로드해 품질 측정값을 시각화하고 규격 이탈을 빠르게 확인하는 Cloudflare Pages용 품질 분석 프리뷰입니다.
+
+## 구현 기능
+- `.xls` / `.xlsx` 드래그 앤 드롭 업로드 및 `변경일지` 시트 자동 인식
+- `xlsx` 기반 브라우저 파일 파싱
+- Recharts 시계열 트렌드 차트
+- USL / LSL 입력과 규격 이탈 빨간색 강조
+- 지종·측정항목 필터, 최근 관측 데이터 테이블
+- lucide-react 아이콘 기반 대시보드 UI
+
+## 실행
+```bash
 npm install
-npm run dev
+npm run build
+pm2 start ecosystem.config.cjs
 ```
 
-```txt
-npm run deploy
-```
+프리뷰는 `http://localhost:3000`에서 확인합니다.
 
-[For generating/synchronizing types based on your Worker configuration run](https://developers.cloudflare.com/workers/wrangler/commands/#types):
+## 데이터 규칙
+- 변경일지의 9행부터 측정 데이터로 읽습니다.
+- 거래처/항차번호(열 F), 지종(열 G), 평량(열 I), 생산 시간(열 A~E)을 기본 매핑합니다.
+- 기본 평량 규격은 USL 306, LSL 294이며 화면에서 수정할 수 있습니다.
+- 실제 운영 데이터 저장소는 사용하지 않으며, 업로드된 파일은 브라우저에서만 처리합니다.
 
-```txt
-npm run cf-typegen
-```
-
-Pass the `CloudflareBindings` as generics when instantiation `Hono`:
-
-```ts
-// src/index.ts
-const app = new Hono<{ Bindings: CloudflareBindings }>()
-```
+## 상태
+- 로컬 라이브 프리뷰: 활성
+- Cloudflare Pages 배포: 미배포
+- 다음 단계: 두께·수분 열 매핑 고도화, 측정항목별 실제 규격표 연결, 리포트 내보내기
