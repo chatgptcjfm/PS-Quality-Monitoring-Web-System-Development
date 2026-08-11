@@ -27499,8 +27499,8 @@ function CheckField(hexstr, fld) {
   if (m !== hexstr) throw new Error(fld + "Expected " + hexstr + " saw " + m);
   this.l += hexstr.length >> 1;
 }
-function prep_blob(blob, pos2) {
-  blob.l = pos2;
+function prep_blob(blob, pos) {
+  blob.l = pos;
   blob.read_shift = /*::(*/
   ReadShift;
   blob.chk = CheckField;
@@ -29565,7 +29565,7 @@ function parse_WsBool(blob, length, opts) {
   return { fDialog: flags & 16, fBelow: flags & 64, fRight: flags & 128 };
 }
 function parse_BoundSheet8(blob, length, opts) {
-  var pos2 = blob.read_shift(4);
+  var pos = blob.read_shift(4);
   var hidden = blob.read_shift(1) & 3;
   var dt = blob.read_shift(1);
   switch (dt) {
@@ -29584,7 +29584,7 @@ function parse_BoundSheet8(blob, length, opts) {
   }
   var name = parse_ShortXLUnicodeString(blob, 0, opts);
   if (name.length === 0) name = "Sheet1";
-  return { pos: pos2, hs: hidden, dt, name };
+  return { pos, hs: hidden, dt, name };
 }
 function parse_SST(blob, length) {
   var end = blob.l + length;
@@ -57939,7 +57939,7 @@ var createSpringEasing = function createSpringEasing2() {
   var config = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
   var _config$stiff = config.stiff, stiff = _config$stiff === void 0 ? 100 : _config$stiff, _config$damping = config.damping, damping = _config$damping === void 0 ? 8 : _config$damping, _config$dt = config.dt, dt = _config$dt === void 0 ? 16.67 : _config$dt;
   var destX = 1;
-  var positions = [0];
+  var positions2 = [0];
   var currX = 0;
   var currV = 0;
   var maxIterations = 1e4;
@@ -57949,14 +57949,14 @@ var createSpringEasing = function createSpringEasing2() {
     var FDamping = currV * damping;
     currV += (FSpring - FDamping) * dt / 1e3;
     currX += currV * dt / 1e3;
-    positions.push(currX);
+    positions2.push(currX);
     if (Math.abs(currX - destX) < ACCURACY && Math.abs(currV) < ACCURACY) {
       break;
     }
     iterations++;
   }
-  positions[positions.length - 1] = destX;
-  var maxIndex = positions.length - 1;
+  positions2[positions2.length - 1] = destX;
+  var maxIndex = positions2.length - 1;
   return (t) => {
     var _positions$index, _positions, _positions$index2;
     if (t <= 0) return 0;
@@ -57964,7 +57964,7 @@ var createSpringEasing = function createSpringEasing2() {
     var exactFrame = t * maxIndex;
     var index = Math.floor(exactFrame);
     var fraction = exactFrame - index;
-    return ((_positions$index = positions[index]) !== null && _positions$index !== void 0 ? _positions$index : 0) + (((_positions = positions[index + 1]) !== null && _positions !== void 0 ? _positions : 0) - ((_positions$index2 = positions[index]) !== null && _positions$index2 !== void 0 ? _positions$index2 : 0)) * fraction;
+    return ((_positions$index = positions2[index]) !== null && _positions$index !== void 0 ? _positions$index : 0) + (((_positions = positions2[index + 1]) !== null && _positions !== void 0 ? _positions : 0) - ((_positions$index2 = positions2[index]) !== null && _positions$index2 !== void 0 ? _positions$index2 : 0)) * fraction;
   };
 };
 var createEasingFunction = (easing) => {
@@ -65124,8 +65124,8 @@ var combineActiveCartesianProps = (chartEvent, layout, tooltipAxisType, tooltipA
   if (!isInCartesianRange(chartEvent, offset)) {
     return void 0;
   }
-  var pos2 = calculateCartesianTooltipPos(chartEvent, layout);
-  var activeIndex = calculateActiveTickIndex(pos2, orderedTooltipTicks, tooltipTicks, tooltipAxisType, tooltipAxisRange);
+  var pos = calculateCartesianTooltipPos(chartEvent, layout);
+  var activeIndex = calculateActiveTickIndex(pos, orderedTooltipTicks, tooltipTicks, tooltipAxisType, tooltipAxisRange);
   var activeCoordinate = getActiveCartesianCoordinate(layout, tooltipTicks, activeIndex, chartEvent);
   return {
     activeIndex: String(activeIndex),
@@ -65140,8 +65140,8 @@ var combineActivePolarProps = (chartEvent, layout, polarViewBox, tooltipAxisType
   if (!rangeObj) {
     return void 0;
   }
-  var pos2 = calculatePolarTooltipPos(rangeObj, layout);
-  var activeIndex = calculateActiveTickIndex(pos2, orderedTooltipTicks, tooltipTicks, tooltipAxisType, tooltipAxisRange);
+  var pos = calculatePolarTooltipPos(rangeObj, layout);
+  var activeIndex = calculateActiveTickIndex(pos, orderedTooltipTicks, tooltipTicks, tooltipAxisType, tooltipAxisRange);
   var activeCoordinate = getActivePolarCoordinate(layout, tooltipTicks, activeIndex, rangeObj);
   return {
     activeIndex: String(activeIndex),
@@ -73199,77 +73199,90 @@ var Zap = createLucideIcon("zap", __iconNode11);
 // src/client.tsx
 var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
 var metricOptions = [
-  { label: "\uD3C9\uB7C9 (g/\u33A1)", key: "\uD3C9\uB7C9", unit: "g/\u33A1", usl: 306, lsl: 294, kind: "position" },
-  { label: "\uB450\uAED8 (\u339B)", key: "\uB450\uAED8", unit: "\u339B", usl: 360, lsl: 340, kind: "position" },
-  { label: "\uC218\uBD84 (%)", key: "\uC218\uBD84", unit: "%", usl: 7.5, lsl: 4.5, kind: "position" },
-  { label: "\uBC31\uC0C9\uB3C4", key: "\uBC31\uC0C9\uB3C4", unit: "", usl: 80, lsl: 42, kind: "position" },
-  { label: "PPS", key: "PPS", unit: "", usl: 3.5, lsl: 1, kind: "position" },
-  { label: "\uC778\uC1C4\uCE35\uBD84\uB9AC", key: "\uC778\uC1C4\uCE35\uBD84\uB9AC", unit: "", usl: 100, lsl: 15, kind: "single" },
-  { label: "\uD53D\uD0B9 (TV20)", key: "\uD53D\uD0B9", unit: "", usl: 100, lsl: 0, kind: "single" },
-  { label: "\uBAA8\uD2C0\uB9C1", key: "\uBAA8\uD2C0\uB9C1", unit: "", usl: 100, lsl: 3, kind: "single" },
-  { label: "\uB0B4\uC808\uB3C4", key: "\uB0B4\uC808\uB3C4", unit: "\uD68C", usl: 100, lsl: 0, kind: "position" },
-  { label: "\uC2A4\uD2F0\uD504\uB2C8\uC2A4", key: "\uC2A4\uD2F0\uD504\uB2C8\uC2A4", unit: "", usl: 150, lsl: 0, kind: "position" },
-  { label: "\uD30C\uC5F4\uAC15\uB3C4", key: "\uD30C\uC5F4\uAC15\uB3C4", unit: "", usl: 150, lsl: 0, kind: "single" },
-  { label: "\uC778\uD130\uB110", key: "\uC778\uD130\uB110", unit: "", usl: 100, lsl: 0, kind: "single" }
+  { label: "\uD3C9\uB7C9 (g/\u33A1)", key: "\uD3C9\uB7C9", unit: "g/\u33A1", usl: 306, lsl: 294 },
+  { label: "\uB450\uAED8 (\u339B)", key: "\uB450\uAED8", unit: "\u339B", usl: 360, lsl: 340 },
+  { label: "\uBC00\uB3C4", key: "\uBC00\uB3C4", unit: "", usl: 1, lsl: 0.7 },
+  { label: "\uC218\uBD84 (%)", key: "\uC218\uBD84", unit: "%", usl: 7.5, lsl: 4.5 },
+  { label: "\uBC31\uC0C9\uB3C4 \xB7 \uD45C\uBA74 \uC804/\uC911/\uD6C4", key: "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)", unit: "", usl: 80, lsl: 42 },
+  { label: "\uBC31\uC0C9\uB3C4 \xB7 \uD6C4\uBA74", key: "\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)", unit: "", usl: 80, lsl: 42 },
+  { label: "PPS \xB7 \uD45C\uBA74/\uD6C4\uBA74", key: "PPS", unit: "", usl: 3.5, lsl: 1 },
+  { label: "\uC778\uC1C4\uCE35\uBD84\uB9AC (TV15)", key: "\uC778\uC1C4\uCE35\uBD84\uB9AC", unit: "", usl: 100, lsl: 15 },
+  { label: "\uBAA8\uD2C0\uB9C1", key: "\uBAA8\uD2C0\uB9C1", unit: "", usl: 100, lsl: 3 },
+  { label: "\uB0B4\uC808\uB3C4 MD", key: "\uB0B4\uC808\uB3C4(MD)", unit: "\uD68C", usl: 100, lsl: 0 },
+  { label: "\uB0B4\uC808\uB3C4 CD", key: "\uB0B4\uC808\uB3C4(CD)", unit: "\uD68C", usl: 100, lsl: 0 },
+  { label: "\uC2A4\uD2F0\uD504\uB2C8\uC2A4 MD/CD", key: "\uC2A4\uD2F0\uD504\uB2C8\uC2A4", unit: "", usl: 150, lsl: 0 },
+  { label: "\uD30C\uC5F4\uAC15\uB3C4", key: "\uD30C\uC5F4\uAC15\uB3C4", unit: "", usl: 150, lsl: 0 },
+  { label: "\uC778\uD130\uB110", key: "\uC778\uD130\uB110", unit: "", usl: 100, lsl: 0 },
+  { label: "\uBD80\uCC29\uB7C9 \xB7 \uD45C\uBA74", key: "\uBD80\uCC29\uB7C9(\uD45C\uBA74)", unit: "", usl: 100, lsl: 0 },
+  { label: "\uBD80\uCC29\uB7C9 \xB7 \uC774\uBA74", key: "\uBD80\uCC29\uB7C9(\uC774\uBA74)", unit: "", usl: 100, lsl: 0 },
+  { label: "\uBD80\uCC29\uB7C9 \xB7 \uD6C4\uC774\uBA74", key: "\uBD80\uCC29\uB7C9(\uD6C4\uC774\uBA74)", unit: "", usl: 100, lsl: 0 },
+  { label: "\uBD80\uCC29\uB7C9 \xB7 \uD6C4\uBA74", key: "\uBD80\uCC29\uB7C9(\uD6C4\uBA74)", unit: "", usl: 100, lsl: 0 },
+  { label: "\uBD80\uCC29 \uBC31\uC0C9\uB3C4 \xB7 \uD45C\uBA74", key: "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD45C\uBA74)", unit: "", usl: 100, lsl: 0 },
+  { label: "\uBD80\uCC29 \uBC31\uC0C9\uB3C4 \xB7 \uC774\uBA74", key: "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uC774\uBA74)", unit: "", usl: 100, lsl: 0 },
+  { label: "\uBD80\uCC29 \uBC31\uC0C9\uB3C4 \xB7 \uD6C4\uC774\uBA74", key: "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uC774\uBA74)", unit: "", usl: 100, lsl: 0 },
+  { label: "\uBD80\uCC29 \uBC31\uC0C9\uB3C4 \xB7 \uD6C4\uBA74", key: "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)", unit: "", usl: 100, lsl: 0 },
+  { label: "\uB4A4\uBE44\uCE68 \uC804/\uC911/\uD6C4", key: "\uB4A4\uBE44\uCE68", unit: "", usl: 5, lsl: 0 },
+  { label: "\uD45C\uBA74 \uC0C9\uCC28 L", key: "\uD45C\uBA74\uC0C9\uCC28L", unit: "", usl: 100, lsl: 0 },
+  { label: "\uD45C\uBA74 \uC0C9\uCC28 a", key: "\uD45C\uBA74\uC0C9\uCC28a", unit: "", usl: 100, lsl: -100 },
+  { label: "\uD45C\uBA74 \uC0C9\uCC28 b", key: "\uD45C\uBA74\uC0C9\uCC28b", unit: "", usl: 100, lsl: -100 },
+  { label: "\uD6C4\uBA74 \uC0C9\uCC28 L", key: "\uD6C4\uBA74\uC0C9\uCC28L", unit: "", usl: 100, lsl: 0 },
+  { label: "\uD6C4\uBA74 \uC0C9\uCC28 a", key: "\uD6C4\uBA74\uC0C9\uCC28a", unit: "", usl: 100, lsl: -100 },
+  { label: "\uD6C4\uBA74 \uC0C9\uCC28 b", key: "\uD6C4\uBA74\uC0C9\uCC28b", unit: "", usl: 100, lsl: -100 },
+  { label: "\uD6C4\uBA74\uC9C0\uBD84", key: "\uD6C4\uBA74\uC9C0\uBD84", unit: "", usl: 100, lsl: 0 },
+  { label: "\uAE08\uC18D \uAC80\uCD9C MD", key: "\uAE08\uC18DMD", unit: "\uC7A5", usl: 20, lsl: 0 },
+  { label: "\uAE08\uC18D \uAC80\uCD9C CD", key: "\uAE08\uC18DCD", unit: "\uC7A5", usl: 20, lsl: 0 }
 ];
 var positionKeys = ["\uC804", "\uC911", "\uD6C4"];
-var numeric = (value) => {
-  const n = Number(value);
+var numeric = (v) => {
+  const n = Number(v);
   return Number.isFinite(n) ? n : null;
 };
-var slashAverage = (value) => {
-  const nums = String(value ?? "").split("/").map((v) => Number(v.trim())).filter(Number.isFinite);
-  return nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : numeric(value);
+var slashAverage = (v) => {
+  const ns = String(v ?? "").split("/").map((x2) => Number(x2.trim())).filter(Number.isFinite);
+  return ns.length ? ns.reduce((a, b) => a + b, 0) / ns.length : numeric(v);
 };
-var pos = (row, indices) => ({ \uC804: numeric(row[indices[0]]), \uC911: numeric(row[indices[1]]), \uD6C4: numeric(row[indices[2]]) });
-var avgPosition = (values) => {
-  const nums = positionKeys.map((k) => values[k]).filter((v) => v !== null);
-  return nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : null;
+var slashPair = (v) => {
+  const ns = String(v ?? "").split("/").map((x2) => Number(x2.trim())).filter(Number.isFinite);
+  return [ns[0] ?? null, ns[1] ?? null];
 };
-var metricValue = (values) => avgPosition(values);
+var positions = (row, idx) => ({ \uC804: numeric(row[idx[0]]), \uC911: numeric(row[idx[1]]), \uD6C4: numeric(row[idx[2]]) });
+var avg = (v) => {
+  const ns = positionKeys.map((k) => v[k]).filter((x2) => x2 !== null);
+  return ns.length ? ns.reduce((a, b) => a + b, 0) / ns.length : null;
+};
+var scalar = (v) => ({ \uC804: numeric(v), \uC911: null, \uD6C4: null });
+function makeValues(row) {
+  const [md, cd] = slashPair(row[37]);
+  return { \uD3C9\uB7C9: positions(row, [8, 9, 10]), \uB450\uAED8: positions(row, [11, 12, 13]), \uBC00\uB3C4: scalar(row[14]), \uC218\uBD84: positions(row, [15, 16, 17]), "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": positions(row, [18, 19, 20]), "\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[21]), PPS: { \uC804: slashAverage(row[23]), \uC911: null, \uD6C4: slashAverage(row[26]) }, \uC778\uC1C4\uCE35\uBD84\uB9AC: scalar(row[30]), \uBAA8\uD2C0\uB9C1: scalar(row[32]), "\uB0B4\uC808\uB3C4(MD)": scalar(md), "\uB0B4\uC808\uB3C4(CD)": scalar(cd), \uC2A4\uD2F0\uD504\uB2C8\uC2A4: { \uC804: numeric(row[39]), \uC911: numeric(row[40]), \uD6C4: null }, \uD30C\uC5F4\uAC15\uB3C4: scalar(row[41]), \uC778\uD130\uB110: scalar(slashAverage(row[45])), "\uBD80\uCC29\uB7C9(\uD45C\uBA74)": scalar(row[52]), "\uBD80\uCC29\uB7C9(\uC774\uBA74)": scalar(row[54]), "\uBD80\uCC29\uB7C9(\uD6C4\uC774\uBA74)": scalar(row[56]), "\uBD80\uCC29\uB7C9(\uD6C4\uBA74)": scalar(row[58]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": scalar(row[53]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uC774\uBA74)": scalar(row[55]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uC774\uBA74)": scalar(row[57]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[59]), \uB4A4\uBE44\uCE68: positions(row, [60, 61, 62]), \uD45C\uBA74\uC0C9\uCC28L: scalar(row[71]), \uD45C\uBA74\uC0C9\uCC28a: scalar(row[72]), \uD45C\uBA74\uC0C9\uCC28b: scalar(row[73]), \uD6C4\uBA74\uC0C9\uCC28L: scalar(row[75]), \uD6C4\uBA74\uC0C9\uCC28a: scalar(row[76]), \uD6C4\uBA74\uC0C9\uCC28b: scalar(row[77]), \uD6C4\uBA74\uC9C0\uBD84: scalar(row[79]), \uAE08\uC18DMD: scalar(row[84]), \uAE08\uC18DCD: scalar(row[85]) };
+}
 function rowFromSheet(row, index) {
   const client = String(row[5] ?? "").replace(/\n/g, " ").trim();
   const grade = String(row[6] ?? "").trim();
-  const basisWeight = numeric(row[7]);
-  const hasData = client || grade || row.slice(8).some((v) => v !== null && v !== "");
-  if (!hasData) return null;
-  const values = {
-    \uD3C9\uB7C9: pos(row, [8, 9, 10]),
-    \uB450\uAED8: pos(row, [11, 12, 13]),
-    \uC218\uBD84: pos(row, [15, 16, 17]),
-    \uBC31\uC0C9\uB3C4: { \uC804: avgPosition(pos(row, [18, 19, 20])), \uC911: null, \uD6C4: numeric(row[21]) },
-    PPS: { \uC804: avgPosition(pos(row, [23, 24, 25])), \uC911: null, \uD6C4: numeric(row[26]) },
-    \uC778\uC1C4\uCE35\uBD84\uB9AC: { \uC804: slashAverage(row[30]), \uC911: null, \uD6C4: null },
-    \uD53D\uD0B9: { \uC804: numeric(row[31]), \uC911: null, \uD6C4: null },
-    \uBAA8\uD2C0\uB9C1: { \uC804: numeric(row[32]), \uC911: null, \uD6C4: null },
-    \uB0B4\uC808\uB3C4: { \uC804: slashAverage(row[37]), \uC911: slashAverage(row[38]), \uD6C4: null },
-    \uC2A4\uD2F0\uD504\uB2C8\uC2A4: { \uC804: numeric(row[39]), \uC911: numeric(row[40]), \uD6C4: null },
-    \uD30C\uC5F4\uAC15\uB3C4: { \uC804: numeric(row[41]), \uC911: null, \uD6C4: null },
-    \uC778\uD130\uB110: { \uC804: slashAverage(row[45]), \uC911: null, \uD6C4: null }
-  };
-  const averages = Object.fromEntries(Object.entries(values).map(([key, v]) => [key, metricValue(v)]));
-  const date2 = `${String(row[1] ?? "").padStart(2, "0")}.${String(row[2] ?? "").padStart(2, "0")}`;
-  const time2 = `${String(row[3] ?? "").padStart(2, "0")}:${String(row[4] ?? "").padStart(2, "0")}`;
-  return { id: index + 1, date: date2, time: time2, client: client || "\uBBF8\uC9C0\uC815 \uAC70\uB798\uCC98", grade: grade || "\uBBF8\uC9C0\uC815", basisWeight, source: client.slice(0, 18) || `ROW-${index + 1}`, values, averages };
+  if (!client && !grade && !row.slice(8).some((v) => v !== null && v !== "")) return null;
+  const values = makeValues(row);
+  return { id: index + 1, date: `${String(row[1] ?? "").padStart(2, "0")}.${String(row[2] ?? "").padStart(2, "0")}`, time: `${String(row[3] ?? "").padStart(2, "0")}:${String(row[4] ?? "").padStart(2, "0")}`, client: client || "\uBBF8\uC9C0\uC815 \uAC70\uB798\uCC98", grade: grade || "\uBBF8\uC9C0\uC815", basisWeight: numeric(row[7]), source: client.slice(0, 18) || `ROW-${index + 1}`, values, averages: Object.fromEntries(Object.entries(values).map(([k, v]) => [k, avg(v)])), md: slashPair(row[84])[0], cd: slashPair(row[85])[0] };
 }
 function parseWorkbook(file) {
   return file.arrayBuffer().then((buffer) => {
-    const wb = readSync(buffer, { type: "array", cellDates: true });
+    const wb = readSync(buffer, { type: "array" });
     const name = wb.SheetNames.find((n) => n.includes("\uBCC0\uACBD\uC77C\uC9C0")) ?? wb.SheetNames[0];
     const rows = utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: null });
-    return rows.slice(8).map(rowFromSheet).filter((r2) => Boolean(r2));
+    const out = [];
+    for (const [i, row] of rows.slice(8).entries()) {
+      const parsed = rowFromSheet(row, i);
+      if (parsed) out.push(parsed);
+      if (String(row[5] ?? "").includes("6810J30061")) break;
+    }
+    return out;
   });
 }
-var demoRows = [
-  { id: 1, date: "08.10", time: "07:38", client: "\uC911\uAD6D \xB7 \uC81C\uC57D\uCF00\uC774\uC2A4", grade: "IV", basisWeight: 300, source: "6810J30001", values: { \uD3C9\uB7C9: { \uC804: 303, \uC911: 301, \uD6C4: 302 }, \uB450\uAED8: { \uC804: 349, \uC911: 344, \uD6C4: 349 }, \uC218\uBD84: { \uC804: 6, \uC911: 6, \uD6C4: 6.1 }, \uBC31\uC0C9\uB3C4: { \uC804: 76.6, \uC911: null, \uD6C4: 67.2 }, PPS: { \uC804: 2.6, \uC911: null, \uD6C4: 6.7 }, \uC778\uC1C4\uCE35\uBD84\uB9AC: { \uC804: 10, \uC911: null, \uD6C4: null }, \uD53D\uD0B9: { \uC804: 11, \uC911: null, \uD6C4: null }, \uBAA8\uD2C0\uB9C1: { \uC804: 2.9, \uC911: null, \uD6C4: null }, \uB0B4\uC808\uB3C4: { \uC804: 19.5, \uC911: 20, \uD6C4: null }, \uC2A4\uD2F0\uD504\uB2C8\uC2A4: { \uC804: 100, \uC911: 40, \uD6C4: null }, \uD30C\uC5F4\uAC15\uB3C4: { \uC804: 4.9, \uC911: null, \uD6C4: null }, \uC778\uD130\uB110: { \uC804: 0.83, \uC911: null, \uD6C4: null } }, averages: {} },
-  { id: 2, date: "08.10", time: "07:49", client: "\uC2E0\uC2B9\uC544\uC774\uC5D4\uC528", grade: "IV", basisWeight: 300, source: "6810J30005", values: { \uD3C9\uB7C9: { \uC804: 305, \uC911: 304, \uD6C4: 305 }, \uB450\uAED8: { \uC804: 357, \uC911: 355, \uD6C4: 358 }, \uC218\uBD84: { \uC804: 6.3, \uC911: 6.3, \uD6C4: 6.2 }, \uBC31\uC0C9\uB3C4: { \uC804: 77, \uC911: null, \uD6C4: 67.5 }, PPS: { \uC804: 2.6, \uC911: null, \uD6C4: null }, \uC778\uC1C4\uCE35\uBD84\uB9AC: { \uC804: 13, \uC911: null, \uD6C4: null }, \uD53D\uD0B9: { \uC804: 10, \uC911: null, \uD6C4: null }, \uBAA8\uD2C0\uB9C1: { \uC804: 2.7, \uC911: null, \uD6C4: null }, \uB0B4\uC808\uB3C4: { \uC804: 18, \uC911: 20, \uD6C4: null }, \uC2A4\uD2F0\uD504\uB2C8\uC2A4: { \uC804: 100, \uC911: 40, \uD6C4: null }, \uD30C\uC5F4\uAC15\uB3C4: { \uC804: 4.8, \uC911: null, \uD6C4: null }, \uC778\uD130\uB110: { \uC804: 0.8, \uC911: null, \uD6C4: null } }, averages: {} },
-  { id: 3, date: "08.10", time: "08:16", client: "\uC911\uAD6D \xB7 \uC81C\uC57D\uCF00\uC774\uC2A4", grade: "IV", basisWeight: 300, source: "6810J30012", values: { \uD3C9\uB7C9: { \uC804: 307, \uC911: 306, \uD6C4: 308 }, \uB450\uAED8: { \uC804: 362, \uC911: 361, \uD6C4: 363 }, \uC218\uBD84: { \uC804: 7.9, \uC911: 7.8, \uD6C4: 7.7 }, \uBC31\uC0C9\uB3C4: { \uC804: 74, \uC911: null, \uD6C4: 66 }, PPS: { \uC804: 3.8, \uC911: null, \uD6C4: 7 }, \uC778\uC1C4\uCE35\uBD84\uB9AC: { \uC804: 18, \uC911: null, \uD6C4: null }, \uD53D\uD0B9: { \uC804: 12, \uC911: null, \uD6C4: null }, \uBAA8\uD2C0\uB9C1: { \uC804: 3.1, \uC911: null, \uD6C4: null }, \uB0B4\uC808\uB3C4: { \uC804: 14, \uC911: 15, \uD6C4: null }, \uC2A4\uD2F0\uD504\uB2C8\uC2A4: { \uC804: 102, \uC911: 42, \uD6C4: null }, \uD30C\uC5F4\uAC15\uB3C4: { \uC804: 4.1, \uC911: null, \uD6C4: null }, \uC778\uD130\uB110: { \uC804: 1.2, \uC911: null, \uD6C4: null } }, averages: {} },
-  { id: 4, date: "08.10", time: "08:32", client: "\uD0DC\uAD6D \xB7 \uD3EC\uC7A5\uC6A9\uC9C0", grade: "III", basisWeight: 250, source: "6810J30018", values: { \uD3C9\uB7C9: { \uC804: 298, \uC911: 299, \uD6C4: 298 }, \uB450\uAED8: { \uC804: 348, \uC911: 347, \uD6C4: 349 }, \uC218\uBD84: { \uC804: 5.8, \uC911: 5.9, \uD6C4: 5.8 }, \uBC31\uC0C9\uB3C4: { \uC804: 75, \uC911: null, \uD6C4: 65 }, PPS: { \uC804: 2.8, \uC911: null, \uD6C4: 6.4 }, \uC778\uC1C4\uCE35\uBD84\uB9AC: { \uC804: 9, \uC911: null, \uD6C4: null }, \uD53D\uD0B9: { \uC804: 8, \uC911: null, \uD6C4: null }, \uBAA8\uD2C0\uB9C1: { \uC804: 2.4, \uC911: null, \uD6C4: null }, \uB0B4\uC808\uB3C4: { \uC804: 22, \uC911: 24, \uD6C4: null }, \uC2A4\uD2F0\uD504\uB2C8\uC2A4: { \uC804: 95, \uC911: 38, \uD6C4: null }, \uD30C\uC5F4\uAC15\uB3C4: { \uC804: 5.2, \uC911: null, \uD6C4: null }, \uC778\uD130\uB110: { \uC804: 0.7, \uC911: null, \uD6C4: null } }, averages: {} }
-];
-for (const row of demoRows) row.averages = Object.fromEntries(Object.entries(row.values).map(([k, v]) => [k, metricValue(v)]));
-function locationAverage(rows, metric, location) {
-  const nums = rows.map((r2) => r2.values[metric]?.[location]).filter((v) => v !== null && v !== void 0);
-  return nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : null;
+var demoRows = Array.from({ length: 4 }, (_, i) => {
+  const row = rowFromSheet([null, 8, 10, 7, 38 + i * 5, `6810J3000${i + 1}(\uC0D8\uD50C \uAC70\uB798\uCC98)`, i === 3 ? "III" : "IV", i === 3 ? 250 : 300, 303 + i, 301 + i, 302 + i, 349 + i * 3, 344 + i * 3, 349 + i * 3, 0.868, 6 + i * 0.2, 6 + i * 0.2, 6.1 + i * 0.2, 76.5, 76.5, 76.8, 67.2, 2.5, 2.4, 2.9, 6.7, 2.9, 47, 73, "13/7", 11, 2.9, 11, 9, 8, 18, 21, 100, 40, 4.9, "0/0", 3, 0.83, 0, 0, 0, null, 84.4, 65.8, 30.8, 30.6, 28.7, 57.7, 32.8, 68.4, 2.6, 2.7, 2.7, null, null, null, 595, 1, "\uC6B4,\uB300", "\uAE40", "\uD569\uACA9", 86.76, -2.19, -5.73, 1.17, 84.59, -4.08, -1.71, 18.24, null, null, null, 20, 20, 0, 0], i);
+  return row;
+});
+function locationAverage(rows, key, loc) {
+  const ns = rows.map((r2) => r2.values[key]?.[loc]).filter((v) => v !== null && v !== void 0);
+  return ns.length ? ns.reduce((a, b) => a + b, 0) / ns.length : null;
 }
 function App() {
   const inputRef = (0, import_react57.useRef)(null);
@@ -73281,30 +73294,30 @@ function App() {
   const [usl, setUsl] = (0, import_react57.useState)("306");
   const [lsl, setLsl] = (0, import_react57.useState)("294");
   const [dragging, setDragging] = (0, import_react57.useState)(false);
-  const selected = metricOptions.find((m) => m.key === metric) ?? metricOptions[0];
+  const selected = metricOptions.find((x2) => x2.key === metric) ?? metricOptions[0];
   const grades = ["\uC804\uCCB4 \uC9C0\uC885", ...Array.from(new Set(rows.map((r2) => r2.grade)))];
   const bases = ["\uC804\uCCB4 \uD3C9\uB7C9", ...Array.from(new Set(rows.map((r2) => r2.basisWeight).filter((v) => v !== null))).sort((a, b) => a - b).map(String)];
   const filtered = (0, import_react57.useMemo)(() => rows.filter((r2) => (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade) && (basis2 === "\uC804\uCCB4 \uD3C9\uB7C9" || String(r2.basisWeight) === basis2)), [rows, grade, basis2]);
-  const values = filtered.map((r2) => r2.averages[metric]).filter((v) => v !== null);
-  const average = values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+  const nums = filtered.map((r2) => r2.averages[metric]).filter((v) => v !== null);
+  const average = nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : 0;
   const outliers = filtered.filter((r2) => {
     const v = r2.averages[metric];
     return v !== null && (v > Number(usl) || v < Number(lsl));
   });
-  const chartData = filtered.map((r2) => ({ label: `${r2.date} ${r2.time}`, value: r2.averages[metric], row: r2 })).filter((d) => d.value !== null);
-  const passRate = filtered.length ? Math.round((filtered.length - outliers.length) / filtered.length * 100) : 0;
-  const loadFile = async (file) => {
+  const chartData = filtered.map((r2) => ({ label: `${r2.date} ${r2.time}`, value: r2.averages[metric], row: r2 })).filter((x2) => x2.value !== null);
+  const load = async (file) => {
     if (!file || !/\.xls[x]?$/.test(file.name.toLowerCase())) return;
     const parsed = await parseWorkbook(file);
     setRows(parsed.length ? parsed : demoRows);
     setFileName(file.name);
   };
-  const setMetricSafe = (key) => {
+  const changeMetric = (key) => {
     const m = metricOptions.find((x2) => x2.key === key) ?? metricOptions[0];
     setMetric(key);
     setUsl(String(m.usl));
     setLsl(String(m.lsl));
   };
+  const passRate = filtered.length ? Math.round((filtered.length - outliers.length) / filtered.length * 100) : 0;
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", { className: "app-shell", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", { className: "topbar", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "brand", children: [
@@ -73329,7 +73342,7 @@ function App() {
           "\uD488\uC9C8 \uB370\uC774\uD130 ",
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("em", { children: "\uC778\uC0AC\uC774\uD2B8" })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "hero-copy", children: "\uC9C0\uC885\xB7\uD3C9\uB7C9 \uACC4\uCE35\uC73C\uB85C \uD544\uD130\uB9C1\uD558\uACE0 \uC704\uCE58\uBCC4 \uCE21\uC815\uAC12 \uD3C9\uADE0\uC744 \uD655\uC778\uD558\uC138\uC694." })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "hero-copy", children: "\uC0DD\uC0B0 \uC885\uB8CC \uB864\uAE4C\uC9C0\uC758 \uC774\uB825\uB9CC \uC0AC\uC6A9\uD558\uACE0, \uBA74\xB7\uC704\uCE58\uBCC4 \uD488\uC9C8\uAC12\uC744 \uD655\uC778\uD558\uC138\uC694." })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "hero-stamp", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "LAST SYNC" }),
@@ -73344,9 +73357,9 @@ function App() {
       }, onDragLeave: () => setDragging(false), onDrop: (e) => {
         e.preventDefault();
         setDragging(false);
-        void loadFile(e.dataTransfer.files[0]);
+        void load(e.dataTransfer.files[0]);
       }, onClick: () => inputRef.current?.click(), children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { ref: inputRef, type: "file", accept: ".xls,.xlsx", hidden: true, onChange: (e) => void loadFile(e.target.files?.[0]) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { ref: inputRef, type: "file", accept: ".xls,.xlsx", hidden: true, onChange: (e) => void load(e.target.files?.[0]) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "upload-icon", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { size: 22 }) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "\uC5D1\uC140 \uD30C\uC77C\uC744 \uC5EC\uAE30\uC5D0 \uB193\uC73C\uC138\uC694" }),
@@ -73382,7 +73395,7 @@ function App() {
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
         "\uD488\uC9C8 \uD56D\uBAA9 ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: metric, onChange: (e) => setMetricSafe(e.target.value), children: metricOptions.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: x2.key, children: x2.label }, x2.key)) })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: metric, onChange: (e) => changeMetric(e.target.value), children: metricOptions.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: x2.key, children: x2.label }, x2.key)) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "spec-controls", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "SPEC LIMITS" }),
@@ -73400,17 +73413,14 @@ function App() {
     ] }),
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "stat-grid", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "stat-card", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uD544\uD130 \uB370\uC774\uD130" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uC0DD\uC0B0 \uC774\uB825" }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("strong", { children: [
           filtered.length,
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: " \uAC74" })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChartColumn, { size: 14 }),
-          " \uC9C0\uC885 ",
-          grade,
-          " \xB7 \uD3C9\uB7C9 ",
-          basis2
+          " 6810J30061 \uC774\uD6C4 \uC81C\uC678"
         ] })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "stat-card", children: [
@@ -73427,7 +73437,7 @@ function App() {
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "positive", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Gauge, { size: 14 }),
-          " \uC804\xB7\uC911\xB7\uD6C4 \uC704\uCE58 \uD3C9\uADE0"
+          " \uC804\xB7\uC911\xB7\uD6C4 / \uBA74\uBCC4 \uD3C9\uADE0"
         ] })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "stat-card alert-card", children: [
@@ -73460,13 +73470,13 @@ function App() {
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "panel-kicker", children: "TREND MONITOR" }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h2", { children: [
               selected.label,
-              " \uC704\uCE58 \uD3C9\uADE0 \uD2B8\uB80C\uB4DC"
+              " \uD2B8\uB80C\uB4DC"
             ] })
           ] }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "legend", children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
               /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", { className: "legend-line" }),
-              " \uC704\uCE58 \uD3C9\uADE0"
+              " \uD3C9\uADE0\uAC12"
             ] }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
               /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", { className: "legend-usl" }),
@@ -73474,7 +73484,7 @@ function App() {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "chart-wrap", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResponsiveContainer, { width: "100%", height: "100%", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(AreaChart, { data: chartData, margin: { top: 18, right: 18, left: -18, bottom: 0 }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "chart-wrap", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResponsiveContainer, { width: "100%", height: "100%", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(AreaChart, { data: chartData, children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("defs", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("linearGradient", { id: "qualityFill", x1: "0", y1: "0", x2: "0", y2: "1", children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("stop", { offset: "0%", stopColor: "#27d3a2", stopOpacity: 0.27 }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("stop", { offset: "100%", stopColor: "#27d3a2", stopOpacity: 0 })
@@ -73482,17 +73492,20 @@ function App() {
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CartesianGrid, { stroke: "#e8edf2", vertical: false }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(XAxis, { dataKey: "label", tick: { fontSize: 10, fill: "#84909d" }, tickLine: false, axisLine: false }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, { domain: [Number(lsl) - 6, Number(usl) + 6], tick: { fontSize: 10, fill: "#84909d" }, tickLine: false, axisLine: false }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { formatter: (v) => [`${Number(v).toFixed(2)} ${selected.unit}`, selected.label], contentStyle: { border: 0, borderRadius: 10 } }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReferenceLine, { y: Number(usl), stroke: "#f36a5d", strokeDasharray: "5 5", label: { value: "USL", fill: "#f36a5d", fontSize: 11, position: "insideTopRight" } }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReferenceLine, { y: Number(lsl), stroke: "#f36a5d", strokeDasharray: "5 5", label: { value: "LSL", fill: "#f36a5d", fontSize: 11, position: "insideBottomRight" } }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Area, { type: "monotone", dataKey: "value", stroke: "#16b98d", strokeWidth: 2.5, fill: "url(#qualityFill)", dot: (p) => p.payload.row.averages[metric] > Number(usl) || p.payload.row.averages[metric] < Number(lsl) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: p.cx, cy: p.cy, r: 5, fill: "#f36a5d", stroke: "#fff", strokeWidth: 2 }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: p.cx, cy: p.cy, r: 3, fill: "#16b98d", stroke: "#fff", strokeWidth: 2 }), activeDot: { r: 6 } })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { formatter: (v) => [`${Number(v).toFixed(2)} ${selected.unit}`, selected.label] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReferenceLine, { y: Number(usl), stroke: "#f36a5d", strokeDasharray: "5 5" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReferenceLine, { y: Number(lsl), stroke: "#f36a5d", strokeDasharray: "5 5" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Area, { type: "monotone", dataKey: "value", stroke: "#16b98d", strokeWidth: 2.5, fill: "url(#qualityFill)", dot: (p) => {
+            const bad = p.payload.row.averages[metric] > Number(usl) || p.payload.row.averages[metric] < Number(lsl);
+            return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { cx: p.cx, cy: p.cy, r: bad ? 5 : 3, fill: bad ? "#f36a5d" : "#16b98d", stroke: "#fff", strokeWidth: 2 });
+          } })
         ] }) }) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "panel insight-panel", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "panel-head", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "panel-kicker", children: "POSITION AVERAGE" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: "\uC804\xB7\uC911\xB7\uD6C4 \uD3C9\uADE0\uAC12" })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "panel-kicker", children: "POSITION / FACE DETAIL" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: "\uC704\uCE58\uBCC4 \uD3C9\uADE0" })
           ] }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Layers, { size: 20, className: "muted-icon" })
         ] }),
@@ -73506,27 +73519,27 @@ function App() {
               " ",
               selected.unit
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "\uC804\xB7\uC911\xB7\uD6C4 \uCE21\uC815\uAC12\uC744 \uD3C9\uADE0\uD558\uC5EC \uD45C\uC2DC\uD569\uB2C8\uB2E4." })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "\uBA74\xB7\uC704\uCE58\uBCC4 \uC6D0\uC2DC\uAC12\uC744 \uD3C9\uADE0\uD574 \uD45C\uC2DC\uD569\uB2C8\uB2E4." })
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "insight-list", children: positionKeys.map((location) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "insight-list", children: positionKeys.map((loc) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-            location,
+            loc,
             " \uC704\uCE58"
           ] }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("strong", { children: [
-            locationAverage(filtered, metric, location)?.toFixed(2) ?? "\u2014",
+            locationAverage(filtered, metric, loc)?.toFixed(2) ?? "\u2014",
             " ",
             selected.unit
           ] })
-        ] }, location)) })
+        ] }, loc)) })
       ] })
     ] }),
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "panel table-panel", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "panel-head", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "panel-kicker", children: "RECENT OBSERVATIONS" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: "\uC704\uCE58\uBCC4 \uC6D0\uC2DC\uAC12\uACFC \uD3C9\uADE0" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: "\uC0C1\uC138 \uCE21\uC815 \uB370\uC774\uD130" })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "row-count", children: [
           filtered.length,
@@ -73535,19 +73548,20 @@ function App() {
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "table-scroll", children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", { children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uCE21\uC815 \uC2DC\uAC01" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uAC70\uB798\uCC98 / \uD56D\uCC28\uBC88\uD638" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uC0DD\uC0B0 \uC2DC\uAC01" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uAC70\uB798\uCC98 / \uB864" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uC9C0\uC885" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD3C9\uB7C9" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uC804" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uC911" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD6C4" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD3C9\uADE0" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uAE08\uC18D MD/CD" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD310\uC815" })
         ] }) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: filtered.map((row) => {
-          const val = row.averages[metric];
-          const bad = val !== null && (val > Number(usl) || val < Number(lsl));
+          const v = row.averages[metric];
+          const bad = v !== null && (v > Number(usl) || v < Number(lsl));
           return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { className: "mono", children: [
               row.date,
@@ -73561,7 +73575,12 @@ function App() {
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "grade-tag", children: row.grade }) }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "mono", children: row.basisWeight ?? "\u2014" }),
             positionKeys.map((k) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "value-cell", children: row.values[metric]?.[k] ?? "\u2014" }, k)),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: bad ? "danger-text value-cell" : "value-cell", children: val === null ? "\u2014" : val.toFixed(2) }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: bad ? "danger-text value-cell" : "value-cell", children: v === null ? "\u2014" : v.toFixed(2) }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { className: "mono", children: [
+              row.md ?? "\u2014",
+              " / ",
+              row.cd ?? "\u2014"
+            ] }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: `status ${bad ? "status-alert" : "status-ok"}`, children: [
               bad ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { size: 13 }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { size: 13 }),
               " ",
@@ -73573,7 +73592,7 @@ function App() {
     ] }),
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("footer", { children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "QUALITY LEDGER / PLANT 03" }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Data integrity monitored \xB7 v1.1.0" })
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Data integrity monitored \xB7 v1.2.0" })
     ] })
   ] });
 }
