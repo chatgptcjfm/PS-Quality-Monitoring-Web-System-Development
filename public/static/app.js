@@ -73599,7 +73599,7 @@ function App() {
           ] }) }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CartesianGrid, { stroke: "#e8edf2", vertical: false }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(XAxis, { dataKey: "label", tick: { fontSize: 10, fill: "#84909d" }, tickLine: false, axisLine: false }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, { domain: chartDomain, tick: { fontSize: 10, fill: "#84909d" }, tickLine: false, axisLine: false }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, { domain: chartDomain, tickFormatter: (value) => value.toFixed(1), tick: { fontSize: 10, fill: "#84909d" }, tickLine: false, axisLine: false }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { formatter: (v) => [`${Number(v).toFixed(2)} ${selected.unit}`, selected.label] }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReferenceLine, { y: Number(usl), stroke: "#f36a5d", strokeDasharray: "5 5" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReferenceLine, { y: Number(lsl), stroke: "#f36a5d", strokeDasharray: "5 5" }),
