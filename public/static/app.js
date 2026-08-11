@@ -73343,19 +73343,25 @@ function App() {
   const specMax = Math.max(Number(lsl), Number(usl));
   const dataMin = chartValues.length ? Math.min(...chartValues) : specMin;
   const dataMax = chartValues.length ? Math.max(...chartValues) : specMax;
+  const dataMean = chartValues.length ? chartValues.reduce((a, b) => a + b, 0) / chartValues.length : 0;
+  const variance = chartValues.length ? chartValues.reduce((sum, value) => sum + (value - dataMean) ** 2, 0) / chartValues.length : 0;
+  const deviation = Math.sqrt(variance);
+  const dataRange = Math.max(dataMax - dataMin, deviation * 6, Math.abs(dataMean) * 0.01, 1e-4);
   const chartMin = Math.min(dataMin, specMin);
   const chartMax = Math.max(dataMax, specMax);
-  const chartRange = chartMax - chartMin;
-  const chartPadding = Math.max(chartRange * 0.12, Math.abs(chartMax) * 0.02, 0.5);
+  const chartPadding = Math.max(dataRange * 0.12, deviation * 0.75, Math.abs(dataMean) * 0.01, 0.5);
   const chartDomain = [chartMin - chartPadding, chartMax + chartPadding];
   const load = async (files) => {
     const incoming = Array.from(files ?? []);
-    for (const file of incoming) {
-      if (!file || !/\.xls[x]?$/.test(file.name.toLowerCase())) continue;
+    const validIncoming = incoming.filter((file) => file && /\.xls[x]?$/.test(file.name.toLowerCase()));
+    if (validIncoming.length) setFileName((previous) => [...previous ? previous.split(", ") : [], ...validIncoming.map((file) => file.name)].join(", "));
+    const seen = new Set(loadedFiles);
+    for (const file of validIncoming) {
       const plantNumber = file.name.match(/([23])호기/)?.[1];
       const year = Number(file.name.match(/20\d{2}/)?.[0] ?? (/* @__PURE__ */ new Date()).getFullYear());
       const signature = `${file.name}:${file.size}:${file.lastModified}`;
-      if (loadedFiles.includes(signature)) continue;
+      if (seen.has(signature)) continue;
+      seen.add(signature);
       const parsed = plantNumber ? await parseWorkbook(file, `${plantNumber}\uD638\uAE30`, year) : [];
       setRows((previous) => [...previous, ...parsed.map((row, index) => ({ ...row, id: previous.length + index + 1 }))]);
       setLoadedFiles((previous) => [...previous, signature]);
@@ -73364,7 +73370,6 @@ function App() {
       setBasis("");
       setStartDate("");
       setEndDate("");
-      setFileName((previous) => previous ? `${previous}, ${file.name}` : file.name);
     }
   };
   const changeMetric = (key) => {
