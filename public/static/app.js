@@ -73260,13 +73260,16 @@ function makeValues(row) {
   const [md, cd] = slashPair(row[37]);
   return { \uD3C9\uB7C9: positions(row, [8, 9, 10]), \uB450\uAED8: positions(row, [11, 12, 13]), \uBC00\uB3C4: scalar(row[14]), \uC218\uBD84: positions(row, [15, 16, 17]), "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": positions(row, [18, 19, 20]), "\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[21]), PPS: positions(row, [23, 24, 25]), \uC778\uC1C4\uCE35\uBD84\uB9AC: scalar(row[30]), \uD53D\uD0B9: scalar(row[31]), \uBAA8\uD2C0\uB9C1: scalar(row[32]), "\uB0B4\uC808\uB3C4(MD)": scalar(md), "\uB0B4\uC808\uB3C4(CD)": scalar(cd), "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(MD)": scalar(row[39]), "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(CD)": scalar(row[40]), \uD30C\uC5F4\uAC15\uB3C4: scalar(row[41]), \uC778\uD130\uB110: scalar(slashAverage(row[45])), "\uBD80\uCC29\uB7C9(\uD45C\uBA74)": scalar(row[52]), "\uBD80\uCC29\uB7C9(\uC774\uBA74)": scalar(row[54]), "\uBD80\uCC29\uB7C9(\uD6C4\uC774\uBA74)": scalar(row[56]), "\uBD80\uCC29\uB7C9(\uD6C4\uBA74)": scalar(row[58]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": scalar(row[53]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uC774\uBA74)": scalar(row[55]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uC774\uBA74)": scalar(row[57]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[59]), \uB4A4\uBE44\uCE68: positions(row, [60, 61, 62]), \uD45C\uBA74\uC0C9\uCC28L: scalar(row[71]), \uD45C\uBA74\uC0C9\uCC28a: scalar(row[72]), \uD45C\uBA74\uC0C9\uCC28b: scalar(row[73]), \uD6C4\uBA74\uC0C9\uCC28L: scalar(row[75]), \uD6C4\uBA74\uC0C9\uCC28a: scalar(row[76]), \uD6C4\uBA74\uC0C9\uCC28b: scalar(row[77]), \uD6C4\uBA74\uC9C0\uBD84: scalar(row[79]), \uAE08\uC18DMD: scalar(row[84]), \uAE08\uC18DCD: scalar(row[85]) };
 }
-function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30", tab = "") {
+function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30", tab = "", year = 2026) {
   const client = String(row[5] ?? "").replace(/\n/g, " ").trim();
   const grade = String(row[6] ?? "").trim();
   if (!client || /^(?:[1-9]|1[0-2])월$/.test(client)) return null;
   const weight = numeric(row[7]);
+  const month = numeric(row[0]) ?? 0;
+  const day = numeric(row[1]) ?? 0;
+  const dateKey = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
   const values = makeValues(row);
-  return { id: index + 1, plant: currentPlant, tab, date: `${String(row[0] ?? "").padStart(2, "0")}.${String(row[1] ?? "").padStart(2, "0")}`, time: `${String(row[2] ?? "").padStart(2, "0")}:${String(row[3] ?? "").padStart(2, "0")}`, client, grade: grade || "\uBBF8\uC9C0\uC815", basisWeight: weight, basisLabel: weight === null ? "\uBBF8\uC9C0\uC815 \uD3C9\uB7C9" : String(weight), source: client.slice(0, 18), values, averages: Object.fromEntries(Object.entries(values).map(([k, v]) => [k, avg(v)])), md: slashPair(row[84])[0], cd: slashPair(row[85])[0] };
+  return { id: index + 1, plant: currentPlant, tab, date: `${String(row[0] ?? "").padStart(2, "0")}.${String(row[1] ?? "").padStart(2, "0")}`, dateKey, time: `${String(row[2] ?? "").padStart(2, "0")}:${String(row[3] ?? "").padStart(2, "0")}`, client, grade: grade || "\uBBF8\uC9C0\uC815", basisWeight: weight, basisLabel: weight === null ? "\uBBF8\uC9C0\uC815 \uD3C9\uB7C9" : String(weight), source: client.slice(0, 18), values, averages: Object.fromEntries(Object.entries(values).map(([k, v]) => [k, avg(v)])), md: slashPair(row[84])[0], cd: slashPair(row[85])[0] };
 }
 function classifySheet(name) {
   const tab = name.trim();
@@ -73279,7 +73282,7 @@ function classifySheet(name) {
   const basisLabel = basisWeight === null ? tab : country ? `${basisWeight} (${country})` : String(basisWeight);
   return { tab, grade, basisWeight, basisLabel };
 }
-function parseWorkbook(file, currentPlant) {
+function parseWorkbook(file, currentPlant, year) {
   return file.arrayBuffer().then((buffer) => {
     const wb = readSync(buffer, { type: "array" });
     const out = [];
@@ -73288,7 +73291,7 @@ function parseWorkbook(file, currentPlant) {
       if (sheet.length < 9) continue;
       const cls = classifySheet(name);
       for (const [i, row] of sheet.slice(8).entries()) {
-        const parsed = rowFromSheet(row, i, currentPlant, cls.tab);
+        const parsed = rowFromSheet(row, i, currentPlant, cls.tab, year);
         if (parsed) {
           parsed.grade = cls.grade;
           parsed.basisWeight = cls.basisWeight ?? parsed.basisWeight;
@@ -73301,7 +73304,7 @@ function parseWorkbook(file, currentPlant) {
   });
 }
 var demoRows = Array.from({ length: 4 }, (_, i) => {
-  const row = rowFromSheet([null, 8, 10, 7, 38 + i * 5, `6810J3000${i + 1}(\uC0D8\uD50C \uAC70\uB798\uCC98)`, i === 3 ? "III" : "IV", i === 3 ? 250 : 300, 303 + i, 301 + i, 302 + i, 349 + i * 3, 344 + i * 3, 349 + i * 3, 0.868, 6 + i * 0.2, 6 + i * 0.2, 6.1 + i * 0.2, 76.5, 76.5, 76.8, 67.2, 2.5, 2.4, 2.9, 6.7, 2.9, 47, 73, "13/7", 11, 2.9, 11, 9, 8, 18, 21, 100, 40, 4.9, "0/0", 3, 0.83, 0, 0, 0, null, 84.4, 65.8, 30.8, 30.6, 28.7, 57.7, 32.8, 68.4, 2.6, 2.7, 2.7, null, null, null, 595, 1, "\uC6B4,\uB300", "\uAE40", "\uD569\uACA9", 86.76, -2.19, -5.73, 1.17, 84.59, -4.08, -1.71, 18.24, null, null, null, 20, 20, 0, 0], i);
+  const row = rowFromSheet([null, 8, 10, 7, 38 + i * 5, `6810J3000${i + 1}(\uC0D8\uD50C \uAC70\uB798\uCC98)`, i === 3 ? "III" : "IV", i === 3 ? 250 : 300, 303 + i, 301 + i, 302 + i, 349 + i * 3, 344 + i * 3, 349 + i * 3, 0.868, 6 + i * 0.2, 6 + i * 0.2, 6.1 + i * 0.2, 76.5, 76.5, 76.8, 67.2, 2.5, 2.4, 2.9, 6.7, 2.9, 47, 73, "13/7", 11, 2.9, 11, 9, 8, 18, 21, 100, 40, 4.9, "0/0", 3, 0.83, 0, 0, 0, null, 84.4, 65.8, 30.8, 30.6, 28.7, 57.7, 32.8, 68.4, 2.6, 2.7, 2.7, null, null, null, 595, 1, "\uC6B4,\uB300", "\uAE40", "\uD569\uACA9", 86.76, -2.19, -5.73, 1.17, 84.59, -4.08, -1.71, 18.24, null, null, null, 20, 20, 0, 0], i, "3\uD638\uAE30", "", 2026);
   return row;
 });
 function locationAverage(rows, key, loc) {
@@ -73315,6 +73318,9 @@ function App() {
   const [fileName, setFileName] = (0, import_react57.useState)("3\uD638\uAE30 2026.08.10.xls");
   const [grade, setGrade] = (0, import_react57.useState)("");
   const [basis2, setBasis] = (0, import_react57.useState)("");
+  const [month, setMonth] = (0, import_react57.useState)("");
+  const [startDate, setStartDate] = (0, import_react57.useState)("");
+  const [endDate, setEndDate] = (0, import_react57.useState)("");
   const [category, setCategory] = (0, import_react57.useState)("");
   const [metric, setMetric] = (0, import_react57.useState)("\uD3C9\uB7C9");
   const [usl, setUsl] = (0, import_react57.useState)("306");
@@ -73324,11 +73330,12 @@ function App() {
   const selected = metricOptions.find((x2) => x2.key === metric) ?? metricOptions[0];
   const plants = ["2\uD638\uAE30", "3\uD638\uAE30"];
   const grades = ["\uC804\uCCB4 \uC9C0\uC885", ...Array.from(new Set(rows.map((r2) => r2.grade)))];
+  const months2 = ["\uC804\uCCB4 \uC6D4", ...Array.from({ length: 12 }, (_, i) => String(i + 1))];
   const bases = ["\uC804\uCCB4 \uD3C9\uB7C9", ...Array.from(new Set(rows.filter((r2) => (!plant || plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (!grade || grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade)).map((r2) => r2.basisLabel))).sort((a, b) => a.localeCompare(b, "ko", { numeric: true }))];
   (0, import_react57.useEffect)(() => {
     if (basis2 && basis2 !== "\uC804\uCCB4 \uD3C9\uB7C9" && !bases.includes(basis2)) setBasis("");
   }, [basis2, bases.join("|")]);
-  const filtered = (0, import_react57.useMemo)(() => !plant || !grade || !basis2 ? [] : rows.filter((r2) => (plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade) && (basis2 === "\uC804\uCCB4 \uD3C9\uB7C9" || r2.basisLabel === basis2)), [rows, plant, grade, basis2]);
+  const filtered = (0, import_react57.useMemo)(() => !plant || !grade || !basis2 ? [] : rows.filter((r2) => (plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade) && (basis2 === "\uC804\uCCB4 \uD3C9\uB7C9" || r2.basisLabel === basis2) && (!month || r2.dateKey.slice(5, 7) === month.padStart(2, "0")) && (!startDate || r2.dateKey >= startDate) && (!endDate || r2.dateKey <= endDate)), [rows, plant, grade, basis2, month, startDate, endDate]);
   const nums = filtered.map((r2) => r2.averages[metric]).filter((v) => v !== null);
   const average = nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : 0;
   const outliers = filtered.filter((r2) => {
@@ -73336,14 +73343,28 @@ function App() {
     return v !== null && (v > Number(usl) || v < Number(lsl));
   });
   const chartData = filtered.map((r2) => ({ label: `${r2.date} ${r2.time}`, value: r2.averages[metric], row: r2 })).filter((x2) => x2.value !== null);
+  const chartValues = chartData.map((x2) => x2.value);
+  const specMin = Math.min(Number(lsl), Number(usl));
+  const specMax = Math.max(Number(lsl), Number(usl));
+  const dataMin = chartValues.length ? Math.min(...chartValues) : specMin;
+  const dataMax = chartValues.length ? Math.max(...chartValues) : specMax;
+  const chartMin = Math.min(dataMin, specMin);
+  const chartMax = Math.max(dataMax, specMax);
+  const chartRange = chartMax - chartMin;
+  const chartPadding = Math.max(chartRange * 0.12, Math.abs(chartMax) * 0.02, 0.5);
+  const chartDomain = [chartMin - chartPadding, chartMax + chartPadding];
   const load = async (file) => {
     if (!file || !/\.xls[x]?$/.test(file.name.toLowerCase())) return;
     const plantNumber = file.name.match(/([23])호기/)?.[1];
-    const parsed = plantNumber ? await parseWorkbook(file, `${plantNumber}\uD638\uAE30`) : [];
+    const year = Number(file.name.match(/20\d{2}/)?.[0] ?? (/* @__PURE__ */ new Date()).getFullYear());
+    const parsed = plantNumber ? await parseWorkbook(file, `${plantNumber}\uD638\uAE30`, year) : [];
     setRows(parsed);
     setPlant("");
     setGrade("");
     setBasis("");
+    setMonth("");
+    setStartDate("");
+    setEndDate("");
     setFileName(file.name);
   };
   const changeMetric = (key) => {
@@ -73447,6 +73468,24 @@ function App() {
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC120\uD0DD \uC548 \uD568" }),
           grades.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2))
         ] })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
+        "\uC6D4 ",
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: month, onChange: (e) => setMonth(e.target.value), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC804\uCCB4 \uC6D4" }),
+          months2.slice(1).map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("option", { value: x2, children: [
+            x2,
+            "\uC6D4"
+          ] }, x2))
+        ] })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
+        "\uC2DC\uC791\uC77C ",
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { type: "date", value: startDate, onChange: (e) => setStartDate(e.target.value) })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
+        "\uC885\uB8CC\uC77C ",
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { type: "date", value: endDate, onChange: (e) => setEndDate(e.target.value) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
         "\uD3C9\uB7C9 ",
@@ -73560,7 +73599,7 @@ function App() {
           ] }) }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CartesianGrid, { stroke: "#e8edf2", vertical: false }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(XAxis, { dataKey: "label", tick: { fontSize: 10, fill: "#84909d" }, tickLine: false, axisLine: false }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, { domain: [Number(lsl) - 6, Number(usl) + 6], tick: { fontSize: 10, fill: "#84909d" }, tickLine: false, axisLine: false }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, { domain: chartDomain, tick: { fontSize: 10, fill: "#84909d" }, tickLine: false, axisLine: false }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { formatter: (v) => [`${Number(v).toFixed(2)} ${selected.unit}`, selected.label] }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReferenceLine, { y: Number(usl), stroke: "#f36a5d", strokeDasharray: "5 5" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReferenceLine, { y: Number(lsl), stroke: "#f36a5d", strokeDasharray: "5 5" }),
