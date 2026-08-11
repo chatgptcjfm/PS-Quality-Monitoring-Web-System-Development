@@ -73261,7 +73261,7 @@ function makeValues(row) {
 function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30", tab = "") {
   const client = String(row[5] ?? "").replace(/\n/g, " ").trim();
   const grade = String(row[6] ?? "").trim();
-  if (!client) return null;
+  if (!client || /^(?:[1-9]|1[0-2])월$/.test(client)) return null;
   const weight = numeric(row[7]);
   const values = makeValues(row);
   return { id: index + 1, plant: currentPlant, tab, date: `${String(row[0] ?? "").padStart(2, "0")}.${String(row[1] ?? "").padStart(2, "0")}`, time: `${String(row[2] ?? "").padStart(2, "0")}:${String(row[3] ?? "").padStart(2, "0")}`, client, grade: grade || "\uBBF8\uC9C0\uC815", basisWeight: weight, basisLabel: weight === null ? "\uBBF8\uC9C0\uC815 \uD3C9\uB7C9" : String(weight), source: client.slice(0, 18), values, averages: Object.fromEntries(Object.entries(values).map(([k, v]) => [k, avg(v)])), md: slashPair(row[84])[0], cd: slashPair(row[85])[0] };
@@ -73311,10 +73311,10 @@ function locationAverage(rows, key, loc) {
 function App() {
   const inputRef = (0, import_react57.useRef)(null);
   const [rows, setRows] = (0, import_react57.useState)(demoRows);
-  const [plant, setPlant] = (0, import_react57.useState)("\uC804\uCCB4 \uD638\uAE30");
+  const [plant, setPlant] = (0, import_react57.useState)("");
   const [fileName, setFileName] = (0, import_react57.useState)("3\uD638\uAE30 2026.08.10.xls");
-  const [grade, setGrade] = (0, import_react57.useState)("\uC804\uCCB4 \uC9C0\uC885");
-  const [basis2, setBasis] = (0, import_react57.useState)("\uC804\uCCB4 \uD3C9\uB7C9");
+  const [grade, setGrade] = (0, import_react57.useState)("");
+  const [basis2, setBasis] = (0, import_react57.useState)("");
   const [metric, setMetric] = (0, import_react57.useState)("\uD3C9\uB7C9");
   const [usl, setUsl] = (0, import_react57.useState)("306");
   const [lsl, setLsl] = (0, import_react57.useState)("294");
@@ -73322,11 +73322,11 @@ function App() {
   const selected = metricOptions.find((x2) => x2.key === metric) ?? metricOptions[0];
   const plants = ["\uC804\uCCB4 \uD638\uAE30", ...Array.from(new Set(rows.map((r2) => r2.plant)))];
   const grades = ["\uC804\uCCB4 \uC9C0\uC885", ...Array.from(new Set(rows.map((r2) => r2.grade)))];
-  const bases = ["\uC804\uCCB4 \uD3C9\uB7C9", ...Array.from(new Set(rows.filter((r2) => (plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade)).map((r2) => r2.basisLabel))).sort((a, b) => a.localeCompare(b, "ko", { numeric: true }))];
+  const bases = ["\uC804\uCCB4 \uD3C9\uB7C9", ...Array.from(new Set(rows.filter((r2) => (!plant || plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (!grade || grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade)).map((r2) => r2.basisLabel))).sort((a, b) => a.localeCompare(b, "ko", { numeric: true }))];
   (0, import_react57.useEffect)(() => {
-    if (basis2 !== "\uC804\uCCB4 \uD3C9\uB7C9" && !bases.includes(basis2)) setBasis("\uC804\uCCB4 \uD3C9\uB7C9");
+    if (basis2 && basis2 !== "\uC804\uCCB4 \uD3C9\uB7C9" && !bases.includes(basis2)) setBasis("");
   }, [basis2, bases.join("|")]);
-  const filtered = (0, import_react57.useMemo)(() => rows.filter((r2) => (plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade) && (basis2 === "\uC804\uCCB4 \uD3C9\uB7C9" || r2.basisLabel === basis2)), [rows, plant, grade, basis2]);
+  const filtered = (0, import_react57.useMemo)(() => !plant || !grade || !basis2 ? [] : rows.filter((r2) => (plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade) && (basis2 === "\uC804\uCCB4 \uD3C9\uB7C9" || r2.basisLabel === basis2)), [rows, plant, grade, basis2]);
   const nums = filtered.map((r2) => r2.averages[metric]).filter((v) => v !== null);
   const average = nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : 0;
   const outliers = filtered.filter((r2) => {
@@ -73338,6 +73338,9 @@ function App() {
     if (!file || !/\.xls[x]?$/.test(file.name.toLowerCase())) return;
     const parsed = await parseWorkbook(file);
     setRows(parsed.length ? parsed : demoRows);
+    setPlant("");
+    setGrade("");
+    setBasis("");
     setFileName(file.name);
   };
   const changeMetric = (key) => {
@@ -73419,15 +73422,24 @@ function App() {
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
         "\uD638\uAE30 ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: plant, onChange: (e) => setPlant(e.target.value), children: plants.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2)) })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: plant, onChange: (e) => setPlant(e.target.value), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC120\uD0DD \uC548 \uD568" }),
+          plants.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2))
+        ] })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
         "\uC9C0\uC885 ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: grade, onChange: (e) => setGrade(e.target.value), children: grades.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2)) })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: grade, onChange: (e) => setGrade(e.target.value), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC120\uD0DD \uC548 \uD568" }),
+          grades.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2))
+        ] })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
         "\uD3C9\uB7C9 ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: basis2, onChange: (e) => setBasis(e.target.value), children: bases.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: x2, children: x2 === "\uC804\uCCB4 \uD3C9\uB7C9" ? x2 : `${x2} g/\u33A1` }, x2)) })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: basis2, onChange: (e) => setBasis(e.target.value), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC120\uD0DD \uC548 \uD568" }),
+          bases.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: x2, children: x2 === "\uC804\uCCB4 \uD3C9\uB7C9" ? x2 : `${x2} g/\u33A1` }, x2))
+        ] })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
         "\uD488\uC9C8 \uD56D\uBAA9 ",
