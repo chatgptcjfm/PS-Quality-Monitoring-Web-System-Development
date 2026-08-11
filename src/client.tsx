@@ -10,7 +10,6 @@ import {
   AlertTriangle, BarChart3, CheckCircle2, ChevronDown, FileSpreadsheet,
   Filter, Gauge, Layers3, UploadCloud, X, Zap,
 } from 'lucide-react'
-import 'recharts'
 
 type QualityRow = {
   id: number; date: string; client: string; grade: string; measure: string
