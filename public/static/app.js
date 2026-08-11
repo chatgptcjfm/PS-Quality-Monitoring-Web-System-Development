@@ -27499,8 +27499,8 @@ function CheckField(hexstr, fld) {
   if (m !== hexstr) throw new Error(fld + "Expected " + hexstr + " saw " + m);
   this.l += hexstr.length >> 1;
 }
-function prep_blob(blob, pos) {
-  blob.l = pos;
+function prep_blob(blob, pos2) {
+  blob.l = pos2;
   blob.read_shift = /*::(*/
   ReadShift;
   blob.chk = CheckField;
@@ -29565,7 +29565,7 @@ function parse_WsBool(blob, length, opts) {
   return { fDialog: flags & 16, fBelow: flags & 64, fRight: flags & 128 };
 }
 function parse_BoundSheet8(blob, length, opts) {
-  var pos = blob.read_shift(4);
+  var pos2 = blob.read_shift(4);
   var hidden = blob.read_shift(1) & 3;
   var dt = blob.read_shift(1);
   switch (dt) {
@@ -29584,7 +29584,7 @@ function parse_BoundSheet8(blob, length, opts) {
   }
   var name = parse_ShortXLUnicodeString(blob, 0, opts);
   if (name.length === 0) name = "Sheet1";
-  return { pos, hs: hidden, dt, name };
+  return { pos: pos2, hs: hidden, dt, name };
 }
 function parse_SST(blob, length) {
   var end = blob.l + length;
@@ -65124,8 +65124,8 @@ var combineActiveCartesianProps = (chartEvent, layout, tooltipAxisType, tooltipA
   if (!isInCartesianRange(chartEvent, offset)) {
     return void 0;
   }
-  var pos = calculateCartesianTooltipPos(chartEvent, layout);
-  var activeIndex = calculateActiveTickIndex(pos, orderedTooltipTicks, tooltipTicks, tooltipAxisType, tooltipAxisRange);
+  var pos2 = calculateCartesianTooltipPos(chartEvent, layout);
+  var activeIndex = calculateActiveTickIndex(pos2, orderedTooltipTicks, tooltipTicks, tooltipAxisType, tooltipAxisRange);
   var activeCoordinate = getActiveCartesianCoordinate(layout, tooltipTicks, activeIndex, chartEvent);
   return {
     activeIndex: String(activeIndex),
@@ -65140,8 +65140,8 @@ var combineActivePolarProps = (chartEvent, layout, polarViewBox, tooltipAxisType
   if (!rangeObj) {
     return void 0;
   }
-  var pos = calculatePolarTooltipPos(rangeObj, layout);
-  var activeIndex = calculateActiveTickIndex(pos, orderedTooltipTicks, tooltipTicks, tooltipAxisType, tooltipAxisRange);
+  var pos2 = calculatePolarTooltipPos(rangeObj, layout);
+  var activeIndex = calculateActiveTickIndex(pos2, orderedTooltipTicks, tooltipTicks, tooltipAxisType, tooltipAxisRange);
   var activeCoordinate = getActivePolarCoordinate(layout, tooltipTicks, activeIndex, rangeObj);
   return {
     activeIndex: String(activeIndex),
@@ -73198,75 +73198,112 @@ var Zap = createLucideIcon("zap", __iconNode11);
 
 // src/client.tsx
 var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
-var demoRows = [
-  { id: 1, date: "08.10", client: "\uC911\uAD6D \xB7 \uC81C\uC57D\uCF00\uC774\uC2A4", grade: "IV", measure: "\uD3C9\uB7C9", value: 303, status: "\uC815\uC0C1", time: "07:38", source: "6810J30001" },
-  { id: 2, date: "08.10", client: "\uC911\uAD6D \xB7 \uC81C\uC57D\uCF00\uC774\uC2A4", grade: "IV", measure: "\uD3C9\uB7C9", value: 304, status: "\uC815\uC0C1", time: "07:44", source: "6810J30003" },
-  { id: 3, date: "08.10", client: "\uC2E0\uC2B9\uC544\uC774\uC5D4\uC528", grade: "IV", measure: "\uD3C9\uB7C9", value: 305, status: "\uC815\uC0C1", time: "07:49", source: "6810J30005" },
-  { id: 4, date: "08.10", client: "\uB514\uC640\uC774 \xB7 \uD765\uC544", grade: "IV", measure: "\uD3C9\uB7C9", value: 302, status: "\uC815\uC0C1", time: "08:01", source: "6810J30009" },
-  { id: 5, date: "08.10", client: "\uC911\uAD6D \xB7 \uC81C\uC57D\uCF00\uC774\uC2A4", grade: "IV", measure: "\uD3C9\uB7C9", value: 307, status: "\uC774\uD0C8", time: "08:16", source: "6810J30012" },
-  { id: 6, date: "08.10", client: "\uD0DC\uAD6D \xB7 \uD3EC\uC7A5\uC6A9\uC9C0", grade: "III", measure: "\uD3C9\uB7C9", value: 298, status: "\uC815\uC0C1", time: "08:32", source: "6810J30018" },
-  { id: 7, date: "08.10", client: "\uC911\uAD6D \xB7 \uC81C\uC57D\uCF00\uC774\uC2A4", grade: "IV", measure: "\uD3C9\uB7C9", value: 301, status: "\uC815\uC0C1", time: "08:48", source: "6810J30020" },
-  { id: 8, date: "08.10", client: "\uC2E0\uC2B9\uC544\uC774\uC5D4\uC528", grade: "IV", measure: "\uD3C9\uB7C9", value: 296, status: "\uC774\uD0C8", time: "09:04", source: "6810J30022" }
-];
 var metricOptions = [
-  { label: "\uD3C9\uB7C9 (g/\u33A1)", key: "\uD3C9\uB7C9", usl: 306, lsl: 294, unit: "g/\u33A1" },
-  { label: "\uB450\uAED8 (\u339B)", key: "\uB450\uAED8", usl: 360, lsl: 340, unit: "\u339B" },
-  { label: "\uC218\uBD84 (%)", key: "\uC218\uBD84", usl: 7.5, lsl: 4.5, unit: "%" }
+  { label: "\uD3C9\uB7C9 (g/\u33A1)", key: "\uD3C9\uB7C9", unit: "g/\u33A1", usl: 306, lsl: 294, kind: "position" },
+  { label: "\uB450\uAED8 (\u339B)", key: "\uB450\uAED8", unit: "\u339B", usl: 360, lsl: 340, kind: "position" },
+  { label: "\uC218\uBD84 (%)", key: "\uC218\uBD84", unit: "%", usl: 7.5, lsl: 4.5, kind: "position" },
+  { label: "\uBC31\uC0C9\uB3C4", key: "\uBC31\uC0C9\uB3C4", unit: "", usl: 80, lsl: 42, kind: "position" },
+  { label: "PPS", key: "PPS", unit: "", usl: 3.5, lsl: 1, kind: "position" },
+  { label: "\uC778\uC1C4\uCE35\uBD84\uB9AC", key: "\uC778\uC1C4\uCE35\uBD84\uB9AC", unit: "", usl: 100, lsl: 15, kind: "single" },
+  { label: "\uD53D\uD0B9 (TV20)", key: "\uD53D\uD0B9", unit: "", usl: 100, lsl: 0, kind: "single" },
+  { label: "\uBAA8\uD2C0\uB9C1", key: "\uBAA8\uD2C0\uB9C1", unit: "", usl: 100, lsl: 3, kind: "single" },
+  { label: "\uB0B4\uC808\uB3C4", key: "\uB0B4\uC808\uB3C4", unit: "\uD68C", usl: 100, lsl: 0, kind: "position" },
+  { label: "\uC2A4\uD2F0\uD504\uB2C8\uC2A4", key: "\uC2A4\uD2F0\uD504\uB2C8\uC2A4", unit: "", usl: 150, lsl: 0, kind: "position" },
+  { label: "\uD30C\uC5F4\uAC15\uB3C4", key: "\uD30C\uC5F4\uAC15\uB3C4", unit: "", usl: 150, lsl: 0, kind: "single" },
+  { label: "\uC778\uD130\uB110", key: "\uC778\uD130\uB110", unit: "", usl: 100, lsl: 0, kind: "single" }
 ];
+var positionKeys = ["\uC804", "\uC911", "\uD6C4"];
+var numeric = (value) => {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+};
+var slashAverage = (value) => {
+  const nums = String(value ?? "").split("/").map((v) => Number(v.trim())).filter(Number.isFinite);
+  return nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : numeric(value);
+};
+var pos = (row, indices) => ({ \uC804: numeric(row[indices[0]]), \uC911: numeric(row[indices[1]]), \uD6C4: numeric(row[indices[2]]) });
+var avgPosition = (values) => {
+  const nums = positionKeys.map((k) => values[k]).filter((v) => v !== null);
+  return nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : null;
+};
+var metricValue = (values) => avgPosition(values);
+function rowFromSheet(row, index) {
+  const client = String(row[5] ?? "").replace(/\n/g, " ").trim();
+  const grade = String(row[6] ?? "").trim();
+  const basisWeight = numeric(row[7]);
+  const hasData = client || grade || row.slice(8).some((v) => v !== null && v !== "");
+  if (!hasData) return null;
+  const values = {
+    \uD3C9\uB7C9: pos(row, [8, 9, 10]),
+    \uB450\uAED8: pos(row, [11, 12, 13]),
+    \uC218\uBD84: pos(row, [15, 16, 17]),
+    \uBC31\uC0C9\uB3C4: { \uC804: avgPosition(pos(row, [18, 19, 20])), \uC911: null, \uD6C4: numeric(row[21]) },
+    PPS: { \uC804: avgPosition(pos(row, [23, 24, 25])), \uC911: null, \uD6C4: numeric(row[26]) },
+    \uC778\uC1C4\uCE35\uBD84\uB9AC: { \uC804: slashAverage(row[30]), \uC911: null, \uD6C4: null },
+    \uD53D\uD0B9: { \uC804: numeric(row[31]), \uC911: null, \uD6C4: null },
+    \uBAA8\uD2C0\uB9C1: { \uC804: numeric(row[32]), \uC911: null, \uD6C4: null },
+    \uB0B4\uC808\uB3C4: { \uC804: slashAverage(row[37]), \uC911: slashAverage(row[38]), \uD6C4: null },
+    \uC2A4\uD2F0\uD504\uB2C8\uC2A4: { \uC804: numeric(row[39]), \uC911: numeric(row[40]), \uD6C4: null },
+    \uD30C\uC5F4\uAC15\uB3C4: { \uC804: numeric(row[41]), \uC911: null, \uD6C4: null },
+    \uC778\uD130\uB110: { \uC804: slashAverage(row[45]), \uC911: null, \uD6C4: null }
+  };
+  const averages = Object.fromEntries(Object.entries(values).map(([key, v]) => [key, metricValue(v)]));
+  const date2 = `${String(row[1] ?? "").padStart(2, "0")}.${String(row[2] ?? "").padStart(2, "0")}`;
+  const time2 = `${String(row[3] ?? "").padStart(2, "0")}:${String(row[4] ?? "").padStart(2, "0")}`;
+  return { id: index + 1, date: date2, time: time2, client: client || "\uBBF8\uC9C0\uC815 \uAC70\uB798\uCC98", grade: grade || "\uBBF8\uC9C0\uC815", basisWeight, source: client.slice(0, 18) || `ROW-${index + 1}`, values, averages };
+}
 function parseWorkbook(file) {
   return file.arrayBuffer().then((buffer) => {
-    const workbook = readSync(buffer, { type: "array", cellDates: true });
-    const sheetName = workbook.SheetNames.find((name) => name.includes("\uBCC0\uACBD\uC77C\uC9C0")) ?? workbook.SheetNames[0];
-    const rows = utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: null });
-    const output = [];
-    rows.slice(8).forEach((row, index) => {
-      const client = String(row[5] ?? "").replace(/\n/g, " ").trim();
-      const grade = String(row[6] ?? "").trim();
-      const value = Number(row[8]);
-      if (!client && !grade && !Number.isFinite(value)) return;
-      const date2 = `${String(row[1] ?? "").padStart(2, "0")}.${String(row[2] ?? "").padStart(2, "0")}`;
-      const time2 = `${String(row[3] ?? "").padStart(2, "0")}:${String(row[4] ?? "").padStart(2, "0")}`;
-      output.push({
-        id: index + 1,
-        date: date2,
-        client: client || "\uBBF8\uC9C0\uC815 \uAC70\uB798\uCC98",
-        grade: grade || "\uBBF8\uC9C0\uC815",
-        measure: "\uD3C9\uB7C9",
-        value,
-        status: value > 306 || value < 294 ? "\uC774\uD0C8" : "\uC815\uC0C1",
-        time: time2,
-        source: client.slice(0, 12) || `ROW-${index + 1}`
-      });
-    });
-    return output;
+    const wb = readSync(buffer, { type: "array", cellDates: true });
+    const name = wb.SheetNames.find((n) => n.includes("\uBCC0\uACBD\uC77C\uC9C0")) ?? wb.SheetNames[0];
+    const rows = utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: null });
+    return rows.slice(8).map(rowFromSheet).filter((r2) => Boolean(r2));
   });
+}
+var demoRows = [
+  { id: 1, date: "08.10", time: "07:38", client: "\uC911\uAD6D \xB7 \uC81C\uC57D\uCF00\uC774\uC2A4", grade: "IV", basisWeight: 300, source: "6810J30001", values: { \uD3C9\uB7C9: { \uC804: 303, \uC911: 301, \uD6C4: 302 }, \uB450\uAED8: { \uC804: 349, \uC911: 344, \uD6C4: 349 }, \uC218\uBD84: { \uC804: 6, \uC911: 6, \uD6C4: 6.1 }, \uBC31\uC0C9\uB3C4: { \uC804: 76.6, \uC911: null, \uD6C4: 67.2 }, PPS: { \uC804: 2.6, \uC911: null, \uD6C4: 6.7 }, \uC778\uC1C4\uCE35\uBD84\uB9AC: { \uC804: 10, \uC911: null, \uD6C4: null }, \uD53D\uD0B9: { \uC804: 11, \uC911: null, \uD6C4: null }, \uBAA8\uD2C0\uB9C1: { \uC804: 2.9, \uC911: null, \uD6C4: null }, \uB0B4\uC808\uB3C4: { \uC804: 19.5, \uC911: 20, \uD6C4: null }, \uC2A4\uD2F0\uD504\uB2C8\uC2A4: { \uC804: 100, \uC911: 40, \uD6C4: null }, \uD30C\uC5F4\uAC15\uB3C4: { \uC804: 4.9, \uC911: null, \uD6C4: null }, \uC778\uD130\uB110: { \uC804: 0.83, \uC911: null, \uD6C4: null } }, averages: {} },
+  { id: 2, date: "08.10", time: "07:49", client: "\uC2E0\uC2B9\uC544\uC774\uC5D4\uC528", grade: "IV", basisWeight: 300, source: "6810J30005", values: { \uD3C9\uB7C9: { \uC804: 305, \uC911: 304, \uD6C4: 305 }, \uB450\uAED8: { \uC804: 357, \uC911: 355, \uD6C4: 358 }, \uC218\uBD84: { \uC804: 6.3, \uC911: 6.3, \uD6C4: 6.2 }, \uBC31\uC0C9\uB3C4: { \uC804: 77, \uC911: null, \uD6C4: 67.5 }, PPS: { \uC804: 2.6, \uC911: null, \uD6C4: null }, \uC778\uC1C4\uCE35\uBD84\uB9AC: { \uC804: 13, \uC911: null, \uD6C4: null }, \uD53D\uD0B9: { \uC804: 10, \uC911: null, \uD6C4: null }, \uBAA8\uD2C0\uB9C1: { \uC804: 2.7, \uC911: null, \uD6C4: null }, \uB0B4\uC808\uB3C4: { \uC804: 18, \uC911: 20, \uD6C4: null }, \uC2A4\uD2F0\uD504\uB2C8\uC2A4: { \uC804: 100, \uC911: 40, \uD6C4: null }, \uD30C\uC5F4\uAC15\uB3C4: { \uC804: 4.8, \uC911: null, \uD6C4: null }, \uC778\uD130\uB110: { \uC804: 0.8, \uC911: null, \uD6C4: null } }, averages: {} },
+  { id: 3, date: "08.10", time: "08:16", client: "\uC911\uAD6D \xB7 \uC81C\uC57D\uCF00\uC774\uC2A4", grade: "IV", basisWeight: 300, source: "6810J30012", values: { \uD3C9\uB7C9: { \uC804: 307, \uC911: 306, \uD6C4: 308 }, \uB450\uAED8: { \uC804: 362, \uC911: 361, \uD6C4: 363 }, \uC218\uBD84: { \uC804: 7.9, \uC911: 7.8, \uD6C4: 7.7 }, \uBC31\uC0C9\uB3C4: { \uC804: 74, \uC911: null, \uD6C4: 66 }, PPS: { \uC804: 3.8, \uC911: null, \uD6C4: 7 }, \uC778\uC1C4\uCE35\uBD84\uB9AC: { \uC804: 18, \uC911: null, \uD6C4: null }, \uD53D\uD0B9: { \uC804: 12, \uC911: null, \uD6C4: null }, \uBAA8\uD2C0\uB9C1: { \uC804: 3.1, \uC911: null, \uD6C4: null }, \uB0B4\uC808\uB3C4: { \uC804: 14, \uC911: 15, \uD6C4: null }, \uC2A4\uD2F0\uD504\uB2C8\uC2A4: { \uC804: 102, \uC911: 42, \uD6C4: null }, \uD30C\uC5F4\uAC15\uB3C4: { \uC804: 4.1, \uC911: null, \uD6C4: null }, \uC778\uD130\uB110: { \uC804: 1.2, \uC911: null, \uD6C4: null } }, averages: {} },
+  { id: 4, date: "08.10", time: "08:32", client: "\uD0DC\uAD6D \xB7 \uD3EC\uC7A5\uC6A9\uC9C0", grade: "III", basisWeight: 250, source: "6810J30018", values: { \uD3C9\uB7C9: { \uC804: 298, \uC911: 299, \uD6C4: 298 }, \uB450\uAED8: { \uC804: 348, \uC911: 347, \uD6C4: 349 }, \uC218\uBD84: { \uC804: 5.8, \uC911: 5.9, \uD6C4: 5.8 }, \uBC31\uC0C9\uB3C4: { \uC804: 75, \uC911: null, \uD6C4: 65 }, PPS: { \uC804: 2.8, \uC911: null, \uD6C4: 6.4 }, \uC778\uC1C4\uCE35\uBD84\uB9AC: { \uC804: 9, \uC911: null, \uD6C4: null }, \uD53D\uD0B9: { \uC804: 8, \uC911: null, \uD6C4: null }, \uBAA8\uD2C0\uB9C1: { \uC804: 2.4, \uC911: null, \uD6C4: null }, \uB0B4\uC808\uB3C4: { \uC804: 22, \uC911: 24, \uD6C4: null }, \uC2A4\uD2F0\uD504\uB2C8\uC2A4: { \uC804: 95, \uC911: 38, \uD6C4: null }, \uD30C\uC5F4\uAC15\uB3C4: { \uC804: 5.2, \uC911: null, \uD6C4: null }, \uC778\uD130\uB110: { \uC804: 0.7, \uC911: null, \uD6C4: null } }, averages: {} }
+];
+for (const row of demoRows) row.averages = Object.fromEntries(Object.entries(row.values).map(([k, v]) => [k, metricValue(v)]));
+function locationAverage(rows, metric, location) {
+  const nums = rows.map((r2) => r2.values[metric]?.[location]).filter((v) => v !== null && v !== void 0);
+  return nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : null;
 }
 function App() {
   const inputRef = (0, import_react57.useRef)(null);
   const [rows, setRows] = (0, import_react57.useState)(demoRows);
   const [fileName, setFileName] = (0, import_react57.useState)("3\uD638\uAE30 2026.08.10.xls");
   const [grade, setGrade] = (0, import_react57.useState)("\uC804\uCCB4 \uC9C0\uC885");
-  const [metric, setMetric] = (0, import_react57.useState)(metricOptions[0].key);
+  const [basis2, setBasis] = (0, import_react57.useState)("\uC804\uCCB4 \uD3C9\uB7C9");
+  const [metric, setMetric] = (0, import_react57.useState)("\uD3C9\uB7C9");
   const [usl, setUsl] = (0, import_react57.useState)("306");
   const [lsl, setLsl] = (0, import_react57.useState)("294");
   const [dragging, setDragging] = (0, import_react57.useState)(false);
-  const selectedMetric = metricOptions.find((item) => item.key === metric) ?? metricOptions[0];
-  const grades = ["\uC804\uCCB4 \uC9C0\uC885", ...Array.from(new Set(rows.map((row) => row.grade)))];
-  const filteredRows = (0, import_react57.useMemo)(() => rows.filter((row) => grade === "\uC804\uCCB4 \uC9C0\uC885" || row.grade === grade), [rows, grade]);
-  const chartData = filteredRows.map((row) => ({ ...row, label: `${row.date} ${row.time}`, value: Number(row.value) }));
-  const outliers = filteredRows.filter((row) => row.value > Number(usl) || row.value < Number(lsl));
-  const avg = filteredRows.length ? filteredRows.reduce((sum, row) => sum + row.value, 0) / filteredRows.length : 0;
-  const passRate = filteredRows.length ? Math.round((filteredRows.length - outliers.length) / filteredRows.length * 100) : 0;
+  const selected = metricOptions.find((m) => m.key === metric) ?? metricOptions[0];
+  const grades = ["\uC804\uCCB4 \uC9C0\uC885", ...Array.from(new Set(rows.map((r2) => r2.grade)))];
+  const bases = ["\uC804\uCCB4 \uD3C9\uB7C9", ...Array.from(new Set(rows.map((r2) => r2.basisWeight).filter((v) => v !== null))).sort((a, b) => a - b).map(String)];
+  const filtered = (0, import_react57.useMemo)(() => rows.filter((r2) => (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade) && (basis2 === "\uC804\uCCB4 \uD3C9\uB7C9" || String(r2.basisWeight) === basis2)), [rows, grade, basis2]);
+  const values = filtered.map((r2) => r2.averages[metric]).filter((v) => v !== null);
+  const average = values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+  const outliers = filtered.filter((r2) => {
+    const v = r2.averages[metric];
+    return v !== null && (v > Number(usl) || v < Number(lsl));
+  });
+  const chartData = filtered.map((r2) => ({ label: `${r2.date} ${r2.time}`, value: r2.averages[metric], row: r2 })).filter((d) => d.value !== null);
+  const passRate = filtered.length ? Math.round((filtered.length - outliers.length) / filtered.length * 100) : 0;
   const loadFile = async (file) => {
     if (!file || !/\.xls[x]?$/.test(file.name.toLowerCase())) return;
     const parsed = await parseWorkbook(file);
     setRows(parsed.length ? parsed : demoRows);
     setFileName(file.name);
   };
-  const handleDrop = (event) => {
-    event.preventDefault();
-    setDragging(false);
-    void loadFile(event.dataTransfer.files[0]);
+  const setMetricSafe = (key) => {
+    const m = metricOptions.find((x2) => x2.key === key) ?? metricOptions[0];
+    setMetric(key);
+    setUsl(String(m.usl));
+    setLsl(String(m.lsl));
   };
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", { className: "app-shell", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", { className: "topbar", children: [
@@ -73292,7 +73329,7 @@ function App() {
           "\uD488\uC9C8 \uB370\uC774\uD130 ",
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("em", { children: "\uC778\uC0AC\uC774\uD2B8" })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "hero-copy", children: "\uBCC0\uACBD\uC77C\uC9C0 \uB370\uC774\uD130\uC5D0\uC11C \uD328\uD134\uC744 \uC77D\uACE0, \uADDC\uACA9 \uC774\uD0C8\uC744 \uD55C\uB208\uC5D0 \uAD00\uB9AC\uD558\uC138\uC694." })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "hero-copy", children: "\uC9C0\uC885\xB7\uD3C9\uB7C9 \uACC4\uCE35\uC73C\uB85C \uD544\uD130\uB9C1\uD558\uACE0 \uC704\uCE58\uBCC4 \uCE21\uC815\uAC12 \uD3C9\uADE0\uC744 \uD655\uC778\uD558\uC138\uC694." })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "hero-stamp", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "LAST SYNC" }),
@@ -73304,7 +73341,11 @@ function App() {
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: `upload-zone ${dragging ? "is-dragging" : ""}`, onDragOver: (e) => {
         e.preventDefault();
         setDragging(true);
-      }, onDragLeave: () => setDragging(false), onDrop: handleDrop, onClick: () => inputRef.current?.click(), children: [
+      }, onDragLeave: () => setDragging(false), onDrop: (e) => {
+        e.preventDefault();
+        setDragging(false);
+        void loadFile(e.dataTransfer.files[0]);
+      }, onClick: () => inputRef.current?.click(), children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { ref: inputRef, type: "file", accept: ".xls,.xlsx", hidden: true, onChange: (e) => void loadFile(e.target.files?.[0]) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "upload-icon", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { size: 22 }) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
@@ -73332,12 +73373,16 @@ function App() {
         " FILTERS"
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uC9C0\uC885 ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: grade, onChange: (e) => setGrade(e.target.value), children: grades.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: item }, item)) })
+        "\uC9C0\uC885 \uB300\uBD84\uB958 ",
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: grade, onChange: (e) => setGrade(e.target.value), children: grades.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2)) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uCE21\uC815 \uD56D\uBAA9 ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: metric, onChange: (e) => setMetric(e.target.value), children: metricOptions.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: item.key, children: item.label }, item.key)) })
+        "\uD3C9\uB7C9 \uC911\uBD84\uB958 ",
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: basis2, onChange: (e) => setBasis(e.target.value), children: bases.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 === "\uC804\uCCB4 \uD3C9\uB7C9" ? x2 : `${x2} g/\u33A1` }, x2)) })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
+        "\uD488\uC9C8 \uD56D\uBAA9 ",
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: metric, onChange: (e) => setMetricSafe(e.target.value), children: metricOptions.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: x2.key, children: x2.label }, x2.key)) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "spec-controls", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "SPEC LIMITS" }),
@@ -73355,38 +73400,41 @@ function App() {
     ] }),
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "stat-grid", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "stat-card", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uCE21\uC815 \uB370\uC774\uD130" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uD544\uD130 \uB370\uC774\uD130" }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("strong", { children: [
-          filteredRows.length.toLocaleString(),
-          " ",
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: "\uAC74" })
+          filtered.length,
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: " \uAC74" })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChartColumn, { size: 14 }),
-          " \uCD5C\uADFC \uBCC0\uACBD\uC77C\uC9C0 \uAE30\uC900"
+          " \uC9C0\uC885 ",
+          grade,
+          " \xB7 \uD3C9\uB7C9 ",
+          basis2
         ] })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "stat-card", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
           "\uD3C9\uADE0 ",
-          metric
+          selected.label
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("strong", { children: [
-          avg.toFixed(metric === "\uC218\uBD84" ? 2 : 1),
-          " ",
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: selectedMetric.unit })
+          average.toFixed(metric === "\uC218\uBD84" ? 2 : 1),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("small", { children: [
+            " ",
+            selected.unit
+          ] })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "positive", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Gauge, { size: 14 }),
-          " \uACF5\uC815 \uC911\uC2EC\uAC12"
+          " \uC804\xB7\uC911\xB7\uD6C4 \uC704\uCE58 \uD3C9\uADE0"
         ] })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "stat-card alert-card", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uADDC\uACA9 \uC774\uD0C8" }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("strong", { children: [
           outliers.length,
-          " ",
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: "\uAC74" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: " \uAC74" })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { size: 14 }),
@@ -73410,12 +73458,15 @@ function App() {
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "panel-head", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "panel-kicker", children: "TREND MONITOR" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: "\uC2DC\uACC4\uC5F4 \uD488\uC9C8 \uD2B8\uB80C\uB4DC" })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h2", { children: [
+              selected.label,
+              " \uC704\uCE58 \uD3C9\uADE0 \uD2B8\uB80C\uB4DC"
+            ] })
           ] }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "legend", children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
               /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", { className: "legend-line" }),
-              " \uCE21\uC815\uAC12"
+              " \uC704\uCE58 \uD3C9\uADE0"
             ] }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
               /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", { className: "legend-usl" }),
@@ -73431,59 +73482,54 @@ function App() {
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CartesianGrid, { stroke: "#e8edf2", vertical: false }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(XAxis, { dataKey: "label", tick: { fontSize: 10, fill: "#84909d" }, tickLine: false, axisLine: false }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, { domain: [Number(lsl) - 6, Number(usl) + 6], tick: { fontSize: 10, fill: "#84909d" }, tickLine: false, axisLine: false }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { contentStyle: { border: "0", borderRadius: 10, boxShadow: "0 8px 30px rgba(20,40,70,.12)" }, formatter: (value) => [`${value} ${selectedMetric.unit}`, metric] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { formatter: (v) => [`${Number(v).toFixed(2)} ${selected.unit}`, selected.label], contentStyle: { border: 0, borderRadius: 10 } }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReferenceLine, { y: Number(usl), stroke: "#f36a5d", strokeDasharray: "5 5", label: { value: "USL", fill: "#f36a5d", fontSize: 11, position: "insideTopRight" } }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReferenceLine, { y: Number(lsl), stroke: "#f36a5d", strokeDasharray: "5 5", label: { value: "LSL", fill: "#f36a5d", fontSize: 11, position: "insideBottomRight" } }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Area, { type: "monotone", dataKey: "value", stroke: "#16b98d", strokeWidth: 2.5, fill: "url(#qualityFill)", dot: (props) => props.payload.status === "\uC774\uD0C8" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { ...props, r: 5, fill: "#f36a5d", stroke: "#fff", strokeWidth: 2 }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { ...props, r: 3, fill: "#16b98d", stroke: "#fff", strokeWidth: 2 }), activeDot: { r: 6 } })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Area, { type: "monotone", dataKey: "value", stroke: "#16b98d", strokeWidth: 2.5, fill: "url(#qualityFill)", dot: (p) => p.payload.row.averages[metric] > Number(usl) || p.payload.row.averages[metric] < Number(lsl) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { ...p, r: 5, fill: "#f36a5d", stroke: "#fff", strokeWidth: 2 }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", { ...p, r: 3, fill: "#16b98d", stroke: "#fff", strokeWidth: 2 }), activeDot: { r: 6 } })
         ] }) }) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "panel insight-panel", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "panel-head", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "panel-kicker", children: "AI QUALITY READOUT" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: "\uACF5\uC815 \uD574\uC11D" })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "panel-kicker", children: "POSITION AVERAGE" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: "\uC804\xB7\uC911\xB7\uD6C4 \uD3C9\uADE0\uAC12" })
           ] }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Layers, { size: 20, className: "muted-icon" })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "insight-highlight", children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "signal-icon", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Zap, { size: 17, fill: "currentColor" }) }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "\uC548\uC815\uC801\uC778 \uACF5\uC815 \uD750\uB984" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "\uCD5C\uADFC \uCE21\uC815\uAC12\uC774 \uC911\uC2EC\uC120\uC744 \uC720\uC9C0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4." })
-          ] })
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "insight-list", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uC911\uC2EC \uACBD\uD5A5" }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("strong", { children: [
-              avg.toFixed(1),
+              selected.label,
+              " \uD3C9\uADE0 ",
+              average.toFixed(2),
               " ",
-              selectedMetric.unit
-            ] })
-          ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uCD5C\uB300 \uD3B8\uCC28" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { className: outliers.length ? "danger-text" : "", children: outliers.length ? `${Math.max(...filteredRows.map((r2) => Math.abs(r2.value - avg))).toFixed(1)} ${selectedMetric.unit}` : "\uC5C6\uC74C" })
-          ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uC0D8\uD50C \uBC94\uC704" }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: filteredRows.length ? `${Math.min(...filteredRows.map((r2) => r2.value))} \u2014 ${Math.max(...filteredRows.map((r2) => r2.value))}` : "\u2014" })
+              selected.unit
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "\uC804\xB7\uC911\xB7\uD6C4 \uCE21\uC815\uAC12\uC744 \uD3C9\uADE0\uD558\uC5EC \uD45C\uC2DC\uD569\uB2C8\uB2E4." })
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { className: "text-button", type: "button", children: [
-          "\uC0C1\uC138 \uB9AC\uD3EC\uD2B8 \uBCF4\uAE30 ",
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\u2192" })
-        ] })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "insight-list", children: positionKeys.map((location) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+            location,
+            " \uC704\uCE58"
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("strong", { children: [
+            locationAverage(filtered, metric, location)?.toFixed(2) ?? "\u2014",
+            " ",
+            selected.unit
+          ] })
+        ] }, location)) })
       ] })
     ] }),
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "panel table-panel", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "panel-head", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "panel-kicker", children: "RECENT OBSERVATIONS" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: "\uCD5C\uADFC \uCE21\uC815 \uB370\uC774\uD130" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", { children: "\uC704\uCE58\uBCC4 \uC6D0\uC2DC\uAC12\uACFC \uD3C9\uADE0" })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: "row-count", children: [
-          filteredRows.length,
+          filtered.length,
           " records"
         ] })
       ] }),
@@ -73492,12 +73538,16 @@ function App() {
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uCE21\uC815 \uC2DC\uAC01" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uAC70\uB798\uCC98 / \uD56D\uCC28\uBC88\uD638" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uC9C0\uC885" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD56D\uBAA9" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uCE21\uC815\uAC12" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD3C9\uB7C9" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uC804" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uC911" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD6C4" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD3C9\uADE0" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD310\uC815" })
         ] }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: filteredRows.map((row) => {
-          const isOutlier = row.value > Number(usl) || row.value < Number(lsl);
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: filtered.map((row) => {
+          const val = row.averages[metric];
+          const bad = val !== null && (val > Number(usl) || val < Number(lsl));
           return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { className: "mono", children: [
               row.date,
@@ -73509,15 +73559,13 @@ function App() {
               /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: row.source })
             ] }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "grade-tag", children: row.grade }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: metric }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { className: isOutlier ? "danger-text value-cell" : "value-cell", children: [
-              row.value,
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "mono", children: row.basisWeight ?? "\u2014" }),
+            positionKeys.map((k) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "value-cell", children: row.values[metric]?.[k] ?? "\u2014" }, k)),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: bad ? "danger-text value-cell" : "value-cell", children: val === null ? "\u2014" : val.toFixed(2) }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: `status ${bad ? "status-alert" : "status-ok"}`, children: [
+              bad ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { size: 13 }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { size: 13 }),
               " ",
-              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: selectedMetric.unit })
-            ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: `status ${isOutlier ? "status-alert" : "status-ok"}`, children: [
-              isOutlier ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { size: 13 }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { size: 13 }),
-              isOutlier ? "\uADDC\uACA9 \uC774\uD0C8" : "\uD569\uACA9"
+              bad ? "\uADDC\uACA9 \uC774\uD0C8" : "\uD569\uACA9"
             ] }) })
           ] }, row.id);
         }) })
@@ -73525,7 +73573,7 @@ function App() {
     ] }),
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("footer", { children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "QUALITY LEDGER / PLANT 03" }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Data integrity monitored \xB7 v1.0.0" })
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Data integrity monitored \xB7 v1.1.0" })
     ] })
   ] });
 }
