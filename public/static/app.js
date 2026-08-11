@@ -21487,7 +21487,7 @@ var require_use_sync_external_store_shim_development = __commonJS({
           },
           [subscribe, value, getSnapshot]
         );
-        useEffect19(
+        useEffect20(
           function() {
             checkIfSnapshotChanged(inst) && forceUpdate({ inst });
             return subscribe(function() {
@@ -21513,7 +21513,7 @@ var require_use_sync_external_store_shim_development = __commonJS({
         return getSnapshot();
       }
       "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-      var React41 = require_react(), objectIs = "function" === typeof Object.is ? Object.is : is3, useState14 = React41.useState, useEffect19 = React41.useEffect, useLayoutEffect9 = React41.useLayoutEffect, useDebugValue2 = React41.useDebugValue, didWarnOld18Alpha = false, didWarnUncachedGetSnapshot = false, shim = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? useSyncExternalStore$1 : useSyncExternalStore$2;
+      var React41 = require_react(), objectIs = "function" === typeof Object.is ? Object.is : is3, useState14 = React41.useState, useEffect20 = React41.useEffect, useLayoutEffect9 = React41.useLayoutEffect, useDebugValue2 = React41.useDebugValue, didWarnOld18Alpha = false, didWarnUncachedGetSnapshot = false, shim = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? useSyncExternalStore$1 : useSyncExternalStore$2;
       exports.useSyncExternalStore = void 0 !== React41.useSyncExternalStore ? React41.useSyncExternalStore : shim;
       "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
     })();
@@ -21541,7 +21541,7 @@ var require_with_selector_development = __commonJS({
         return x2 === y2 && (0 !== x2 || 1 / x2 === 1 / y2) || x2 !== x2 && y2 !== y2;
       }
       "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-      var React41 = require_react(), shim = require_shim(), objectIs = "function" === typeof Object.is ? Object.is : is3, useSyncExternalStore2 = shim.useSyncExternalStore, useRef19 = React41.useRef, useEffect19 = React41.useEffect, useMemo13 = React41.useMemo, useDebugValue2 = React41.useDebugValue;
+      var React41 = require_react(), shim = require_shim(), objectIs = "function" === typeof Object.is ? Object.is : is3, useSyncExternalStore2 = shim.useSyncExternalStore, useRef19 = React41.useRef, useEffect20 = React41.useEffect, useMemo13 = React41.useMemo, useDebugValue2 = React41.useDebugValue;
       exports.useSyncExternalStoreWithSelector = function(subscribe, getSnapshot, getServerSnapshot, selector, isEqual2) {
         var instRef = useRef19(null);
         if (null === instRef.current) {
@@ -21584,7 +21584,7 @@ var require_with_selector_development = __commonJS({
           [getSnapshot, getServerSnapshot, selector, isEqual2]
         );
         var value = useSyncExternalStore2(subscribe, instRef[0], instRef[1]);
-        useEffect19(
+        useEffect20(
           function() {
             inst.hasValue = true;
             inst.value = value;
@@ -21620,7 +21620,7 @@ var require_use_sync_external_store_with_selector_development = __commonJS({
         return x2 === y2 && (0 !== x2 || 1 / x2 === 1 / y2) || x2 !== x2 && y2 !== y2;
       }
       "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-      var React41 = require_react(), objectIs = "function" === typeof Object.is ? Object.is : is3, useSyncExternalStore2 = React41.useSyncExternalStore, useRef19 = React41.useRef, useEffect19 = React41.useEffect, useMemo13 = React41.useMemo, useDebugValue2 = React41.useDebugValue;
+      var React41 = require_react(), objectIs = "function" === typeof Object.is ? Object.is : is3, useSyncExternalStore2 = React41.useSyncExternalStore, useRef19 = React41.useRef, useEffect20 = React41.useEffect, useMemo13 = React41.useMemo, useDebugValue2 = React41.useDebugValue;
       exports.useSyncExternalStoreWithSelector = function(subscribe, getSnapshot, getServerSnapshot, selector, isEqual2) {
         var instRef = useRef19(null);
         if (null === instRef.current) {
@@ -21663,7 +21663,7 @@ var require_use_sync_external_store_with_selector_development = __commonJS({
           [getSnapshot, getServerSnapshot, selector, isEqual2]
         );
         var value = useSyncExternalStore2(subscribe, instRef[0], instRef[1]);
-        useEffect19(
+        useEffect20(
           function() {
             inst.hasValue = true;
             inst.value = value;
@@ -73261,16 +73261,21 @@ function makeValues(row) {
 function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30", tab = "") {
   const client = String(row[5] ?? "").replace(/\n/g, " ").trim();
   const grade = String(row[6] ?? "").trim();
-  if (!client && !grade && !row.slice(8).some((v) => v !== null && v !== "")) return null;
+  if (!client) return null;
+  const weight = numeric(row[7]);
   const values = makeValues(row);
-  return { id: index + 1, plant: currentPlant, tab, date: `${String(row[1] ?? "").padStart(2, "0")}.${String(row[2] ?? "").padStart(2, "0")}`, time: `${String(row[3] ?? "").padStart(2, "0")}:${String(row[4] ?? "").padStart(2, "0")}`, client: client || "\uBBF8\uC9C0\uC815 \uAC70\uB798\uCC98", grade: grade || "\uBBF8\uC9C0\uC815", basisWeight: numeric(row[7]), source: client.slice(0, 18) || `ROW-${index + 1}`, values, averages: Object.fromEntries(Object.entries(values).map(([k, v]) => [k, avg(v)])), md: slashPair(row[84])[0], cd: slashPair(row[85])[0] };
+  return { id: index + 1, plant: currentPlant, tab, date: `${String(row[0] ?? "").padStart(2, "0")}.${String(row[1] ?? "").padStart(2, "0")}`, time: `${String(row[2] ?? "").padStart(2, "0")}:${String(row[3] ?? "").padStart(2, "0")}`, client, grade: grade || "\uBBF8\uC9C0\uC815", basisWeight: weight, basisLabel: weight === null ? "\uBBF8\uC9C0\uC815 \uD3C9\uB7C9" : String(weight), source: client.slice(0, 18), values, averages: Object.fromEntries(Object.entries(values).map(([k, v]) => [k, avg(v)])), md: slashPair(row[84])[0], cd: slashPair(row[85])[0] };
 }
 function classifySheet(name) {
   const tab = name.trim();
   const match = tab.match(/(\d{3})/);
   const basisWeight = match ? Number(match[1]) : null;
-  const grade = match ? tab.slice(0, match.index).trim().replace(/[\s(]+$/, "") || tab : tab;
-  return { tab, grade, basisWeight };
+  const prefix = match ? tab.slice(0, match.index).trim().replace(/[\s(]+$/, "") : tab;
+  const suffix2 = match ? tab.slice((match.index ?? 0) + 3).trim() : "";
+  const country = suffix2.replace(/^\s*/, "").replace(/^\((.+)\).*$/, "$1").trim();
+  const grade = prefix || tab;
+  const basisLabel = basisWeight === null ? tab : country ? `${basisWeight} (${country})` : String(basisWeight);
+  return { tab, grade, basisWeight, basisLabel };
 }
 function parseWorkbook(file) {
   return file.arrayBuffer().then((buffer) => {
@@ -73287,6 +73292,7 @@ function parseWorkbook(file) {
         if (parsed) {
           parsed.grade = cls.grade;
           parsed.basisWeight = cls.basisWeight ?? parsed.basisWeight;
+          parsed.basisLabel = cls.basisLabel;
           out.push(parsed);
         }
       }
@@ -73316,8 +73322,11 @@ function App() {
   const selected = metricOptions.find((x2) => x2.key === metric) ?? metricOptions[0];
   const plants = ["\uC804\uCCB4 \uD638\uAE30", ...Array.from(new Set(rows.map((r2) => r2.plant)))];
   const grades = ["\uC804\uCCB4 \uC9C0\uC885", ...Array.from(new Set(rows.map((r2) => r2.grade)))];
-  const bases = ["\uC804\uCCB4 \uD3C9\uB7C9", ...Array.from(new Set(rows.map((r2) => r2.basisWeight).filter((v) => v !== null))).sort((a, b) => a - b).map(String)];
-  const filtered = (0, import_react57.useMemo)(() => rows.filter((r2) => (plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade) && (basis2 === "\uC804\uCCB4 \uD3C9\uB7C9" || String(r2.basisWeight) === basis2)), [rows, plant, grade, basis2]);
+  const bases = ["\uC804\uCCB4 \uD3C9\uB7C9", ...Array.from(new Set(rows.filter((r2) => (plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade)).map((r2) => r2.basisLabel))).sort((a, b) => a.localeCompare(b, "ko", { numeric: true }))];
+  (0, import_react57.useEffect)(() => {
+    if (basis2 !== "\uC804\uCCB4 \uD3C9\uB7C9" && !bases.includes(basis2)) setBasis("\uC804\uCCB4 \uD3C9\uB7C9");
+  }, [basis2, bases.join("|")]);
+  const filtered = (0, import_react57.useMemo)(() => rows.filter((r2) => (plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade) && (basis2 === "\uC804\uCCB4 \uD3C9\uB7C9" || r2.basisLabel === basis2)), [rows, plant, grade, basis2]);
   const nums = filtered.map((r2) => r2.averages[metric]).filter((v) => v !== null);
   const average = nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : 0;
   const outliers = filtered.filter((r2) => {
@@ -73386,7 +73395,7 @@ function App() {
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "upload-icon", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { size: 22 }) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "\uC5D1\uC140 \uD30C\uC77C\uC744 \uC5EC\uAE30\uC5D0 \uB193\uC73C\uC138\uC694" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: ".XLS \uB610\uB294 .XLSX \xB7 \uBCC0\uACBD\uC77C\uC9C0 \uC2DC\uD2B8 \uC790\uB3D9 \uC778\uC2DD" })
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: ".XLS \uB610\uB294 .XLSX \xB7 \uBAA8\uB4E0 \uC720\uD6A8\uD55C \uD0ED \uC790\uB3D9 \uBD84\uC11D" })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", { className: "ghost-button", type: "button", children: [
           "\uD30C\uC77C \uC120\uD0DD ",
@@ -73409,15 +73418,15 @@ function App() {
         " FILTERS"
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uD638\uAE30 \uB300\uBD84\uB958 ",
+        "\uD638\uAE30 ",
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: plant, onChange: (e) => setPlant(e.target.value), children: plants.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2)) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uC9C0\uC885 \uC911\uBD84\uB958 ",
+        "\uC9C0\uC885 ",
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: grade, onChange: (e) => setGrade(e.target.value), children: grades.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2)) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uD3C9\uB7C9 \uC18C\uBD84\uB958 ",
+        "\uD3C9\uB7C9 ",
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: basis2, onChange: (e) => setBasis(e.target.value), children: bases.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: x2, children: x2 === "\uC804\uCCB4 \uD3C9\uB7C9" ? x2 : `${x2} g/\u33A1` }, x2)) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
@@ -73602,7 +73611,7 @@ function App() {
               /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: row.tab || row.source })
             ] }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "grade-tag", children: row.grade }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "mono", children: row.basisWeight ?? "\u2014" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "mono", children: row.basisLabel || "\u2014" }),
             metric === "PPS" || metric === "\uD3C9\uB7C9" || metric === "\uB450\uAED8" || metric === "\uC218\uBD84" || metric === "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)" || metric === "\uB4A4\uBE44\uCE68" ? positionKeys.map((k) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "value-cell", children: row.values[metric]?.[k] ?? "\u2014" }, k)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "value-cell", children: row.averages[metric] ?? "\u2014" }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: bad ? "danger-text value-cell" : "value-cell", children: v === null ? "\u2014" : v.toFixed(2) }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { className: "mono", children: [
