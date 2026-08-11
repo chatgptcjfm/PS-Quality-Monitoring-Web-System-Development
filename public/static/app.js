@@ -73205,12 +73205,14 @@ var metricOptions = [
   { label: "\uC218\uBD84 (%)", key: "\uC218\uBD84", unit: "%", usl: 7.5, lsl: 4.5 },
   { label: "\uBC31\uC0C9\uB3C4 \xB7 \uD45C\uBA74 \uC804/\uC911/\uD6C4", key: "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)", unit: "", usl: 80, lsl: 42 },
   { label: "\uBC31\uC0C9\uB3C4 \xB7 \uD6C4\uBA74", key: "\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)", unit: "", usl: 80, lsl: 42 },
-  { label: "PPS \xB7 \uD45C\uBA74/\uD6C4\uBA74", key: "PPS", unit: "", usl: 3.5, lsl: 1 },
-  { label: "\uC778\uC1C4\uCE35\uBD84\uB9AC (TV15)", key: "\uC778\uC1C4\uCE35\uBD84\uB9AC", unit: "", usl: 100, lsl: 15 },
+  { label: "PPS \xB7 \uD45C\uBA74 \uC804/\uC911/\uD6C4", key: "PPS", unit: "", usl: 3.5, lsl: 1 },
+  { label: "\uC778\uC1C4\uCE35\uBD84\uB9AC", key: "\uC778\uC1C4\uCE35\uBD84\uB9AC", unit: "", usl: 100, lsl: 15 },
+  { label: "\uD53D\uD0B9", key: "\uD53D\uD0B9", unit: "", usl: 100, lsl: 0 },
   { label: "\uBAA8\uD2C0\uB9C1", key: "\uBAA8\uD2C0\uB9C1", unit: "", usl: 100, lsl: 3 },
   { label: "\uB0B4\uC808\uB3C4 MD", key: "\uB0B4\uC808\uB3C4(MD)", unit: "\uD68C", usl: 100, lsl: 0 },
   { label: "\uB0B4\uC808\uB3C4 CD", key: "\uB0B4\uC808\uB3C4(CD)", unit: "\uD68C", usl: 100, lsl: 0 },
-  { label: "\uC2A4\uD2F0\uD504\uB2C8\uC2A4 MD/CD", key: "\uC2A4\uD2F0\uD504\uB2C8\uC2A4", unit: "", usl: 150, lsl: 0 },
+  { label: "\uC2A4\uD2F0\uD504\uB2C8\uC2A4 MD", key: "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(MD)", unit: "", usl: 150, lsl: 0 },
+  { label: "\uC2A4\uD2F0\uD504\uB2C8\uC2A4 CD", key: "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(CD)", unit: "", usl: 150, lsl: 0 },
   { label: "\uD30C\uC5F4\uAC15\uB3C4", key: "\uD30C\uC5F4\uAC15\uB3C4", unit: "", usl: 150, lsl: 0 },
   { label: "\uC778\uD130\uB110", key: "\uC778\uD130\uB110", unit: "", usl: 100, lsl: 0 },
   { label: "\uBD80\uCC29\uB7C9 \xB7 \uD45C\uBA74", key: "\uBD80\uCC29\uB7C9(\uD45C\uBA74)", unit: "", usl: 100, lsl: 0 },
@@ -73234,6 +73236,7 @@ var metricOptions = [
 ];
 var positionKeys = ["\uC804", "\uC911", "\uD6C4"];
 var numeric = (v) => {
+  if (v === null || v === void 0 || String(v).trim() === "") return null;
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
 };
@@ -73253,23 +73256,25 @@ var avg = (v) => {
 var scalar = (v) => ({ \uC804: numeric(v), \uC911: null, \uD6C4: null });
 function makeValues(row) {
   const [md, cd] = slashPair(row[37]);
-  return { \uD3C9\uB7C9: positions(row, [8, 9, 10]), \uB450\uAED8: positions(row, [11, 12, 13]), \uBC00\uB3C4: scalar(row[14]), \uC218\uBD84: positions(row, [15, 16, 17]), "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": positions(row, [18, 19, 20]), "\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[21]), PPS: { \uC804: slashAverage(row[23]), \uC911: null, \uD6C4: slashAverage(row[26]) }, \uC778\uC1C4\uCE35\uBD84\uB9AC: scalar(row[30]), \uBAA8\uD2C0\uB9C1: scalar(row[32]), "\uB0B4\uC808\uB3C4(MD)": scalar(md), "\uB0B4\uC808\uB3C4(CD)": scalar(cd), \uC2A4\uD2F0\uD504\uB2C8\uC2A4: { \uC804: numeric(row[39]), \uC911: numeric(row[40]), \uD6C4: null }, \uD30C\uC5F4\uAC15\uB3C4: scalar(row[41]), \uC778\uD130\uB110: scalar(slashAverage(row[45])), "\uBD80\uCC29\uB7C9(\uD45C\uBA74)": scalar(row[52]), "\uBD80\uCC29\uB7C9(\uC774\uBA74)": scalar(row[54]), "\uBD80\uCC29\uB7C9(\uD6C4\uC774\uBA74)": scalar(row[56]), "\uBD80\uCC29\uB7C9(\uD6C4\uBA74)": scalar(row[58]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": scalar(row[53]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uC774\uBA74)": scalar(row[55]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uC774\uBA74)": scalar(row[57]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[59]), \uB4A4\uBE44\uCE68: positions(row, [60, 61, 62]), \uD45C\uBA74\uC0C9\uCC28L: scalar(row[71]), \uD45C\uBA74\uC0C9\uCC28a: scalar(row[72]), \uD45C\uBA74\uC0C9\uCC28b: scalar(row[73]), \uD6C4\uBA74\uC0C9\uCC28L: scalar(row[75]), \uD6C4\uBA74\uC0C9\uCC28a: scalar(row[76]), \uD6C4\uBA74\uC0C9\uCC28b: scalar(row[77]), \uD6C4\uBA74\uC9C0\uBD84: scalar(row[79]), \uAE08\uC18DMD: scalar(row[84]), \uAE08\uC18DCD: scalar(row[85]) };
+  return { \uD3C9\uB7C9: positions(row, [8, 9, 10]), \uB450\uAED8: positions(row, [11, 12, 13]), \uBC00\uB3C4: scalar(row[14]), \uC218\uBD84: positions(row, [15, 16, 17]), "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": positions(row, [18, 19, 20]), "\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[21]), PPS: positions(row, [23, 24, 25]), \uC778\uC1C4\uCE35\uBD84\uB9AC: scalar(row[30]), \uD53D\uD0B9: scalar(row[31]), \uBAA8\uD2C0\uB9C1: scalar(row[32]), "\uB0B4\uC808\uB3C4(MD)": scalar(md), "\uB0B4\uC808\uB3C4(CD)": scalar(cd), "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(MD)": scalar(row[39]), "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(CD)": scalar(row[40]), \uD30C\uC5F4\uAC15\uB3C4: scalar(row[41]), \uC778\uD130\uB110: scalar(slashAverage(row[45])), "\uBD80\uCC29\uB7C9(\uD45C\uBA74)": scalar(row[52]), "\uBD80\uCC29\uB7C9(\uC774\uBA74)": scalar(row[54]), "\uBD80\uCC29\uB7C9(\uD6C4\uC774\uBA74)": scalar(row[56]), "\uBD80\uCC29\uB7C9(\uD6C4\uBA74)": scalar(row[58]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": scalar(row[53]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uC774\uBA74)": scalar(row[55]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uC774\uBA74)": scalar(row[57]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[59]), \uB4A4\uBE44\uCE68: positions(row, [60, 61, 62]), \uD45C\uBA74\uC0C9\uCC28L: scalar(row[71]), \uD45C\uBA74\uC0C9\uCC28a: scalar(row[72]), \uD45C\uBA74\uC0C9\uCC28b: scalar(row[73]), \uD6C4\uBA74\uC0C9\uCC28L: scalar(row[75]), \uD6C4\uBA74\uC0C9\uCC28a: scalar(row[76]), \uD6C4\uBA74\uC0C9\uCC28b: scalar(row[77]), \uD6C4\uBA74\uC9C0\uBD84: scalar(row[79]), \uAE08\uC18DMD: scalar(row[84]), \uAE08\uC18DCD: scalar(row[85]) };
 }
-function rowFromSheet(row, index) {
+function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30") {
   const client = String(row[5] ?? "").replace(/\n/g, " ").trim();
   const grade = String(row[6] ?? "").trim();
   if (!client && !grade && !row.slice(8).some((v) => v !== null && v !== "")) return null;
   const values = makeValues(row);
-  return { id: index + 1, date: `${String(row[1] ?? "").padStart(2, "0")}.${String(row[2] ?? "").padStart(2, "0")}`, time: `${String(row[3] ?? "").padStart(2, "0")}:${String(row[4] ?? "").padStart(2, "0")}`, client: client || "\uBBF8\uC9C0\uC815 \uAC70\uB798\uCC98", grade: grade || "\uBBF8\uC9C0\uC815", basisWeight: numeric(row[7]), source: client.slice(0, 18) || `ROW-${index + 1}`, values, averages: Object.fromEntries(Object.entries(values).map(([k, v]) => [k, avg(v)])), md: slashPair(row[84])[0], cd: slashPair(row[85])[0] };
+  return { id: index + 1, plant: currentPlant, date: `${String(row[1] ?? "").padStart(2, "0")}.${String(row[2] ?? "").padStart(2, "0")}`, time: `${String(row[3] ?? "").padStart(2, "0")}:${String(row[4] ?? "").padStart(2, "0")}`, client: client || "\uBBF8\uC9C0\uC815 \uAC70\uB798\uCC98", grade: grade || "\uBBF8\uC9C0\uC815", basisWeight: numeric(row[7]), source: client.slice(0, 18) || `ROW-${index + 1}`, values, averages: Object.fromEntries(Object.entries(values).map(([k, v]) => [k, avg(v)])), md: slashPair(row[84])[0], cd: slashPair(row[85])[0] };
 }
 function parseWorkbook(file) {
   return file.arrayBuffer().then((buffer) => {
     const wb = readSync(buffer, { type: "array" });
     const name = wb.SheetNames.find((n) => n.includes("\uBCC0\uACBD\uC77C\uC9C0")) ?? wb.SheetNames[0];
     const rows = utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: null });
+    const title = String(rows[1]?.[1] ?? "").trim();
+    const currentPlant = title ? `${title}\uD638\uAE30` : "\uBBF8\uC9C0\uC815 \uD638\uAE30";
     const out = [];
     for (const [i, row] of rows.slice(8).entries()) {
-      const parsed = rowFromSheet(row, i);
+      const parsed = rowFromSheet(row, i, currentPlant);
       if (parsed) out.push(parsed);
       if (String(row[5] ?? "").includes("6810J30061")) break;
     }
@@ -73287,6 +73292,7 @@ function locationAverage(rows, key, loc) {
 function App() {
   const inputRef = (0, import_react57.useRef)(null);
   const [rows, setRows] = (0, import_react57.useState)(demoRows);
+  const [plant, setPlant] = (0, import_react57.useState)("\uC804\uCCB4 \uD638\uAE30");
   const [fileName, setFileName] = (0, import_react57.useState)("3\uD638\uAE30 2026.08.10.xls");
   const [grade, setGrade] = (0, import_react57.useState)("\uC804\uCCB4 \uC9C0\uC885");
   const [basis2, setBasis] = (0, import_react57.useState)("\uC804\uCCB4 \uD3C9\uB7C9");
@@ -73295,9 +73301,10 @@ function App() {
   const [lsl, setLsl] = (0, import_react57.useState)("294");
   const [dragging, setDragging] = (0, import_react57.useState)(false);
   const selected = metricOptions.find((x2) => x2.key === metric) ?? metricOptions[0];
+  const plants = ["\uC804\uCCB4 \uD638\uAE30", ...Array.from(new Set(rows.map((r2) => r2.plant)))];
   const grades = ["\uC804\uCCB4 \uC9C0\uC885", ...Array.from(new Set(rows.map((r2) => r2.grade)))];
   const bases = ["\uC804\uCCB4 \uD3C9\uB7C9", ...Array.from(new Set(rows.map((r2) => r2.basisWeight).filter((v) => v !== null))).sort((a, b) => a - b).map(String)];
-  const filtered = (0, import_react57.useMemo)(() => rows.filter((r2) => (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade) && (basis2 === "\uC804\uCCB4 \uD3C9\uB7C9" || String(r2.basisWeight) === basis2)), [rows, grade, basis2]);
+  const filtered = (0, import_react57.useMemo)(() => rows.filter((r2) => (plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade) && (basis2 === "\uC804\uCCB4 \uD3C9\uB7C9" || String(r2.basisWeight) === basis2)), [rows, plant, grade, basis2]);
   const nums = filtered.map((r2) => r2.averages[metric]).filter((v) => v !== null);
   const average = nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : 0;
   const outliers = filtered.filter((r2) => {
@@ -73342,7 +73349,10 @@ function App() {
           "\uD488\uC9C8 \uB370\uC774\uD130 ",
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("em", { children: "\uC778\uC0AC\uC774\uD2B8" })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "hero-copy", children: "\uC0DD\uC0B0 \uC885\uB8CC \uB864\uAE4C\uC9C0\uC758 \uC774\uB825\uB9CC \uC0AC\uC6A9\uD558\uACE0, \uBA74\xB7\uC704\uCE58\uBCC4 \uD488\uC9C8\uAC12\uC744 \uD655\uC778\uD558\uC138\uC694." })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "hero-copy", children: [
+          plant === "\uC804\uCCB4 \uD638\uAE30" ? "\uD638\uAE30\uBCC4" : plant,
+          " \uC0DD\uC0B0 \uC774\uB825\uC5D0\uC11C \uBA74\xB7\uC704\uCE58\uBCC4 \uD488\uC9C8\uAC12\uC744 \uD655\uC778\uD558\uC138\uC694."
+        ] })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "hero-stamp", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "LAST SYNC" }),
@@ -73386,12 +73396,16 @@ function App() {
         " FILTERS"
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uC9C0\uC885 \uB300\uBD84\uB958 ",
+        "\uD638\uAE30 \uB300\uBD84\uB958 ",
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: plant, onChange: (e) => setPlant(e.target.value), children: plants.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2)) })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
+        "\uC9C0\uC885 \uC911\uBD84\uB958 ",
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: grade, onChange: (e) => setGrade(e.target.value), children: grades.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2)) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uD3C9\uB7C9 \uC911\uBD84\uB958 ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: basis2, onChange: (e) => setBasis(e.target.value), children: bases.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 === "\uC804\uCCB4 \uD3C9\uB7C9" ? x2 : `${x2} g/\u33A1` }, x2)) })
+        "\uD3C9\uB7C9 \uC18C\uBD84\uB958 ",
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: basis2, onChange: (e) => setBasis(e.target.value), children: bases.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: x2, children: x2 === "\uC804\uCCB4 \uD3C9\uB7C9" ? x2 : `${x2} g/\u33A1` }, x2)) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
         "\uD488\uC9C8 \uD56D\uBAA9 ",
@@ -73552,9 +73566,11 @@ function App() {
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uAC70\uB798\uCC98 / \uB864" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uC9C0\uC885" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD3C9\uB7C9" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uC804" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uC911" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD6C4" }),
+          metric === "PPS" || metric === "\uD3C9\uB7C9" || metric === "\uB450\uAED8" || metric === "\uC218\uBD84" || metric === "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)" || metric === "\uB4A4\uBE44\uCE68" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uC804" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uC911" }),
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD6C4" })
+          ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uCE21\uC815\uAC12" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD3C9\uADE0" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uAE08\uC18D MD/CD" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD310\uC815" })
@@ -73574,7 +73590,7 @@ function App() {
             ] }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "grade-tag", children: row.grade }) }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "mono", children: row.basisWeight ?? "\u2014" }),
-            positionKeys.map((k) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "value-cell", children: row.values[metric]?.[k] ?? "\u2014" }, k)),
+            metric === "PPS" || metric === "\uD3C9\uB7C9" || metric === "\uB450\uAED8" || metric === "\uC218\uBD84" || metric === "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)" || metric === "\uB4A4\uBE44\uCE68" ? positionKeys.map((k) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "value-cell", children: row.values[metric]?.[k] ?? "\u2014" }, k)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "value-cell", children: row.averages[metric] ?? "\u2014" }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: bad ? "danger-text value-cell" : "value-cell", children: v === null ? "\u2014" : v.toFixed(2) }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { className: "mono", children: [
               row.md ?? "\u2014",
