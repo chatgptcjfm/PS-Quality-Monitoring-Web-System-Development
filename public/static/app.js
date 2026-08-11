@@ -73258,25 +73258,38 @@ function makeValues(row) {
   const [md, cd] = slashPair(row[37]);
   return { \uD3C9\uB7C9: positions(row, [8, 9, 10]), \uB450\uAED8: positions(row, [11, 12, 13]), \uBC00\uB3C4: scalar(row[14]), \uC218\uBD84: positions(row, [15, 16, 17]), "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": positions(row, [18, 19, 20]), "\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[21]), PPS: positions(row, [23, 24, 25]), \uC778\uC1C4\uCE35\uBD84\uB9AC: scalar(row[30]), \uD53D\uD0B9: scalar(row[31]), \uBAA8\uD2C0\uB9C1: scalar(row[32]), "\uB0B4\uC808\uB3C4(MD)": scalar(md), "\uB0B4\uC808\uB3C4(CD)": scalar(cd), "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(MD)": scalar(row[39]), "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(CD)": scalar(row[40]), \uD30C\uC5F4\uAC15\uB3C4: scalar(row[41]), \uC778\uD130\uB110: scalar(slashAverage(row[45])), "\uBD80\uCC29\uB7C9(\uD45C\uBA74)": scalar(row[52]), "\uBD80\uCC29\uB7C9(\uC774\uBA74)": scalar(row[54]), "\uBD80\uCC29\uB7C9(\uD6C4\uC774\uBA74)": scalar(row[56]), "\uBD80\uCC29\uB7C9(\uD6C4\uBA74)": scalar(row[58]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": scalar(row[53]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uC774\uBA74)": scalar(row[55]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uC774\uBA74)": scalar(row[57]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[59]), \uB4A4\uBE44\uCE68: positions(row, [60, 61, 62]), \uD45C\uBA74\uC0C9\uCC28L: scalar(row[71]), \uD45C\uBA74\uC0C9\uCC28a: scalar(row[72]), \uD45C\uBA74\uC0C9\uCC28b: scalar(row[73]), \uD6C4\uBA74\uC0C9\uCC28L: scalar(row[75]), \uD6C4\uBA74\uC0C9\uCC28a: scalar(row[76]), \uD6C4\uBA74\uC0C9\uCC28b: scalar(row[77]), \uD6C4\uBA74\uC9C0\uBD84: scalar(row[79]), \uAE08\uC18DMD: scalar(row[84]), \uAE08\uC18DCD: scalar(row[85]) };
 }
-function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30") {
+function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30", tab = "") {
   const client = String(row[5] ?? "").replace(/\n/g, " ").trim();
   const grade = String(row[6] ?? "").trim();
   if (!client && !grade && !row.slice(8).some((v) => v !== null && v !== "")) return null;
   const values = makeValues(row);
-  return { id: index + 1, plant: currentPlant, date: `${String(row[1] ?? "").padStart(2, "0")}.${String(row[2] ?? "").padStart(2, "0")}`, time: `${String(row[3] ?? "").padStart(2, "0")}:${String(row[4] ?? "").padStart(2, "0")}`, client: client || "\uBBF8\uC9C0\uC815 \uAC70\uB798\uCC98", grade: grade || "\uBBF8\uC9C0\uC815", basisWeight: numeric(row[7]), source: client.slice(0, 18) || `ROW-${index + 1}`, values, averages: Object.fromEntries(Object.entries(values).map(([k, v]) => [k, avg(v)])), md: slashPair(row[84])[0], cd: slashPair(row[85])[0] };
+  return { id: index + 1, plant: currentPlant, tab, date: `${String(row[1] ?? "").padStart(2, "0")}.${String(row[2] ?? "").padStart(2, "0")}`, time: `${String(row[3] ?? "").padStart(2, "0")}:${String(row[4] ?? "").padStart(2, "0")}`, client: client || "\uBBF8\uC9C0\uC815 \uAC70\uB798\uCC98", grade: grade || "\uBBF8\uC9C0\uC815", basisWeight: numeric(row[7]), source: client.slice(0, 18) || `ROW-${index + 1}`, values, averages: Object.fromEntries(Object.entries(values).map(([k, v]) => [k, avg(v)])), md: slashPair(row[84])[0], cd: slashPair(row[85])[0] };
+}
+function classifySheet(name) {
+  const tab = name.trim();
+  const match = tab.match(/(\d{3})/);
+  const basisWeight = match ? Number(match[1]) : null;
+  const grade = match ? tab.slice(0, match.index).trim().replace(/[\s(]+$/, "") || tab : tab;
+  return { tab, grade, basisWeight };
 }
 function parseWorkbook(file) {
   return file.arrayBuffer().then((buffer) => {
     const wb = readSync(buffer, { type: "array" });
-    const name = wb.SheetNames.find((n) => n.includes("\uBCC0\uACBD\uC77C\uC9C0")) ?? wb.SheetNames[0];
-    const rows = utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: null });
-    const title = String(rows[1]?.[1] ?? "").trim();
-    const currentPlant = title ? `${title}\uD638\uAE30` : "\uBBF8\uC9C0\uC815 \uD638\uAE30";
     const out = [];
-    for (const [i, row] of rows.slice(8).entries()) {
-      const parsed = rowFromSheet(row, i, currentPlant);
-      if (parsed) out.push(parsed);
-      if (String(row[5] ?? "").includes("6810J30061")) break;
+    for (const name of wb.SheetNames) {
+      const sheet = utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: null });
+      if (sheet.length < 9) continue;
+      const title = String(sheet[2]?.[1] ?? "").trim();
+      const currentPlant = title ? `${title}\uD638\uAE30` : "\uBBF8\uC9C0\uC815 \uD638\uAE30";
+      const cls = classifySheet(name);
+      for (const [i, row] of sheet.slice(8).entries()) {
+        const parsed = rowFromSheet(row, i, currentPlant, cls.tab);
+        if (parsed) {
+          parsed.grade = cls.grade;
+          parsed.basisWeight = cls.basisWeight ?? parsed.basisWeight;
+          out.push(parsed);
+        }
+      }
     }
     return out;
   });
@@ -73586,7 +73599,7 @@ function App() {
             ] }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { children: [
               /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: row.client }),
-              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: row.source })
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: row.tab || row.source })
             ] }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "grade-tag", children: row.grade }) }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "mono", children: row.basisWeight ?? "\u2014" }),
