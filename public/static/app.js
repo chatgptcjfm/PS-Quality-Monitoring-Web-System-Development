@@ -73303,22 +73303,18 @@ function parseWorkbook(file, currentPlant, year) {
     return out;
   });
 }
-var demoRows = Array.from({ length: 4 }, (_, i) => {
-  const row = rowFromSheet([null, 8, 10, 7, 38 + i * 5, `6810J3000${i + 1}(\uC0D8\uD50C \uAC70\uB798\uCC98)`, i === 3 ? "III" : "IV", i === 3 ? 250 : 300, 303 + i, 301 + i, 302 + i, 349 + i * 3, 344 + i * 3, 349 + i * 3, 0.868, 6 + i * 0.2, 6 + i * 0.2, 6.1 + i * 0.2, 76.5, 76.5, 76.8, 67.2, 2.5, 2.4, 2.9, 6.7, 2.9, 47, 73, "13/7", 11, 2.9, 11, 9, 8, 18, 21, 100, 40, 4.9, "0/0", 3, 0.83, 0, 0, 0, null, 84.4, 65.8, 30.8, 30.6, 28.7, 57.7, 32.8, 68.4, 2.6, 2.7, 2.7, null, null, null, 595, 1, "\uC6B4,\uB300", "\uAE40", "\uD569\uACA9", 86.76, -2.19, -5.73, 1.17, 84.59, -4.08, -1.71, 18.24, null, null, null, 20, 20, 0, 0], i, "3\uD638\uAE30", "", 2026);
-  return row;
-});
 function locationAverage(rows, key, loc) {
   const ns = rows.map((r2) => r2.values[key]?.[loc]).filter((v) => v !== null && v !== void 0);
   return ns.length ? ns.reduce((a, b) => a + b, 0) / ns.length : null;
 }
 function App() {
   const inputRef = (0, import_react57.useRef)(null);
-  const [rows, setRows] = (0, import_react57.useState)(demoRows);
+  const [rows, setRows] = (0, import_react57.useState)([]);
+  const [loadedFiles, setLoadedFiles] = (0, import_react57.useState)([]);
   const [plant, setPlant] = (0, import_react57.useState)("");
-  const [fileName, setFileName] = (0, import_react57.useState)("3\uD638\uAE30 2026.08.10.xls");
+  const [fileName, setFileName] = (0, import_react57.useState)("");
   const [grade, setGrade] = (0, import_react57.useState)("");
   const [basis2, setBasis] = (0, import_react57.useState)("");
-  const [month, setMonth] = (0, import_react57.useState)("");
   const [startDate, setStartDate] = (0, import_react57.useState)("");
   const [endDate, setEndDate] = (0, import_react57.useState)("");
   const [category, setCategory] = (0, import_react57.useState)("");
@@ -73330,12 +73326,11 @@ function App() {
   const selected = metricOptions.find((x2) => x2.key === metric) ?? metricOptions[0];
   const plants = ["2\uD638\uAE30", "3\uD638\uAE30"];
   const grades = ["\uC804\uCCB4 \uC9C0\uC885", ...Array.from(new Set(rows.map((r2) => r2.grade)))];
-  const months2 = ["\uC804\uCCB4 \uC6D4", ...Array.from({ length: 12 }, (_, i) => String(i + 1))];
   const bases = ["\uC804\uCCB4 \uD3C9\uB7C9", ...Array.from(new Set(rows.filter((r2) => (!plant || plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (!grade || grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade)).map((r2) => r2.basisLabel))).sort((a, b) => a.localeCompare(b, "ko", { numeric: true }))];
   (0, import_react57.useEffect)(() => {
     if (basis2 && basis2 !== "\uC804\uCCB4 \uD3C9\uB7C9" && !bases.includes(basis2)) setBasis("");
   }, [basis2, bases.join("|")]);
-  const filtered = (0, import_react57.useMemo)(() => !plant || !grade || !basis2 ? [] : rows.filter((r2) => (plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade) && (basis2 === "\uC804\uCCB4 \uD3C9\uB7C9" || r2.basisLabel === basis2) && (!month || r2.dateKey.slice(5, 7) === month.padStart(2, "0")) && (!startDate || r2.dateKey >= startDate) && (!endDate || r2.dateKey <= endDate)), [rows, plant, grade, basis2, month, startDate, endDate]);
+  const filtered = (0, import_react57.useMemo)(() => !plant || !grade || !basis2 ? [] : rows.filter((r2) => (plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade) && (basis2 === "\uC804\uCCB4 \uD3C9\uB7C9" || r2.basisLabel === basis2) && (!startDate || r2.dateKey >= startDate) && (!endDate || r2.dateKey <= endDate)), [rows, plant, grade, basis2, startDate, endDate]);
   const nums = filtered.map((r2) => r2.averages[metric]).filter((v) => v !== null);
   const average = nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : 0;
   const outliers = filtered.filter((r2) => {
@@ -73353,19 +73348,24 @@ function App() {
   const chartRange = chartMax - chartMin;
   const chartPadding = Math.max(chartRange * 0.12, Math.abs(chartMax) * 0.02, 0.5);
   const chartDomain = [chartMin - chartPadding, chartMax + chartPadding];
-  const load = async (file) => {
-    if (!file || !/\.xls[x]?$/.test(file.name.toLowerCase())) return;
-    const plantNumber = file.name.match(/([23])호기/)?.[1];
-    const year = Number(file.name.match(/20\d{2}/)?.[0] ?? (/* @__PURE__ */ new Date()).getFullYear());
-    const parsed = plantNumber ? await parseWorkbook(file, `${plantNumber}\uD638\uAE30`, year) : [];
-    setRows(parsed);
-    setPlant("");
-    setGrade("");
-    setBasis("");
-    setMonth("");
-    setStartDate("");
-    setEndDate("");
-    setFileName(file.name);
+  const load = async (files) => {
+    const incoming = Array.from(files ?? []);
+    for (const file of incoming) {
+      if (!file || !/\.xls[x]?$/.test(file.name.toLowerCase())) continue;
+      const plantNumber = file.name.match(/([23])호기/)?.[1];
+      const year = Number(file.name.match(/20\d{2}/)?.[0] ?? (/* @__PURE__ */ new Date()).getFullYear());
+      const signature = `${file.name}:${file.size}:${file.lastModified}`;
+      if (loadedFiles.includes(signature)) continue;
+      const parsed = plantNumber ? await parseWorkbook(file, `${plantNumber}\uD638\uAE30`, year) : [];
+      setRows((previous) => [...previous, ...parsed.map((row, index) => ({ ...row, id: previous.length + index + 1 }))]);
+      setLoadedFiles((previous) => [...previous, signature]);
+      setPlant("");
+      setGrade("");
+      setBasis("");
+      setStartDate("");
+      setEndDate("");
+      setFileName((previous) => previous ? `${previous}, ${file.name}` : file.name);
+    }
   };
   const changeMetric = (key) => {
     const m = metricOptions.find((x2) => x2.key === key) ?? metricOptions[0];
@@ -73427,9 +73427,9 @@ function App() {
       }, onDragLeave: () => setDragging(false), onDrop: (e) => {
         e.preventDefault();
         setDragging(false);
-        void load(e.dataTransfer.files[0]);
+        void load(e.dataTransfer.files);
       }, onClick: () => inputRef.current?.click(), children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { ref: inputRef, type: "file", accept: ".xls,.xlsx", hidden: true, onChange: (e) => void load(e.target.files?.[0]) }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { ref: inputRef, type: "file", accept: ".xls,.xlsx", multiple: true, hidden: true, onChange: (e) => void load(e.target.files ?? void 0) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "upload-icon", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { size: 22 }) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "\uC5D1\uC140 \uD30C\uC77C\uC744 \uC5EC\uAE30\uC5D0 \uB193\uC73C\uC138\uC694" }),
@@ -73451,71 +73451,66 @@ function App() {
       ] })
     ] }),
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "control-bar", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "control-label", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Funnel, { size: 17 }),
-        " FILTERS"
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uD638\uAE30 ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: plant, onChange: (e) => setPlant(e.target.value), children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC120\uD0DD \uC548 \uD568" }),
-          plants.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2))
-        ] })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uC9C0\uC885 ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: grade, onChange: (e) => setGrade(e.target.value), children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC120\uD0DD \uC548 \uD568" }),
-          grades.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2))
-        ] })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uC6D4 ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: month, onChange: (e) => setMonth(e.target.value), children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC804\uCCB4 \uC6D4" }),
-          months2.slice(1).map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("option", { value: x2, children: [
-            x2,
-            "\uC6D4"
-          ] }, x2))
-        ] })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uC2DC\uC791\uC77C ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { type: "date", value: startDate, onChange: (e) => setStartDate(e.target.value) })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uC885\uB8CC\uC77C ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { type: "date", value: endDate, onChange: (e) => setEndDate(e.target.value) })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uD3C9\uB7C9 ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: basis2, onChange: (e) => setBasis(e.target.value), children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC120\uD0DD \uC548 \uD568" }),
-          bases.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: x2, children: x2 === "\uC804\uCCB4 \uD3C9\uB7C9" ? x2 : `${x2} g/\u33A1` }, x2))
-        ] })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uD488\uC9C8 \uBD84\uB958 ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: category, onChange: (e) => setCategory(e.target.value), children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC804\uCCB4 \uBD84\uB958" }),
-          categoryOptions.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2))
-        ] })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
-        "\uD488\uC9C8 \uD56D\uBAA9 ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: metric, onChange: (e) => changeMetric(e.target.value), children: visibleMetrics.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: x2.key, children: x2.label }, x2.key)) })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "spec-controls", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "SPEC LIMITS" }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { className: "limit-input usl", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", {}),
-          " USL ",
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { value: usl, onChange: (e) => setUsl(e.target.value) })
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "filter-row filter-row-dates", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "control-label", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Funnel, { size: 17 }),
+          " FILTERS"
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { className: "limit-input lsl", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", {}),
-          " LSL ",
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { value: lsl, onChange: (e) => setLsl(e.target.value) })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
+          "\uC2DC\uC791\uC77C ",
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { type: "date", value: startDate, onChange: (e) => setStartDate(e.target.value) })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "date-range-separator", children: "~" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
+          "\uC885\uB8CC\uC77C ",
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { type: "date", value: endDate, onChange: (e) => setEndDate(e.target.value) })
+        ] })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "filter-row filter-row-selects", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
+          "\uD638\uAE30 ",
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: plant, onChange: (e) => setPlant(e.target.value), children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC120\uD0DD \uC548 \uD568" }),
+            plants.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2))
+          ] })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
+          "\uC9C0\uC885 ",
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: grade, onChange: (e) => setGrade(e.target.value), children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC120\uD0DD \uC548 \uD568" }),
+            grades.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2))
+          ] })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
+          "\uD3C9\uB7C9 ",
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: basis2, onChange: (e) => setBasis(e.target.value), children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC120\uD0DD \uC548 \uD568" }),
+            bases.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: x2, children: x2 === "\uC804\uCCB4 \uD3C9\uB7C9" ? x2 : `${x2} g/\u33A1` }, x2))
+          ] })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
+          "\uD488\uC9C8 \uBD84\uB958 ",
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: category, onChange: (e) => setCategory(e.target.value), children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC804\uCCB4 \uBD84\uB958" }),
+            categoryOptions.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2))
+          ] })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
+          "\uD488\uC9C8 \uD56D\uBAA9 ",
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: metric, onChange: (e) => changeMetric(e.target.value), children: visibleMetrics.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: x2.key, children: x2.label }, x2.key)) })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "spec-controls", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "SPEC LIMITS" }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { className: "limit-input usl", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", {}),
+            " USL ",
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { value: usl, onChange: (e) => setUsl(e.target.value) })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { className: "limit-input lsl", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("i", {}),
+            " LSL ",
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { value: lsl, onChange: (e) => setLsl(e.target.value) })
+          ] })
         ] })
       ] })
     ] }),
