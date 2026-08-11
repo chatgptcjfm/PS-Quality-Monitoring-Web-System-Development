@@ -73234,6 +73234,8 @@ var metricOptions = [
   { label: "\uAE08\uC18D \uAC80\uCD9C MD", key: "\uAE08\uC18DMD", unit: "\uC7A5", usl: 20, lsl: 0 },
   { label: "\uAE08\uC18D \uAC80\uCD9C CD", key: "\uAE08\uC18DCD", unit: "\uC7A5", usl: 20, lsl: 0 }
 ];
+var metricCategories = { "\uD3C9\uB7C9": "\uBB3C\uB9AC\uC801\uD2B9\uC131", "\uB450\uAED8": "\uBB3C\uB9AC\uC801\uD2B9\uC131", "\uBC00\uB3C4": "\uBB3C\uB9AC\uC801\uD2B9\uC131", "\uC218\uBD84": "\uBB3C\uB9AC\uC801\uD2B9\uC131", "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": "\uBB3C\uB9AC\uC801\uD2B9\uC131", "\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": "\uBB3C\uB9AC\uC801\uD2B9\uC131", "PPS": "\uBB3C\uB9AC\uC801\uD2B9\uC131", "\uB0B4\uC808\uB3C4(MD)": "\uAC15\uB3C4\uD2B9\uC131", "\uB0B4\uC808\uB3C4(CD)": "\uAC15\uB3C4\uD2B9\uC131", "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(MD)": "\uAC15\uB3C4\uD2B9\uC131", "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(CD)": "\uAC15\uB3C4\uD2B9\uC131", "\uD30C\uC5F4\uAC15\uB3C4": "\uAC15\uB3C4\uD2B9\uC131", "\uC778\uD130\uB110": "\uAC15\uB3C4\uD2B9\uC131", "\uBAA8\uD2C0\uB9C1": "\uC778\uC1C4\uD2B9\uC131", "\uD53D\uD0B9": "\uC778\uC1C4\uD2B9\uC131", "\uC778\uC1C4\uCE35\uBD84\uB9AC": "\uC778\uC1C4\uD2B9\uC131", "\uD45C\uBA74\uC0C9\uCC28L": "\uC0C9\uC0C1", "\uD45C\uBA74\uC0C9\uCC28a": "\uC0C9\uC0C1", "\uD45C\uBA74\uC0C9\uCC28b": "\uC0C9\uC0C1", "\uD6C4\uBA74\uC0C9\uCC28L": "\uC0C9\uC0C1", "\uD6C4\uBA74\uC0C9\uCC28a": "\uC0C9\uC0C1", "\uD6C4\uBA74\uC0C9\uCC28b": "\uC0C9\uC0C1", "\uD6C4\uBA74\uC9C0\uBD84": "\uAE30\uD0C0", "\uAE08\uC18DMD": "\uAE30\uD0C0", "\uAE08\uC18DCD": "\uAE30\uD0C0", "\uB4A4\uBE44\uCE68": "\uAE30\uD0C0", "\uBD80\uCC29\uB7C9(\uD45C\uBA74)": "\uBD80\uCC29\uB7C9", "\uBD80\uCC29\uB7C9(\uC774\uBA74)": "\uBD80\uCC29\uB7C9", "\uBD80\uCC29\uB7C9(\uD6C4\uC774\uBA74)": "\uBD80\uCC29\uB7C9", "\uBD80\uCC29\uB7C9(\uD6C4\uBA74)": "\uBD80\uCC29\uB7C9", "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": "\uBD80\uCC29\uB7C9", "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uC774\uBA74)": "\uBD80\uCC29\uB7C9", "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uC774\uBA74)": "\uBD80\uCC29\uB7C9", "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": "\uBD80\uCC29\uB7C9" };
+var categoryOptions = ["\uBB3C\uB9AC\uC801\uD2B9\uC131", "\uAC15\uB3C4\uD2B9\uC131", "\uC778\uC1C4\uD2B9\uC131", "\uC0C9\uC0C1", "\uAE30\uD0C0", "\uBD80\uCC29\uB7C9"];
 var positionKeys = ["\uC804", "\uC911", "\uD6C4"];
 var numeric = (v) => {
   if (v === null || v === void 0 || String(v).trim() === "") return null;
@@ -73277,15 +73279,13 @@ function classifySheet(name) {
   const basisLabel = basisWeight === null ? tab : country ? `${basisWeight} (${country})` : String(basisWeight);
   return { tab, grade, basisWeight, basisLabel };
 }
-function parseWorkbook(file) {
+function parseWorkbook(file, currentPlant) {
   return file.arrayBuffer().then((buffer) => {
     const wb = readSync(buffer, { type: "array" });
     const out = [];
     for (const name of wb.SheetNames) {
       const sheet = utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: null });
       if (sheet.length < 9) continue;
-      const title = String(sheet[2]?.[1] ?? "").trim();
-      const currentPlant = title ? `${title}\uD638\uAE30` : "\uBBF8\uC9C0\uC815 \uD638\uAE30";
       const cls = classifySheet(name);
       for (const [i, row] of sheet.slice(8).entries()) {
         const parsed = rowFromSheet(row, i, currentPlant, cls.tab);
@@ -73315,12 +73315,14 @@ function App() {
   const [fileName, setFileName] = (0, import_react57.useState)("3\uD638\uAE30 2026.08.10.xls");
   const [grade, setGrade] = (0, import_react57.useState)("");
   const [basis2, setBasis] = (0, import_react57.useState)("");
+  const [category, setCategory] = (0, import_react57.useState)("");
   const [metric, setMetric] = (0, import_react57.useState)("\uD3C9\uB7C9");
   const [usl, setUsl] = (0, import_react57.useState)("306");
   const [lsl, setLsl] = (0, import_react57.useState)("294");
   const [dragging, setDragging] = (0, import_react57.useState)(false);
+  const visibleMetrics = category ? metricOptions.filter((x2) => metricCategories[x2.key] === category) : metricOptions;
   const selected = metricOptions.find((x2) => x2.key === metric) ?? metricOptions[0];
-  const plants = ["\uC804\uCCB4 \uD638\uAE30", ...Array.from(new Set(rows.map((r2) => r2.plant)))];
+  const plants = ["2\uD638\uAE30", "3\uD638\uAE30"];
   const grades = ["\uC804\uCCB4 \uC9C0\uC885", ...Array.from(new Set(rows.map((r2) => r2.grade)))];
   const bases = ["\uC804\uCCB4 \uD3C9\uB7C9", ...Array.from(new Set(rows.filter((r2) => (!plant || plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (!grade || grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade)).map((r2) => r2.basisLabel))).sort((a, b) => a.localeCompare(b, "ko", { numeric: true }))];
   (0, import_react57.useEffect)(() => {
@@ -73336,8 +73338,9 @@ function App() {
   const chartData = filtered.map((r2) => ({ label: `${r2.date} ${r2.time}`, value: r2.averages[metric], row: r2 })).filter((x2) => x2.value !== null);
   const load = async (file) => {
     if (!file || !/\.xls[x]?$/.test(file.name.toLowerCase())) return;
-    const parsed = await parseWorkbook(file);
-    setRows(parsed.length ? parsed : demoRows);
+    const plantNumber = file.name.match(/([23])호기/)?.[1];
+    const parsed = plantNumber ? await parseWorkbook(file, `${plantNumber}\uD638\uAE30`) : [];
+    setRows(parsed);
     setPlant("");
     setGrade("");
     setBasis("");
@@ -73349,6 +73352,12 @@ function App() {
     setUsl(String(m.usl));
     setLsl(String(m.lsl));
   };
+  (0, import_react57.useEffect)(() => {
+    if (category && metricCategories[metric] !== category) {
+      const next = metricOptions.find((x2) => metricCategories[x2.key] === category);
+      if (next) changeMetric(next.key);
+    }
+  }, [category]);
   const passRate = filtered.length ? Math.round((filtered.length - outliers.length) / filtered.length * 100) : 0;
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", { className: "app-shell", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", { className: "topbar", children: [
@@ -73363,13 +73372,18 @@ function App() {
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "live-dot" }),
         " LIVE ANALYTICS ",
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "divider" }),
-        " PLANT 03 ",
+        " ",
+        plant || "\uD638\uAE30 \uBBF8\uC120\uD0DD",
+        " ",
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "avatar", children: "JK" })
       ] })
     ] }),
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "hero", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "eyebrow", children: "QUALITY CONTROL / 03" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { className: "eyebrow", children: [
+          "QUALITY CONTROL / ",
+          plant || "\u2014"
+        ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h1", { children: [
           "\uD488\uC9C8 \uB370\uC774\uD130 ",
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("em", { children: "\uC778\uC0AC\uC774\uD2B8" })
@@ -73442,8 +73456,15 @@ function App() {
         ] })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
+        "\uD488\uC9C8 \uBD84\uB958 ",
+        /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", { value: category, onChange: (e) => setCategory(e.target.value), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: "", children: "\uC804\uCCB4 \uBD84\uB958" }),
+          categoryOptions.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: x2 }, x2))
+        ] })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", { children: [
         "\uD488\uC9C8 \uD56D\uBAA9 ",
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: metric, onChange: (e) => changeMetric(e.target.value), children: metricOptions.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: x2.key, children: x2.label }, x2.key)) })
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", { value: metric, onChange: (e) => changeMetric(e.target.value), children: visibleMetrics.map((x2) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { value: x2.key, children: x2.label }, x2.key)) })
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "spec-controls", children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "SPEC LIMITS" }),
@@ -73606,7 +73627,6 @@ function App() {
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD6C4" })
           ] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uCE21\uC815\uAC12" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD3C9\uADE0" }),
-          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uAE08\uC18D MD/CD" }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", { children: "\uD310\uC815" })
         ] }) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: filtered.map((row) => {
@@ -73626,11 +73646,6 @@ function App() {
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "mono", children: row.basisLabel || "\u2014" }),
             metric === "PPS" || metric === "\uD3C9\uB7C9" || metric === "\uB450\uAED8" || metric === "\uC218\uBD84" || metric === "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)" || metric === "\uB4A4\uBE44\uCE68" ? positionKeys.map((k) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "value-cell", children: row.values[metric]?.[k] ?? "\u2014" }, k)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "value-cell", children: row.averages[metric] ?? "\u2014" }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: bad ? "danger-text value-cell" : "value-cell", children: v === null ? "\u2014" : v.toFixed(2) }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { className: "mono", children: [
-              row.md ?? "\u2014",
-              " / ",
-              row.cd ?? "\u2014"
-            ] }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: `status ${bad ? "status-alert" : "status-ok"}`, children: [
               bad ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { size: 13 }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { size: 13 }),
               " ",
@@ -73641,7 +73656,10 @@ function App() {
       ] }) })
     ] }),
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("footer", { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "QUALITY LEDGER / PLANT 03" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+        "QUALITY LEDGER / ",
+        plant || "\uD638\uAE30 \uBBF8\uC120\uD0DD"
+      ] }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Data integrity monitored \xB7 v1.2.0" })
     ] })
   ] });
