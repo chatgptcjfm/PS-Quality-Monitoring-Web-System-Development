@@ -73152,7 +73152,7 @@ function makeValues(row) {
 function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30", tab = "", year = 2026) {
   const client = String(row[5] ?? "").replace(/\n/g, " ").trim();
   const grade = String(row[6] ?? "").trim();
-  if (!client || /^(?:[1-9]|1[0-2])월$/.test(client)) return null;
+  if (!client || /^(?:[1-9]|1[0-2])월$/.test(client) || /비계획|폐품/.test(client) || /^MB$/i.test(grade)) return null;
   const weight = numeric(row[7]);
   const month = numeric(row[0]) ?? 0;
   const day = numeric(row[1]) ?? 0;
@@ -73162,13 +73162,15 @@ function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30", tab = "", year
 }
 function classifySheet(name) {
   const tab = name.trim();
+  const special = tab.match(/^450\(일본\)KS-Coat$/i);
   const match = tab.match(/(\d{3})/);
   const basisWeight = match ? Number(match[1]) : null;
   const prefix = match ? tab.slice(0, match.index).trim().replace(/[\s(]+$/, "") : tab;
   const suffix2 = match ? tab.slice((match.index ?? 0) + 3).trim() : "";
-  const country = suffix2.replace(/^\s*/, "").replace(/^\((.+)\).*$/, "$1").trim();
-  const grade = prefix || tab;
-  const basisLabel = basisWeight === null ? tab : country ? `${basisWeight} (${country})` : String(basisWeight);
+  const country = suffix2.replace(/^\s*/, "").replace(/^\((.+?)\)(?:.*)$/, "$1").trim();
+  const normalizedCountry = /^SC260\(일수\)$/i.test(tab) ? "\uC77C\uBCF8" : /^SC310\(일,수\)$/i.test(tab) ? "\uC77C\uBCF8" : special ? "\uC77C\uBCF8" : country;
+  const grade = special ? "SC" : prefix || tab;
+  const basisLabel = basisWeight === null ? tab : normalizedCountry ? `${basisWeight} (${normalizedCountry})` : String(basisWeight);
   return { tab, grade, basisWeight, basisLabel };
 }
 function parseWorkbook(file, currentPlant, year) {
