@@ -73145,6 +73145,7 @@ var slashPair = (v) => {
   const ns = String(v ?? "").split("/").map((x2) => Number(x2.trim())).filter(Number.isFinite);
   return [ns[0] ?? null, ns[1] ?? null];
 };
+var normalizeEndurance = (v) => v !== null && (Math.abs(v - 0.7) < 1e-4 || Math.abs(v - 1) < 1e-4) ? 1 : v;
 var positions = (row, idx) => ({ \uC804: numeric(row[idx[0]]), \uC911: numeric(row[idx[1]]), \uD6C4: numeric(row[idx[2]]) });
 var avg = (v) => {
   const ns = positionKeys.map((k) => v[k]).filter((x2) => x2 !== null);
@@ -73152,7 +73153,9 @@ var avg = (v) => {
 };
 var scalar = (v) => ({ \uC804: numeric(v), \uC911: null, \uD6C4: null });
 function makeValues(row) {
-  const [md, cd] = slashPair(row[37]);
+  const [rawMd, rawCd] = slashPair(row[37]);
+  const md = normalizeEndurance(rawMd);
+  const cd = normalizeEndurance(rawCd);
   return { \uD3C9\uB7C9: positions(row, [8, 9, 10]), \uB450\uAED8: positions(row, [11, 12, 13]), \uBC00\uB3C4: scalar(row[14]), \uC218\uBD84: positions(row, [15, 16, 17]), "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": positions(row, [18, 19, 20]), "\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[21]), PPS: positions(row, [23, 24, 25]), \uC778\uC1C4\uCE35\uBD84\uB9AC: scalar(row[30]), \uD53D\uD0B9: scalar(row[31]), \uBAA8\uD2C0\uB9C1: scalar(row[32]), "\uB0B4\uC808\uB3C4(MD)": scalar(md), "\uB0B4\uC808\uB3C4(CD)": scalar(cd), "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(MD)": scalar(row[39]), "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(CD)": scalar(row[40]), \uD30C\uC5F4\uAC15\uB3C4: scalar(row[41]), \uC778\uD130\uB110: scalar(slashAverage(row[45])), "\uBD80\uCC29\uB7C9(\uD45C\uBA74)": scalar(row[52]), "\uBD80\uCC29\uB7C9(\uC774\uBA74)": scalar(row[54]), "\uBD80\uCC29\uB7C9(\uD6C4\uC774\uBA74)": scalar(row[56]), "\uBD80\uCC29\uB7C9(\uD6C4\uBA74)": scalar(row[58]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": scalar(row[53]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uC774\uBA74)": scalar(row[55]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uC774\uBA74)": scalar(row[57]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[59]), \uB4A4\uBE44\uCE68: positions(row, [60, 61, 62]), \uD45C\uBA74\uC0C9\uCC28L: scalar(row[71]), \uD45C\uBA74\uC0C9\uCC28a: scalar(row[72]), \uD45C\uBA74\uC0C9\uCC28b: scalar(row[73]), \uD6C4\uBA74\uC0C9\uCC28L: scalar(row[75]), \uD6C4\uBA74\uC0C9\uCC28a: scalar(row[76]), \uD6C4\uBA74\uC0C9\uCC28b: scalar(row[77]), \uD6C4\uBA74\uC9C0\uBD84: scalar(row[79]), \uAE08\uC18DMD: scalar(row[84]), \uAE08\uC18DCD: scalar(row[85]) };
 }
 function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30", tab = "", year = 2026) {
