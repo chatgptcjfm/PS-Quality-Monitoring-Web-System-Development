@@ -73234,6 +73234,7 @@ function App() {
   const limitAvailable = Boolean(standardLimit && (standardLimit.usl !== void 0 || standardLimit.lsl !== void 0));
   const activeUsl = standardLimit?.usl;
   const activeLsl = standardLimit?.lsl;
+  const isOutOfSpec = (value) => value !== null && (activeLsl !== void 0 && value < activeLsl || activeUsl !== void 0 && value >= activeUsl);
   const plants = ["2\uD638\uAE30", "3\uD638\uAE30"];
   const grades = ["\uC804\uCCB4 \uC9C0\uC885", ...Array.from(new Set(rows.map((r2) => r2.grade)))];
   const bases = ["\uC804\uCCB4 \uD3C9\uB7C9", ...Array.from(new Set(rows.filter((r2) => (!plant || plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (!grade || grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade)).map((r2) => r2.basisLabel))).sort((a, b) => a.localeCompare(b, "ko", { numeric: true }))];
@@ -73243,10 +73244,7 @@ function App() {
   const filtered = (0, import_react59.useMemo)(() => !plant || !grade || !basis2 ? [] : rows.filter((r2) => (plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade) && (basis2 === "\uC804\uCCB4 \uD3C9\uB7C9" || r2.basisLabel === basis2) && (!startDate || r2.dateKey >= startDate) && (!endDate || r2.dateKey <= endDate)), [rows, plant, grade, basis2, startDate, endDate]);
   const nums = filtered.map((r2) => r2.averages[metric]).filter((v) => v !== null);
   const average = nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : 0;
-  const outliers = filtered.filter((r2) => {
-    const v = r2.averages[metric];
-    return limitAvailable && v !== null && (activeUsl !== void 0 && v > activeUsl || activeLsl !== void 0 && v < activeLsl);
-  });
+  const outliers = filtered.filter((r2) => isOutOfSpec(r2.averages[metric]));
   const fallbackUsl = Number(usl);
   const fallbackLsl = Number(lsl);
   const specWidth = limitAvailable && activeUsl !== void 0 && activeLsl !== void 0 ? Math.abs(activeUsl - activeLsl) : Math.abs(fallbackUsl - fallbackLsl);
@@ -73625,7 +73623,7 @@ function App() {
         ] }) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: filtered.map((row) => {
           const v = row.averages[metric];
-          const bad = limitAvailable && v !== null && (activeUsl !== void 0 && v > activeUsl || activeLsl !== void 0 && v < activeLsl);
+          const bad = isOutOfSpec(v);
           return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", { className: "mono", children: [
               row.date,
