@@ -73138,8 +73138,10 @@ var numeric = (v) => {
   return Number.isFinite(n) ? n : null;
 };
 var slashAverage = (v) => {
-  const ns = String(v ?? "").split("/").map((x2) => Number(x2.trim())).filter(Number.isFinite);
-  return ns.length ? ns.reduce((a, b) => a + b, 0) / ns.length : numeric(v);
+  const text = String(v ?? "").trim();
+  if (!text) return null;
+  const ns = text.split("/").map((x2) => numeric(x2.trim())).filter((value) => value !== null);
+  return ns.length ? ns.reduce((a, b) => a + b, 0) / ns.length : numeric(text);
 };
 var slashPair = (v) => {
   const text = String(v ?? "").replace(/,/g, "").trim();
@@ -73161,12 +73163,12 @@ var avg = (v) => {
   return ns.length ? ns.reduce((a, b) => a + b, 0) / ns.length : null;
 };
 var scalar = (v) => ({ \uC804: numeric(v), \uC911: null, \uD6C4: null });
-function makeValues(row, enduranceColumns = [37]) {
+function makeValues(row, enduranceColumns = [37], internalColumn = 45) {
   const pair = endurancePair(row[enduranceColumns[0]]);
   const [md, cd] = pair[1] !== null ? pair : enduranceColumns.length >= 2 ? [pair[0], numeric(row[enduranceColumns[1]])] : pair;
-  return { \uD3C9\uB7C9: positions(row, [8, 9, 10]), \uB450\uAED8: positions(row, [11, 12, 13]), \uBC00\uB3C4: scalar(row[14]), \uC218\uBD84: positions(row, [15, 16, 17]), "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": positions(row, [18, 19, 20]), "\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[21]), PPS: positions(row, [23, 24, 25]), \uC778\uC1C4\uCE35\uBD84\uB9AC: scalar(row[30]), \uD53D\uD0B9: scalar(row[31]), \uBAA8\uD2C0\uB9C1: scalar(row[32]), "\uB0B4\uC808\uB3C4(MD)": scalar(md), "\uB0B4\uC808\uB3C4(CD)": scalar(cd), "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(MD)": scalar(row[39]), "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(CD)": scalar(row[40]), \uD30C\uC5F4\uAC15\uB3C4: scalar(row[41]), \uC778\uD130\uB110: scalar(slashAverage(row[45])), "\uBD80\uCC29\uB7C9(\uD45C\uBA74)": scalar(row[52]), "\uBD80\uCC29\uB7C9(\uC774\uBA74)": scalar(row[54]), "\uBD80\uCC29\uB7C9(\uD6C4\uC774\uBA74)": scalar(row[56]), "\uBD80\uCC29\uB7C9(\uD6C4\uBA74)": scalar(row[58]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": scalar(row[53]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uC774\uBA74)": scalar(row[55]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uC774\uBA74)": scalar(row[57]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[59]), \uB4A4\uBE44\uCE68: positions(row, [60, 61, 62]), \uD45C\uBA74\uC0C9\uCC28L: scalar(row[71]), \uD45C\uBA74\uC0C9\uCC28a: scalar(row[72]), \uD45C\uBA74\uC0C9\uCC28b: scalar(row[73]), \uD6C4\uBA74\uC0C9\uCC28L: scalar(row[75]), \uD6C4\uBA74\uC0C9\uCC28a: scalar(row[76]), \uD6C4\uBA74\uC0C9\uCC28b: scalar(row[77]), \uD6C4\uBA74\uC9C0\uBD84: scalar(row[79]), \uAE08\uC18DMD: scalar(row[84]), \uAE08\uC18DCD: scalar(row[85]) };
+  return { \uD3C9\uB7C9: positions(row, [8, 9, 10]), \uB450\uAED8: positions(row, [11, 12, 13]), \uBC00\uB3C4: scalar(row[14]), \uC218\uBD84: positions(row, [15, 16, 17]), "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": positions(row, [18, 19, 20]), "\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[21]), PPS: positions(row, [23, 24, 25]), \uC778\uC1C4\uCE35\uBD84\uB9AC: scalar(row[30]), \uD53D\uD0B9: scalar(row[31]), \uBAA8\uD2C0\uB9C1: scalar(row[32]), "\uB0B4\uC808\uB3C4(MD)": scalar(md), "\uB0B4\uC808\uB3C4(CD)": scalar(cd), "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(MD)": scalar(row[39]), "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(CD)": scalar(row[40]), \uD30C\uC5F4\uAC15\uB3C4: scalar(row[41]), \uC778\uD130\uB110: scalar(slashAverage(row[internalColumn])), "\uBD80\uCC29\uB7C9(\uD45C\uBA74)": scalar(row[52]), "\uBD80\uCC29\uB7C9(\uC774\uBA74)": scalar(row[54]), "\uBD80\uCC29\uB7C9(\uD6C4\uC774\uBA74)": scalar(row[56]), "\uBD80\uCC29\uB7C9(\uD6C4\uBA74)": scalar(row[58]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": scalar(row[53]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uC774\uBA74)": scalar(row[55]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uC774\uBA74)": scalar(row[57]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[59]), \uB4A4\uBE44\uCE68: positions(row, [60, 61, 62]), \uD45C\uBA74\uC0C9\uCC28L: scalar(row[71]), \uD45C\uBA74\uC0C9\uCC28a: scalar(row[72]), \uD45C\uBA74\uC0C9\uCC28b: scalar(row[73]), \uD6C4\uBA74\uC0C9\uCC28L: scalar(row[75]), \uD6C4\uBA74\uC0C9\uCC28a: scalar(row[76]), \uD6C4\uBA74\uC0C9\uCC28b: scalar(row[77]), \uD6C4\uBA74\uC9C0\uBD84: scalar(row[79]), \uAE08\uC18DMD: scalar(row[84]), \uAE08\uC18DCD: scalar(row[85]) };
 }
-function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30", tab = "", year = 2026, enduranceColumns = [37]) {
+function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30", tab = "", year = 2026, enduranceColumns = [37], internalColumn = 45) {
   const client = String(row[5] ?? "").replace(/\n/g, " ").trim();
   const grade = String(row[6] ?? "").trim();
   if (!client || /^(?:[1-9]|1[0-2])월$/.test(client) || /비계획|폐품/.test(client) || /^MB$/i.test(grade)) return null;
@@ -73174,7 +73176,7 @@ function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30", tab = "", year
   const month = numeric(row[0]) ?? 0;
   const day = numeric(row[1]) ?? 0;
   const dateKey = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-  const values = makeValues(row, enduranceColumns);
+  const values = makeValues(row, enduranceColumns, internalColumn);
   return { id: index + 1, plant: currentPlant, tab, date: `${String(row[0] ?? "").padStart(2, "0")}.${String(row[1] ?? "").padStart(2, "0")}`, dateKey, time: `${String(row[2] ?? "").padStart(2, "0")}:${String(row[3] ?? "").padStart(2, "0")}`, client, grade: grade || "\uBBF8\uC9C0\uC815", basisWeight: weight, basisLabel: weight === null ? "\uBBF8\uC9C0\uC815 \uD3C9\uB7C9" : String(weight), source: client.slice(0, 18), values, averages: Object.fromEntries(Object.entries(values).map(([k, v]) => [k, avg(v)])), md: slashPair(row[84])[0], cd: slashPair(row[85])[0] };
 }
 function classifySheet(name) {
@@ -73215,6 +73217,14 @@ function findEnduranceColumns(sheet) {
   const likelySeparate = sheet.slice(8, Math.min(sheet.length, 28)).filter((row) => numeric(row[37]) !== null && numeric(row[38]) !== null).length;
   return likelySeparate ? [37, 38] : [37];
 }
+function findInternalColumn(sheet) {
+  const maxColumns = Math.max(...sheet.slice(0, 8).map((row) => row.length), 0);
+  for (let column = 0; column < maxColumns; column++) {
+    const header = sheet.slice(0, 8).map((row) => String(row[column] ?? "")).join(" ").replace(/[\s_()-]+/g, "").toLowerCase();
+    if (header.includes("\uC778\uD130\uB110") || header.includes("internal")) return column;
+  }
+  return 45;
+}
 function parseWorkbook(file, currentPlant, year) {
   return file.arrayBuffer().then((buffer) => {
     const wb = readSync(buffer, { type: "array" });
@@ -73224,8 +73234,9 @@ function parseWorkbook(file, currentPlant, year) {
       if (sheet.length < 9) continue;
       const cls = classifySheet(name);
       const enduranceColumns = findEnduranceColumns(sheet);
+      const internalColumn = findInternalColumn(sheet);
       for (const [i, row] of sheet.slice(8).entries()) {
-        const parsed = rowFromSheet(row, i, currentPlant, cls.tab, year, enduranceColumns);
+        const parsed = rowFromSheet(row, i, currentPlant, cls.tab, year, enduranceColumns, internalColumn);
         if (parsed) {
           parsed.grade = cls.grade;
           parsed.basisWeight = cls.basisWeight ?? parsed.basisWeight;
