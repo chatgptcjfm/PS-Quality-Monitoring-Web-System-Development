@@ -73161,11 +73161,12 @@ var avg = (v) => {
   return ns.length ? ns.reduce((a, b) => a + b, 0) / ns.length : null;
 };
 var scalar = (v) => ({ \uC804: numeric(v), \uC911: null, \uD6C4: null });
-function makeValues(row) {
-  const [md, cd] = endurancePair(row[37]);
+function makeValues(row, enduranceColumns = [37]) {
+  const pair = endurancePair(row[enduranceColumns[0]]);
+  const [md, cd] = pair[1] !== null ? pair : enduranceColumns.length >= 2 ? [pair[0], numeric(row[enduranceColumns[1]])] : pair;
   return { \uD3C9\uB7C9: positions(row, [8, 9, 10]), \uB450\uAED8: positions(row, [11, 12, 13]), \uBC00\uB3C4: scalar(row[14]), \uC218\uBD84: positions(row, [15, 16, 17]), "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": positions(row, [18, 19, 20]), "\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[21]), PPS: positions(row, [23, 24, 25]), \uC778\uC1C4\uCE35\uBD84\uB9AC: scalar(row[30]), \uD53D\uD0B9: scalar(row[31]), \uBAA8\uD2C0\uB9C1: scalar(row[32]), "\uB0B4\uC808\uB3C4(MD)": scalar(md), "\uB0B4\uC808\uB3C4(CD)": scalar(cd), "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(MD)": scalar(row[39]), "\uC2A4\uD2F0\uD504\uB2C8\uC2A4(CD)": scalar(row[40]), \uD30C\uC5F4\uAC15\uB3C4: scalar(row[41]), \uC778\uD130\uB110: scalar(slashAverage(row[45])), "\uBD80\uCC29\uB7C9(\uD45C\uBA74)": scalar(row[52]), "\uBD80\uCC29\uB7C9(\uC774\uBA74)": scalar(row[54]), "\uBD80\uCC29\uB7C9(\uD6C4\uC774\uBA74)": scalar(row[56]), "\uBD80\uCC29\uB7C9(\uD6C4\uBA74)": scalar(row[58]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD45C\uBA74)": scalar(row[53]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uC774\uBA74)": scalar(row[55]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uC774\uBA74)": scalar(row[57]), "\uBD80\uCC29\uBC31\uC0C9\uB3C4(\uD6C4\uBA74)": scalar(row[59]), \uB4A4\uBE44\uCE68: positions(row, [60, 61, 62]), \uD45C\uBA74\uC0C9\uCC28L: scalar(row[71]), \uD45C\uBA74\uC0C9\uCC28a: scalar(row[72]), \uD45C\uBA74\uC0C9\uCC28b: scalar(row[73]), \uD6C4\uBA74\uC0C9\uCC28L: scalar(row[75]), \uD6C4\uBA74\uC0C9\uCC28a: scalar(row[76]), \uD6C4\uBA74\uC0C9\uCC28b: scalar(row[77]), \uD6C4\uBA74\uC9C0\uBD84: scalar(row[79]), \uAE08\uC18DMD: scalar(row[84]), \uAE08\uC18DCD: scalar(row[85]) };
 }
-function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30", tab = "", year = 2026) {
+function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30", tab = "", year = 2026, enduranceColumns = [37]) {
   const client = String(row[5] ?? "").replace(/\n/g, " ").trim();
   const grade = String(row[6] ?? "").trim();
   if (!client || /^(?:[1-9]|1[0-2])월$/.test(client) || /비계획|폐품/.test(client) || /^MB$/i.test(grade)) return null;
@@ -73173,7 +73174,7 @@ function rowFromSheet(row, index, currentPlant = "3\uD638\uAE30", tab = "", year
   const month = numeric(row[0]) ?? 0;
   const day = numeric(row[1]) ?? 0;
   const dateKey = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-  const values = makeValues(row);
+  const values = makeValues(row, enduranceColumns);
   return { id: index + 1, plant: currentPlant, tab, date: `${String(row[0] ?? "").padStart(2, "0")}.${String(row[1] ?? "").padStart(2, "0")}`, dateKey, time: `${String(row[2] ?? "").padStart(2, "0")}:${String(row[3] ?? "").padStart(2, "0")}`, client, grade: grade || "\uBBF8\uC9C0\uC815", basisWeight: weight, basisLabel: weight === null ? "\uBBF8\uC9C0\uC815 \uD3C9\uB7C9" : String(weight), source: client.slice(0, 18), values, averages: Object.fromEntries(Object.entries(values).map(([k, v]) => [k, avg(v)])), md: slashPair(row[84])[0], cd: slashPair(row[85])[0] };
 }
 function classifySheet(name) {
@@ -73189,6 +73190,23 @@ function classifySheet(name) {
   const basisLabel = basisWeight === null ? tab : normalizedCountry ? `${basisWeight} (${normalizedCountry})` : String(basisWeight);
   return { tab, grade, basisWeight, basisLabel };
 }
+function findEnduranceColumns(sheet) {
+  const combined = [];
+  const md = [];
+  const cd = [];
+  const maxColumns = Math.max(...sheet.slice(0, 8).map((row) => row.length), 0);
+  for (let column = 0; column < maxColumns; column++) {
+    const header = sheet.slice(0, 8).map((row) => String(row[column] ?? "")).join(" ").replace(/\s+/g, "").toLowerCase();
+    if (!header.includes("\uB0B4\uC808\uB3C4")) continue;
+    if (/(?:md|md값|md측정)/i.test(header)) md.push(column);
+    else if (/(?:cd|cd값|cd측정)/i.test(header)) cd.push(column);
+    else combined.push(column);
+  }
+  if (md.length && cd.length) return [md[0], cd[0]];
+  if (combined.length) return [combined[0]];
+  const candidates = Array.from({ length: maxColumns }, (_, column) => ({ column, score: sheet.slice(8, Math.min(sheet.length, 28)).filter((row) => /^-?\d+(?:\.\d+)?\s*\/\s*-?\d+(?:\.\d+)?$/.test(String(row[column] ?? "").trim())).length })).filter((item) => item.score > 0).sort((a, b) => b.score - a.score);
+  return candidates.length ? [candidates[0].column] : [37];
+}
 function parseWorkbook(file, currentPlant, year) {
   return file.arrayBuffer().then((buffer) => {
     const wb = readSync(buffer, { type: "array" });
@@ -73197,8 +73215,9 @@ function parseWorkbook(file, currentPlant, year) {
       const sheet = utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: null });
       if (sheet.length < 9) continue;
       const cls = classifySheet(name);
+      const enduranceColumns = findEnduranceColumns(sheet);
       for (const [i, row] of sheet.slice(8).entries()) {
-        const parsed = rowFromSheet(row, i, currentPlant, cls.tab, year);
+        const parsed = rowFromSheet(row, i, currentPlant, cls.tab, year, enduranceColumns);
         if (parsed) {
           parsed.grade = cls.grade;
           parsed.basisWeight = cls.basisWeight ?? parsed.basisWeight;
@@ -73250,6 +73269,7 @@ function App() {
   }, [basis2, bases.join("|")]);
   const filtered = (0, import_react59.useMemo)(() => !plant || !grade || !basis2 ? [] : rows.filter((r2) => (plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade) && (basis2 === "\uC804\uCCB4 \uD3C9\uB7C9" || r2.basisLabel === basis2) && (!startDate || r2.dateKey >= startDate) && (!endDate || r2.dateKey <= endDate)), [rows, plant, grade, basis2, startDate, endDate]);
   const nums = filtered.map((r2) => r2.averages[metric]).filter((v) => v !== null);
+  const measuredRows = filtered.filter((r2) => r2.averages[metric] !== null);
   const average = nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : 0;
   const outliers = filtered.filter((r2) => isOutOfSpec(r2.averages[metric]));
   const fallbackUsl = Number(usl);
@@ -73321,7 +73341,7 @@ function App() {
       if (next) changeMetric(next.key);
     }
   }, [category]);
-  const passRate = filtered.length ? Math.round((filtered.length - outliers.length) / filtered.length * 100) : 0;
+  const passRate = measuredRows.length ? Math.round((measuredRows.length - outliers.length) / measuredRows.length * 100) : 0;
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", { className: "app-shell", children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", { className: "topbar", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "brand", children: [
@@ -73461,9 +73481,9 @@ function App() {
     ] }),
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", { className: "stat-grid", children: [
       /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", { className: "stat-card", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uC0DD\uC0B0 \uC774\uB825" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "\uCE21\uC815 \uAC74\uC218" }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("strong", { children: [
-          filtered.length,
+          measuredRows.length,
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("small", { children: " \uAC74" })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
@@ -73645,7 +73665,7 @@ function App() {
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "mono", children: row.basisLabel || "\u2014" }),
             metric === "PPS" || metric === "\uD3C9\uB7C9" || metric === "\uB450\uAED8" || metric === "\uC218\uBD84" || metric === "\uBC31\uC0C9\uB3C4(\uD45C\uBA74)" || metric === "\uB4A4\uBE44\uCE68" ? positionKeys.map((k) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "value-cell", children: row.values[metric]?.[k] ?? "\u2014" }, k)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: "value-cell", children: row.averages[metric] ?? "\u2014" }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { className: bad ? "danger-text value-cell" : "value-cell", children: v === null ? "\u2014" : v.toFixed(2) }),
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: `status ${bad ? "status-alert" : "status-ok"}`, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", { children: v === null ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "status status-empty", children: "\uCE21\uC815 \uC5C6\uC74C" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { className: `status ${bad ? "status-alert" : "status-ok"}`, children: [
               bad ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { size: 13 }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { size: 13 }),
               " ",
               bad ? "\uADDC\uACA9 \uC774\uD0C8" : "\uD569\uACA9"
