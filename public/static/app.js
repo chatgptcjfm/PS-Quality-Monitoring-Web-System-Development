@@ -73257,10 +73257,10 @@ function App() {
     return entry?.[1] ?? null;
   }, [grade, basis2]);
   const standardLimit = profileLimits?.[metric];
-  const limitAvailable = Boolean(standardLimit && (standardLimit.usl !== void 0 || standardLimit.lsl !== void 0));
-  const activeUsl = standardLimit?.usl;
-  const activeLsl = standardLimit?.lsl;
-  const isOutOfSpec = (value) => value !== null && (activeLsl !== void 0 && value < activeLsl || activeUsl !== void 0 && value >= activeUsl);
+  const activeUsl = typeof standardLimit?.usl === "number" ? standardLimit.usl : void 0;
+  const activeLsl = typeof standardLimit?.lsl === "number" ? standardLimit.lsl : void 0;
+  const limitAvailable = activeUsl !== void 0 || activeLsl !== void 0;
+  const isOutOfSpec = (value) => value !== null && (activeLsl !== void 0 && value < activeLsl || activeUsl !== void 0 && value > activeUsl);
   const plants = ["2\uD638\uAE30", "3\uD638\uAE30"];
   const grades = ["\uC804\uCCB4 \uC9C0\uC885", ...Array.from(new Set(rows.map((r2) => r2.grade)))];
   const bases = ["\uC804\uCCB4 \uD3C9\uB7C9", ...Array.from(new Set(rows.filter((r2) => (!plant || plant === "\uC804\uCCB4 \uD638\uAE30" || r2.plant === plant) && (!grade || grade === "\uC804\uCCB4 \uC9C0\uC885" || r2.grade === grade)).map((r2) => r2.basisLabel))).sort((a, b) => a.localeCompare(b, "ko", { numeric: true }))];
