@@ -73195,17 +73195,25 @@ function findEnduranceColumns(sheet) {
   const md = [];
   const cd = [];
   const maxColumns = Math.max(...sheet.slice(0, 8).map((row) => row.length), 0);
+  const headerFor = (column) => sheet.slice(0, 8).map((row) => String(row[column] ?? "")).join(" ").replace(/[\s_()-]+/g, "").toLowerCase();
   for (let column = 0; column < maxColumns; column++) {
-    const header = sheet.slice(0, 8).map((row) => String(row[column] ?? "")).join(" ").replace(/\s+/g, "").toLowerCase();
-    if (!header.includes("\uB0B4\uC808\uB3C4")) continue;
+    const header = headerFor(column);
+    if (!header.includes("\uB0B4\uC808\uB3C4") && !header.includes("folding") && !header.includes("fold")) continue;
     if (/(?:md|md값|md측정)/i.test(header)) md.push(column);
     else if (/(?:cd|cd값|cd측정)/i.test(header)) cd.push(column);
     else combined.push(column);
   }
   if (md.length && cd.length) return [md[0], cd[0]];
-  if (combined.length) return [combined[0]];
+  if (combined.length) {
+    const column = combined[0];
+    const pairedRows = sheet.slice(8, Math.min(sheet.length, 28)).filter((row) => numeric(row[column]) !== null && numeric(row[column + 1]) !== null).length;
+    const slashRows = sheet.slice(8, Math.min(sheet.length, 28)).filter((row) => /^-?\d+(?:\.\d+)?\s*\/\s*-?\d+(?:\.\d+)?$/.test(String(row[column] ?? "").trim())).length;
+    return pairedRows > slashRows ? [column, column + 1] : [column];
+  }
   const candidates = Array.from({ length: maxColumns }, (_, column) => ({ column, score: sheet.slice(8, Math.min(sheet.length, 28)).filter((row) => /^-?\d+(?:\.\d+)?\s*\/\s*-?\d+(?:\.\d+)?$/.test(String(row[column] ?? "").trim())).length })).filter((item) => item.score > 0).sort((a, b) => b.score - a.score);
-  return candidates.length ? [candidates[0].column] : [37];
+  if (candidates.length) return [candidates[0].column];
+  const likelySeparate = sheet.slice(8, Math.min(sheet.length, 28)).filter((row) => numeric(row[37]) !== null && numeric(row[38]) !== null).length;
+  return likelySeparate ? [37, 38] : [37];
 }
 function parseWorkbook(file, currentPlant, year) {
   return file.arrayBuffer().then((buffer) => {
